@@ -209,56 +209,18 @@
       <!-- Left Side: Search Inputs -->
       <div class="space-y-6">
         <!-- Search for Student -->
-        <div class="flex flex-col w-full relative" #studentSearchArea>
-          <label class="text-primary_dark_blue font-semibold text-sm mb-2">
-            {{ 'ACTIVE_BUILDER.SEARCH_STUDENT' | translate }}
-          </label>
-          <input type="text" placeholder="{{ 'ACTIVE_BUILDER.PLACEHOLDER_STUDENTS' | translate }}" [(ngModel)]="student.searchInput"
-            (input)="onInputChange('student', studentSearch.value)" (focus)="showStudentResults = true"
-            class="px-4 py-3 border-2 border-primary_orange_1 rounded-xl shadow-sm focus:ring-2 focus:ring-primary_orange_1 focus:border-primary_orange_1 text-sm w-full bg-white transition-all"
-            #studentSearch />
-          @if (studentError) {
-            <div class="text-red-500 text-sm mt-2 font-medium">{{ studentError }}</div>
-          }
+        
 
-          @if (student.isLoading) {
-            <div class="text-primary_orange_1 text-sm mt-2 font-medium">
-              {{ 'ACTIVE_BUILDER.LOADING_STUDENTS' | translate }}
-            </div>
-          }
-
-          @if (student.errorMessage) {
-            <div class="text-red-500 text-sm mt-2 font-medium">
-              {{ student.errorMessage }}
-            </div>
-          }
-
-          @if (student.searchResults.length > 0 && showStudentResults) {
-            <div class="absolute z-30 left-0 right-0 top-[4.5rem] bg-white shadow-lg rounded-xl p-2 w-full max-h-60 overflow-auto border-2 border-primary_orange_1">
-              <ul class="space-y-1">
-                @for (stud of student.searchResults; track stud.id || $index) {
-                  <li (click)="select('student', stud)"
-                    class="py-3 px-4 hover:bg-primary_orange_1/10 cursor-pointer rounded-lg text-sm transition-colors">
-                    {{ stud.fullName }} <span class="text-gray-500">({{ stud.userName }})</span>
-                  </li>
-                }
-              </ul>
-
-              @if (student.page < student.totalPages) {
-                <button
-                  class="mt-2 w-full px-4 py-2 bg-primary_orange_1 hover:bg-primary_orange_light text-white text-center font-semibold rounded-lg transition-colors shadow-sm">
-                  {{ 'ACTIVE_BUILDER.LOAD_MORE_STUDENTS' | translate }}
-                </button>
-              }
-            </div>
-          }
-        </div>
-
-        <!-- Search for Teacher -->
+        
+        <div class="bg-white border-2 border-primary_orange_1 rounded-xl p-4 shadow-sm">
+          <!-- Search for Teacher -->
         <div class="flex flex-col w-full relative" #teacherSearchArea>
-          <label class="text-primary_dark_blue font-semibold text-sm mb-2">
-            {{ 'ACTIVE_BUILDER.SEARCH_TEACHER' | translate }}
-          </label>
+          <h3 class="text-lg font-bold text-primary_dark_blue mb-4 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary_orange_1" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
+            </svg>
+            <!-- {{ 'ACTIVE_BUILDER.SELECTED_TEACHER' | translate }} -->SELECT TEACHER
+          </h3>
           <input type="text" placeholder="{{ 'ACTIVE_BUILDER.PLACEHOLDER_TEACHERS' | translate }}" [(ngModel)]="teacher.searchInput"
             (input)="onInputChange('teacher', teacherSearch.value)" (focus)="showTeacherResults = true"
             class="px-4 py-3 border-2 border-primary_orange_1 rounded-xl shadow-sm focus:ring-2 focus:ring-primary_orange_1 focus:border-primary_orange_1 text-sm w-full bg-white transition-all"
@@ -299,12 +261,38 @@
             </div>
           }
         </div>
+          
 
-        <!-- Search for Template -->
+            <div class="space-y-3">
+              <div class="max-h-40 overflow-y-auto space-y-2 mt-2">
+                @for (teach of teacher.selected; track teach.id || $index) {
+                  <div class="flex items-center justify-between bg-primary_background_white p-3 rounded-lg border border-gray-300 hover:border-primary_orange_1 transition-colors">
+                    <span class="text-sm font-medium text-primary_dark_blue break-words flex-1">
+                      {{ teach.fullName }} <span class="text-gray-500 text-xs">({{ teach.userName }})</span>
+                    </span>
+                    <button (click)="select('teacher', teach)"
+                      class="ml-3 px-3 py-1.5 text-xs bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors shadow-sm flex-shrink-0">
+                      {{ 'ACTIVE_BUILDER.REMOVE' | translate }}
+                    </button>
+                  </div>
+                }
+              </div>
+
+            </div>
+          
+        </div>
+
+        
+        <div class="bg-white border-2 border-primary_orange_1 rounded-xl p-4 shadow-sm">
+                    <h3 class="text-lg font-bold text-primary_dark_blue mb-4 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary_orange_1" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+              <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd" />
+            </svg>
+            {{ 'ACTIVE_BUILDER.SELECTED_TEMPLATE' | translate }}
+          </h3>
+          <!-- Search for Template -->
         <div class="flex flex-col w-full relative" #templateSearchArea>
-          <label class="text-primary_dark_blue font-semibold text-sm mb-2">
-            {{ 'ACTIVE_BUILDER.SEARCH_TEMPLATE' | translate }}
-          </label>
           <input type="text" placeholder="{{ 'ACTIVE_BUILDER.PLACEHOLDER_TEMPLATE' | translate }}" [(ngModel)]="template.searchInput"
             (input)="onInputChange('template', templateSearch.value)" (focus)="showTemplateResults = true"
             class="px-4 py-3 border-2 border-primary_orange_1 rounded-xl shadow-sm focus:ring-2 focus:ring-primary_orange_1 focus:border-primary_orange_1 text-sm w-full bg-white transition-all"
@@ -346,6 +334,30 @@
           }
         </div>
 
+
+            <div class="space-y-3">
+              <div class="max-h-40 overflow-y-auto space-y-2 mt-2">
+                @for (temp of template.selected; track temp.id || $index) {
+                  <div class="flex items-center justify-between bg-primary_background_white p-3 rounded-lg border border-gray-300 hover:border-primary_orange_1 transition-colors">
+                    <span class="text-sm font-medium text-primary_dark_blue break-words flex-1">{{ temp.title }}</span>
+                    <button (click)="select('template', temp)"
+                      class="ml-3 px-3 py-1.5 text-xs bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors shadow-sm flex-shrink-0">
+                      {{ 'ACTIVE_BUILDER.REMOVE' | translate }}
+                    </button>
+                  </div>
+                }
+              </div>
+              @if (template.selected.length > 1)
+              {
+              <button (click)="clearSelected('template')"
+                class="w-full px-4 py-2 text-sm bg-gray-400 hover:bg-gray-500 text-white rounded-lg transition-colors shadow-sm font-semibold">
+                {{ 'ACTIVE_BUILDER.CLEAR_ALL' | translate }}
+              </button>
+            }
+            </div>
+          
+        </div>
+
         <!-- Group Name Input -->
         <div>
           <div class="flex flex-col">
@@ -362,9 +374,10 @@
       </div>
 
       <!-- Right Side: Selected Items -->
-      <div class="space-y-6">
+      <div class="flex-col space-y-6">
         <!-- Selected Students -->
-        <div class="bg-white border-2 border-primary_orange_1 rounded-xl p-4 shadow-sm mt-[28px]">
+        <div class="bg-white border-2 border-primary_orange_1 rounded-xl p-4 shadow-sm h-full">
+          
     <!-- ✅ mt-[2.125rem] = label height (text-sm) + mb-2 -->
     <h3 class="text-lg font-bold text-primary_dark_blue mb-4 flex items-center gap-2">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary_orange_1" viewBox="0 0 20 20" fill="currentColor">
@@ -372,13 +385,55 @@
       </svg>
       {{ 'ACTIVE_BUILDER.SELECTED_STUDENTS' | translate }}
     </h3>
+    <div class="flex flex-col w-full relative" #studentSearchArea>
+
+          <input type="text" placeholder="{{ 'ACTIVE_BUILDER.PLACEHOLDER_STUDENTS' | translate }}" [(ngModel)]="student.searchInput"
+            (input)="onInputChange('student', studentSearch.value)" (focus)="showStudentResults = true"
+            class="px-4 py-3 border-2 border-primary_orange_1 rounded-xl shadow-sm focus:ring-2 focus:ring-primary_orange_1 focus:border-primary_orange_1 text-sm w-full bg-white transition-all"
+            #studentSearch />
+          @if (studentError) {
+            <div class="text-red-500 text-sm mt-2 font-medium">{{ studentError }}</div>
+          }
+
+          @if (student.isLoading) {
+            <div class="text-primary_orange_1 text-sm mt-2 font-medium">
+              {{ 'ACTIVE_BUILDER.LOADING_STUDENTS' | translate }}
+            </div>
+          }
+
+          @if (student.errorMessage) {
+            <div class="text-red-500 text-sm mt-2 font-medium">
+              {{ student.errorMessage }}
+            </div>
+          }
+
+          @if (student.searchResults.length > 0 && showStudentResults) {
+            <div class="absolute z-30 left-0 right-0 top-[4.5rem] bg-white shadow-lg rounded-xl p-2 w-full max-h-60 overflow-auto border-2 border-primary_orange_1">
+              <ul class="space-y-1">
+                @for (stud of student.searchResults; track stud.id || $index) {
+                  <li (click)="select('student', stud)"
+                    class="py-3 px-4 hover:bg-primary_orange_1/10 cursor-pointer rounded-lg text-sm transition-colors">
+                    {{ stud.fullName }} <span class="text-gray-500">({{ stud.userName }})</span>
+                  </li>
+                }
+              </ul>
+
+              @if (student.page < student.totalPages) {
+                <button
+                  class="mt-2 w-full px-4 py-2 bg-primary_orange_1 hover:bg-primary_orange_light text-white text-center font-semibold rounded-lg transition-colors shadow-sm">
+                  {{ 'ACTIVE_BUILDER.LOAD_MORE_STUDENTS' | translate }}
+                </button>
+              }
+            </div>
+          }
+        </div>
           @if (student.selected.length === 0) {
-            <div class="text-gray-400 text-sm text-center py-2 italic">
+            <div class="text-gray-400 text-sm text-center align-middle justify-center py-2 italic">
               {{ 'ACTIVE_BUILDER.NOTHING_SELECTED' | translate }}
             </div>
           } @else {
-            <div class="space-y-3">
-              <div class="max-h-60 overflow-y-auto space-y-2 pr-2">
+            <div class="space-y-3 mt-2">
+              <div class="max-h-96 overflow-y-auto space-y-2">
                 @for (stud of student.selected; track stud.id || $index) {
                   <div class="flex items-center justify-between bg-primary_background_white p-3 rounded-lg border border-gray-200 hover:border-primary_orange_1 transition-colors">
                     <span class="text-sm font-medium text-primary_dark_blue break-words flex-1">
@@ -403,79 +458,10 @@
         </div>
 
         <!-- Selected Teachers -->
-        <div class="bg-white border-2 border-primary_orange_1 rounded-xl p-4 shadow-sm">
-          <h3 class="text-lg font-bold text-primary_dark_blue mb-4 flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary_orange_1" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
-            </svg>
-            {{ 'ACTIVE_BUILDER.SELECTED_TEACHER' | translate }}
-          </h3>
-          @if (teacher.selected.length === 0) {
-            <div class="text-gray-400 text-sm text-center py-2 italic">
-              {{ 'ACTIVE_BUILDER.NOTHING_SELECTED' | translate }}
-            </div>
-          } @else {
-            <div class="space-y-3">
-              <div class="max-h-40 overflow-y-auto space-y-2 pr-2">
-                @for (teach of teacher.selected; track teach.id || $index) {
-                  <div class="flex items-center justify-between bg-primary_background_white p-3 rounded-lg border border-gray-200 hover:border-primary_orange_1 transition-colors">
-                    <span class="text-sm font-medium text-primary_dark_blue break-words flex-1">
-                      {{ teach.fullName }} <span class="text-gray-500 text-xs">({{ teach.userName }})</span>
-                    </span>
-                    <button (click)="select('teacher', teach)"
-                      class="ml-3 px-3 py-1.5 text-xs bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors shadow-sm flex-shrink-0">
-                      {{ 'ACTIVE_BUILDER.REMOVE' | translate }}
-                    </button>
-                  </div>
-                }
-              </div>
-              @if (teacher.selected.length > 1)
-              {
-              <button (click)="clearSelected('teacher')"
-                class="w-full px-4 py-2 text-sm bg-gray-400 hover:bg-gray-500 text-white rounded-lg transition-colors shadow-sm font-semibold">
-                {{ 'ACTIVE_BUILDER.CLEAR_ALL' | translate }}
-              </button>
-            }
-            </div>
-          }
-        </div>
+        
 
         <!-- Selected Templates -->
-        <div class="bg-white border-2 border-primary_orange_1 rounded-xl p-4 shadow-sm">
-          <h3 class="text-lg font-bold text-primary_dark_blue mb-4 flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary_orange_1" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
-              <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd" />
-            </svg>
-            {{ 'ACTIVE_BUILDER.SELECTED_TEMPLATE' | translate }}
-          </h3>
-          @if (template.selected.length === 0) {
-            <div class="text-gray-400 text-sm text-center py-2 italic">
-              {{ 'ACTIVE_BUILDER.NOTHING_SELECTED' | translate }}
-            </div>
-          } @else {
-            <div class="space-y-3">
-              <div class="max-h-40 overflow-y-auto space-y-2 pr-2">
-                @for (temp of template.selected; track temp.id || $index) {
-                  <div class="flex items-center justify-between bg-primary_background_white p-3 rounded-lg border border-gray-200 hover:border-primary_orange_1 transition-colors">
-                    <span class="text-sm font-medium text-primary_dark_blue break-words flex-1">{{ temp.title }}</span>
-                    <button (click)="select('template', temp)"
-                      class="ml-3 px-3 py-1.5 text-xs bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors shadow-sm flex-shrink-0">
-                      {{ 'ACTIVE_BUILDER.REMOVE' | translate }}
-                    </button>
-                  </div>
-                }
-              </div>
-              @if (template.selected.length > 1)
-              {
-              <button (click)="clearSelected('template')"
-                class="w-full px-4 py-2 text-sm bg-gray-400 hover:bg-gray-500 text-white rounded-lg transition-colors shadow-sm font-semibold">
-                {{ 'ACTIVE_BUILDER.CLEAR_ALL' | translate }}
-              </button>
-            }
-            </div>
-          }
-        </div>
+        
       </div>
       
       <!-- Finish and Back Buttons -->
