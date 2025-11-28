@@ -114,14 +114,11 @@ public class AnonymousActiveQuestionnaireModel
 
     public async Task MarkParticipantIncompleteAsync(Guid participantId)
     {
-        if (CompletedParticipantIds.Contains(participantId))
+        CompletedParticipantIds.Remove(participantId);
+        if (_context != null)
         {
-            CompletedParticipantIds.Remove(participantId);
-            if (_context != null)
-            {
-                _context.AnonymousActiveQuestionnaires.Update(this);
-                await _context.SaveChangesAsync();
-            }
+            _context.AnonymousActiveQuestionnaires.Update(this);
+            await _context.SaveChangesAsync();
         }
     }
 
