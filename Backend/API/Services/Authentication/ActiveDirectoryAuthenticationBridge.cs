@@ -65,10 +65,28 @@ public class ActiveDirectoryAuthenticationBridge(
             _Logger.LogError(ex, "LDAP authentication failed for user: {Username} with result code: {ResultCode}", username, ex.ResultCode);
 
             // https://ldap.com/ldap-result-code-reference/
+            // Invalid credentials exception data:
+            // Incorrect username/password:             80090308: LdapErr: DSID-0C090434, comment: AcceptSecurityContext error, data 52e, v4f7c\0
+            // Account disabled:                        80090308: LdapErr: DSID-0C090434, comment: AcceptSecurityContext error, data 533, v4f7c\0
+            // User must change password at next logon: 80090308: LdapErr: DSID-0C090434, comment: AcceptSecurityContext error, data 773, v4f7c\0
+            // Expired account:                         80090308: LdapErr: DSID-0C090434, comment: AcceptSecurityContext error, data 701, v4f7c\0
+            
+            string dataPattern = @"data\s([0-9a-fA-F]+)";
+            Match dataMatch = Regex.Match(ex.LdapErrorMessage, dataPattern);
+
             throw ex.ResultCode switch
             {
                 LdapException.ConnectError => new UnauthorizedAccessException("Unable to connect to the LDAP server.", ex),
-                LdapException.InvalidCredentials => new UnauthorizedAccessException("Invalid username or password.", ex),
+                LdapException.InvalidCredentials => new UnauthorizedAccessException(
+                    dataMatch.Success ? dataMatch.Groups[1].Value switch
+                    {
+                        "52e" => JsonSerializer.Serialize(new { ErrorCode = "52e", Message = "Incorrect username or password." }),
+                        "533" => JsonSerializer.Serialize(new { ErrorCode = "533", Message = "Account is disabled." }),
+                        "701" => JsonSerializer.Serialize(new { ErrorCode = "701", Message = "Account has expired." }),
+                        "773" => JsonSerializer.Serialize(new { ErrorCode = "773", Message = "User must change password at next logon." }),
+                        _ => JsonSerializer.Serialize(new { ErrorCode = dataMatch.Groups[1].Value, Message = "Invalid credentials provided." })
+                    } : "Invalid credentials provided.", ex
+                ),
                 LdapException.LdapTimeout => new InvalidOperationException("The LDAP server did not respond in a timely manner.", ex),
                 LdapException.ServerDown => new InvalidOperationException("The LDAP server is currently unreachable.", ex),
                 _ => new InvalidOperationException($"LDAP authentication failed with the following result code and message: {ex.ResultCode} - {ex.Message}", ex),
