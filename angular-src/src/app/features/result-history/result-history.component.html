@@ -177,7 +177,13 @@
   </div>
   <!-- action buttons + view toggle -->
   <div class="flex flex-wrap justify-center sm:justify-end gap-2 w-full sm:w-auto">
-    
+    <!-- Toggle Graph Button -->
+    <button 
+      (click)="TestGraf()"
+      class="px-6 py-3 bg-primary_orange_1 text-white rounded-xl hover:bg-primary_orange_light transition-all duration-150 font-medium shadow-sm">
+      {{ showGraph ? 'Skjul Graf' : 'Vis Graf' }}
+    </button>
+
     <!-- Open PDF -->
     <button
       *ngIf="hasResult()"
@@ -218,38 +224,33 @@
 
     <!-- canonical rendering of the current attempt -->
     <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
-      <!-- Toggle Graph Button -->
-      <div class="flex justify-center mb-4">
-        <button 
-          (click)="TestGraf()"
-          class="px-6 py-3 bg-primary_orange_1 text-white rounded-xl hover:bg-primary_orange_light transition-all duration-150 font-medium shadow-sm">
-          {{ showGraph ? 'Skjul Graf' : 'Vis Graf' }}
-        </button>
-      </div>
 
       <!-- Graph Section -->
-      <div *ngIf="showGraph" class="mb-6 bg-gray-50 p-6 rounded-lg">
-        <div class="flex items-center justify-center gap-4 mb-6">
-          <button 
-            (click)="prevGraphQuestion()" 
-            [disabled]="currentQuestionIndex === 0"
-            class="px-4 py-2 bg-primary_orange_1 text-white rounded-xl hover:bg-primary_orange_light disabled:opacity-50 disabled:cursor-not-allowed transition">
-            ◀ {{ 'COMMON.BUTTONS.PREVIOUS' | translate }}
-          </button>
-          <span class="text-lg font-semibold text-primary_orange_1 min-w-[200px] text-center">
-            Spørgsmål {{ currentQuestionIndex + 1 }} / {{ totalQuestions }}
-          </span>
-          <button 
-            (click)="nextGraphQuestion()" 
-            [disabled]="currentQuestionIndex === totalQuestions - 1"
-            class="px-4 py-2 bg-primary_orange_1 text-white rounded-xl hover:bg-primary_orange_light disabled:opacity-50 disabled:cursor-not-allowed transition">
-            {{ 'COMMON.BUTTONS.NEXT' | translate }} ▶
-          </button>
-        </div>
-        <div class="w-full h-[500px] bg-white rounded-lg shadow-sm p-4">
-          <ag-charts [options]="chartOptions"></ag-charts>
-        </div>
-      </div>
+<div *ngIf="showGraph" class="mb-6 bg-gray-50 p-6 rounded-lg w-full">
+  <div class="flex items-center justify-center gap-4 mb-6">
+    <button 
+      (click)="prevGraphQuestion()" 
+      [disabled]="currentQuestionIndex === 0"
+      class="px-4 py-2 bg-primary_orange_1 text-white rounded-xl hover:bg-primary_orange_light disabled:opacity-50 disabled:cursor-not-allowed transition">
+      ◀ {{ 'COMMON.BUTTONS.PREVIOUS' | translate }}
+    </button>
+    <span class="text-lg font-semibold text-primary_orange_1 min-w-[200px] text-center">
+      Spørgsmål {{ currentQuestionIndex + 1 }} / {{ totalQuestions }}
+    </span>
+    <button 
+      (click)="nextGraphQuestion()" 
+      [disabled]="currentQuestionIndex === totalQuestions - 1"
+      class="px-4 py-2 bg-primary_orange_1 text-white rounded-xl hover:bg-primary_orange_light disabled:opacity-50 disabled:cursor-not-allowed transition">
+      {{ 'COMMON.BUTTONS.NEXT' | translate }} ▶
+    </button>
+  </div>
+  <div class="w-full flex justify-center">
+    <div class="w-full max-w-5xl h-[500px] bg-white rounded-lg shadow-sm p-4">
+      <ag-charts [options]="chartOptions" style="display: block; width: 100%; height: 100%;"></ag-charts>
+    </div>
+  </div>
+</div>
+
 
       <app-show-result
         [result]="getCurrentResultLikeResult()"

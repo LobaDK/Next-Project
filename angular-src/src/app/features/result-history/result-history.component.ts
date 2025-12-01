@@ -3,6 +3,7 @@ import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import { AuthService } from '../../core/services/auth.service';
 
 import { User } from '../../shared/models/user.model';
 import { TemplateBase } from '../active-questionnaire-manager/models/active.models';
@@ -50,6 +51,7 @@ export class ResultHistoryComponent implements OnInit {
   private resultHistoryService = inject(ResultHistoryService);
   private pdfGenerationService = inject(PdfGenerationService);
   private dataCompareService = inject(DataCompareService);
+  private authService = inject(AuthService);  // <-- ADD THIS
 
 
   public translate = inject(TranslateService)
@@ -451,18 +453,16 @@ public TestGraf() {
     const templateId = this.template.selected.id;
     const studentId = this.student.selected.id;
     
-        // The teacher ID should come from the history object
-    // If history isn't loaded yet, we need to wait for it
-    if (!this.history) {
-      console.warn('History not loaded yet, fetching it first...');
-      // Fetch the history first, then load graph
-      this.fetchStudentResultsV2();
-      // Set a flag to load graph after history loads
-      this.shouldLoadGraphAfterHistory = true;
-      return;
-    }
+  // Get teacher ID from the authenticated user
+    const currentUser = this.authService.user();
+    
 
-    const teacherId = this.history.teacher.id;
+      if (!currentUser) {
+      console.error('No authenticated user found!');
+      return;
+      };
+
+    const teacherId = currentUser.id;
 
     if (!teacherId) {
       console.error('Teacher ID is undefined!');
