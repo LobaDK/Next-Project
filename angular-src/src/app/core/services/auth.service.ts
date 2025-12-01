@@ -5,7 +5,7 @@ import { environment } from '../../../environments/environment';
 import { TokenService } from './token.service';
 import { ApiService } from './api.service';
 import { Role, User } from '../../shared/models/user.model';
-import { LoginErrorCode, LoginResult } from '../../features/home/models/login.model';
+import { LoginErrorCode, LoginResult, ADErrorCode, ADErrorResponse } from '../../features/home/models/login.model';
 
 interface AuthTokens {
   authToken: string;
@@ -267,11 +267,50 @@ private mapToRoleEnum(value: string | null): Role | null {
 
 /**
  * Maps HTTP error response to login error code.
- * TODO: Currently maps based on HTTP status codes only. 
- * Should be updated to extract specific error codes from the response body
- * when the API provides more detailed error information.
+ * Extracts Active Directory error codes from the response body when available,
+ * otherwise falls back to HTTP status code mapping.
  */
 private mapHttpErrorToLoginErrorCode(httpError: HttpErrorResponse): LoginErrorCode {
+  // For 401 errors, check if we have AD-specific error information in the response body
+  if (httpError.status === 401 && httpError.error) {
+    try {
+      let adError: ADErrorResponse;
+      
+      // Handle both JSON objects and JSON strings in the error response
+      if (typeof httpError.error === 'string') {
+        adError = JSON.parse(httpError.error);
+      } else if (httpError.error.ErrorCode) {
+        adError = httpError.error;
+      } else {
+        // Fallback: check if error message itself is a JSON string
+        const errorMessage = httpError.error.message || httpError.message;
+        if (errorMessage && typeof errorMessage === 'string') {
+          adError = JSON.parse(errorMessage);
+        } else {
+          throw new Error('No AD error code found');
+        }
+      }
+      
+      // Map AD error codes to specific LoginErrorCode values
+      switch (adError.ErrorCode) {
+        case ADErrorCode.IncorrectCredentials:
+          return LoginErrorCode.InvalidCredentials;
+        case ADErrorCode.AccountDisabled:
+          return LoginErrorCode.AccountDisabled;
+        case ADErrorCode.AccountExpired:
+          return LoginErrorCode.AccountExpired;
+        case ADErrorCode.PasswordExpired:
+          return LoginErrorCode.PasswordExpired;
+        default:
+          return LoginErrorCode.InvalidCredentials; // Default for unknown AD codes
+      }
+    } catch {
+      // If we can't parse AD error codes, fall back to generic invalid credentials
+      return LoginErrorCode.InvalidCredentials;
+    }
+  }
+
+  // Fall back to HTTP status code mapping for non-401 errors or when AD parsing fails
   switch (httpError.status) {
     case 0:
       return LoginErrorCode.Network;

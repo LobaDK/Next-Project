@@ -12,10 +12,12 @@ import { TrackCapsDirective } from '../../shared/directives/caps-lock';
 
 const ERROR_I18N: Record<LoginErrorCode, string> = {
   [LoginErrorCode.InvalidCredentials]: 'LOGIN.ERRORS.INVALID',
+  [LoginErrorCode.AccountDisabled]:    'LOGIN.ERRORS.ACCOUNT_DISABLED',
+  [LoginErrorCode.AccountExpired]:     'LOGIN.ERRORS.ACCOUNT_EXPIRED',
+  [LoginErrorCode.PasswordExpired]:    'LOGIN.ERRORS.PASSWORD_EXPIRED',
   [LoginErrorCode.Network]:            'LOGIN.ERRORS.NETWORK',
   [LoginErrorCode.Server]:             'LOGIN.ERRORS.SERVER',
   [LoginErrorCode.Unknown]:            'LOGIN.ERRORS.GENERIC',
-  // If your enum also includes these, keep them:
   [LoginErrorCode.BadRequest]:         'LOGIN.ERRORS.BAD_REQUEST',
   [LoginErrorCode.Forbidden]:          'LOGIN.ERRORS.FORBIDDEN',
   [LoginErrorCode.RateLimited]:        'LOGIN.ERRORS.RATE_LIMITED',
