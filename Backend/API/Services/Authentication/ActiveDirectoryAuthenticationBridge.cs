@@ -70,6 +70,8 @@ public class ActiveDirectoryAuthenticationBridge(
             // Account disabled:                        80090308: LdapErr: DSID-0C090434, comment: AcceptSecurityContext error, data 533, v4f7c\0
             // User must change password at next logon: 80090308: LdapErr: DSID-0C090434, comment: AcceptSecurityContext error, data 773, v4f7c\0
             // Expired account:                         80090308: LdapErr: DSID-0C090434, comment: AcceptSecurityContext error, data 701, v4f7c\0
+            // Account lockout:                         80090308: LdapErr: DSID-0C090434, comment: AcceptSecurityContext error, data 775, v4f7c\0
+
             
             string dataPattern = @"data\s([0-9a-fA-F]+)";
             Match dataMatch = Regex.Match(ex.LdapErrorMessage, dataPattern);
@@ -84,6 +86,7 @@ public class ActiveDirectoryAuthenticationBridge(
                         "533" => JsonSerializer.Serialize(new { ErrorCode = "533", Message = "Account is disabled." }),
                         "701" => JsonSerializer.Serialize(new { ErrorCode = "701", Message = "Account has expired." }),
                         "773" => JsonSerializer.Serialize(new { ErrorCode = "773", Message = "User must change password at next logon." }),
+                        "775" => JsonSerializer.Serialize(new { ErrorCode = "775", Message = "Account is locked out due to multiple failed login attempts." }),
                         _ => JsonSerializer.Serialize(new { ErrorCode = dataMatch.Groups[1].Value, Message = "Invalid credentials provided." })
                     } : "Invalid credentials provided.", ex
                 ),
