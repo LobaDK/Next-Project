@@ -15,6 +15,7 @@ const ERROR_I18N: Record<LoginErrorCode, string> = {
   [LoginErrorCode.AccountDisabled]:    'LOGIN.ERRORS.ACCOUNT_DISABLED',
   [LoginErrorCode.AccountExpired]:     'LOGIN.ERRORS.ACCOUNT_EXPIRED',
   [LoginErrorCode.PasswordExpired]:    'LOGIN.ERRORS.PASSWORD_EXPIRED',
+  [LoginErrorCode.AccountLocked]:      'LOGIN.ERRORS.ACCOUNT_LOCKED',
   [LoginErrorCode.Network]:            'LOGIN.ERRORS.NETWORK',
   [LoginErrorCode.Server]:             'LOGIN.ERRORS.SERVER',
   [LoginErrorCode.Unknown]:            'LOGIN.ERRORS.GENERIC',
@@ -46,6 +47,9 @@ export class LoginComponent {
 
   isLoading = false;
   capsLockOn = false;
+  
+  // Flag to control whether to show specific AD error messages or generic ones
+  showSpecificErrors = false;
 
   login() {
     if (this.isLoading) return;
@@ -59,7 +63,14 @@ export class LoginComponent {
         this.loggedIn.emit(true);
         return;
       }
-      this.errorKey = ERROR_I18N[res.code];
+      
+      // Check if we should show generic message for AD-specific errors
+      if (!this.showSpecificErrors && this.isADSpecificError(res.code)) {
+        this.errorKey = 'LOGIN.ERRORS.GENERIC_AD_ERROR';
+      } else {
+        this.errorKey = ERROR_I18N[res.code];
+      }
+      
       this.errorOccurred.emit(res.code);
     });
   }
@@ -75,5 +86,17 @@ export class LoginComponent {
 
   onCapsLockChange(capsLockOn: boolean) {
     this.capsLockOn = capsLockOn;
+  }
+  
+  /**
+   * Checks if the error code is specific to Active Directory (not invalid credentials)
+   */
+  private isADSpecificError(errorCode: LoginErrorCode): boolean {
+    return [
+      LoginErrorCode.AccountDisabled,
+      LoginErrorCode.AccountExpired,
+      LoginErrorCode.PasswordExpired,
+      LoginErrorCode.AccountLocked
+    ].includes(errorCode);
   }
 }

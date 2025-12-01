@@ -3,6 +3,7 @@ export enum LoginErrorCode {
   AccountDisabled    = 'ACCOUNT_DISABLED',
   AccountExpired     = 'ACCOUNT_EXPIRED',
   PasswordExpired    = 'PASSWORD_EXPIRED',
+  AccountLocked      = 'ACCOUNT_LOCKED',
   Network            = 'NETWORK',
   Forbidden          = 'FORBIDDEN',
   RateLimited        = 'RATE_LIMITED',
@@ -17,7 +18,8 @@ export enum ADErrorCode {
   IncorrectCredentials = '52e',
   AccountDisabled = '533', 
   AccountExpired = '701',
-  PasswordExpired = '773'
+  PasswordExpired = '773',
+  AccountLocked = '775'
 }
 
 export interface ADErrorResponse {

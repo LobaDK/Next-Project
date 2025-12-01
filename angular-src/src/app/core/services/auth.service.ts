@@ -301,6 +301,8 @@ private mapHttpErrorToLoginErrorCode(httpError: HttpErrorResponse): LoginErrorCo
           return LoginErrorCode.AccountExpired;
         case ADErrorCode.PasswordExpired:
           return LoginErrorCode.PasswordExpired;
+        case ADErrorCode.AccountLocked:
+          return LoginErrorCode.AccountLocked;
         default:
           return LoginErrorCode.InvalidCredentials; // Default for unknown AD codes
       }
