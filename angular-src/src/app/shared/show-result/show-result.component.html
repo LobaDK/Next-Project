@@ -83,7 +83,6 @@
           </div>
         }
       </div>
-<<<<<<< HEAD
     </div>
   </div>
 
@@ -147,98 +146,6 @@
                       class="border border-primary_orange_1 p-2 text-center font-medium text-primary_dark_blue text-xs min-w-[100px] sm:min-w-[120px]">
                     <div class="break-words leading-tight text-xs">
                       {{ option.displayText }}
-=======
-    }
-    <!-- Full View (PDF-like Matrix Style) -->
-    @if (isFullView) {
-      <div class="questions-section space-y-6">
-        @for (answer of result.answers; track answer; let i = $index) {
-          <div class="question-block print:break-inside-avoid bg-white rounded-lg shadow-sm border border-primary_orange_1 p-3 sm:p-4">
-            <h3 class="text-sm sm:text-base font-semibold text-primary_dark_blue mb-3 print:text-black break-words">
-              {{ i + 1 }}. {{ answer.question }}
-            </h3>
-            @if (getTemplateQuestionOptions(answer.question); as options) {
-              <!-- Matrix Table with horizontal scroll for mobile -->
-              @if (options.length > 0 && (!answer.isStudentResponseCustom || !answer.isTeacherResponseCustom)) {
-                <div
-                  class="matrix-table mb-3">
-                  <!-- Scrollable container for mobile -->
-                  <div class="overflow-x-auto border border-primary_orange_1 rounded">
-                    <table class="min-w-full border-collapse">
-                      <thead>
-                        <tr class="bg-primary_orange_light/30">
-                          <th class="border border-primary_orange_1 p-2 text-left font-medium text-primary_dark_blue text-xs sticky left-0 bg-primary_orange_light/30 z-10"></th>
-                          @for (option of options; track option) {
-                            <th
-                              class="border border-primary_orange_1 p-2 text-center font-medium text-primary_dark_blue text-xs min-w-[100px] sm:min-w-[120px]">
-                              <div class="break-words leading-tight text-xs">
-                                {{ option.displayText }}
-                              </div>
-                            </th>
-                          }
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <!-- Student row (only if not custom) -->
-                        @if (!answer.isStudentResponseCustom) {
-                          <tr>
-                            <td class="border border-primary_orange_1 p-2 font-semibold bg-white sticky left-0 z-10 text-xs">
-                              {{ translate.instant('RESULT.STUDENT_LABEL') }}
-                            </td>
-                            @for (option of options; track option; let optionIndex = $index) {
-                              <td
-                                class="border border-primary_orange_1 p-2 text-center min-w-[100px] sm:min-w-[120px]">
-                                @if (isOptionSelected(answer.studentResponse, answer.isStudentResponseCustom, option, optionIndex, 'student')) {
-                                  <span
-                                  class="font-bold text-lg text-primary_orange_1">X</span>
-                                }
-                              </td>
-                            }
-                          </tr>
-                        }
-                        <!-- Teacher row (only if not custom) -->
-                        @if (!answer.isTeacherResponseCustom) {
-                          <tr>
-                            <td class="border border-primary_orange_1 p-2 font-semibold bg-white sticky left-0 z-10 text-xs">
-                              {{ translate.instant('RESULT.TEACHER_LABEL') }}
-                            </td>
-                            @for (option of options; track option; let optionIndex = $index) {
-                              <td
-                                class="border border-primary_orange_1 p-2 text-center min-w-[100px] sm:min-w-[120px]">
-                                @if (isOptionSelected(answer.teacherResponse, answer.isTeacherResponseCustom, option, optionIndex, 'teacher')) {
-                                  <span
-                                  class="font-bold text-lg text-primary_orange_1">X</span>
-                                }
-                              </td>
-                            }
-                          </tr>
-                        }
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              }
-              <!-- No options note -->
-              @if (options.length === 0) {
-                <div class="bg-primary_background_white/80 p-2 rounded border border-primary_orange_1 mb-3">
-                  <p class="text-xs text-primary_dark_blue italic">{{ translate.instant('RESULT.NO_OPTIONS_AVAILABLE') }}</p>
-                </div>
-              }
-            }
-            <!-- Custom Responses Section -->
-            @if (answer.isStudentResponseCustom || answer.isTeacherResponseCustom) {
-              <div
-                class="custom-responses bg-primary_background_white/80 p-2 sm:p-3 rounded border border-primary_orange_1">
-                <h4 class="font-semibold text-primary_dark_blue mb-2 text-xs">{{ translate.instant('RESULT.CUSTOM_RESPONSES') }}</h4>
-                <!-- Student custom response -->
-                @if (answer.isStudentResponseCustom) {
-                  <div class="custom-response mb-2 p-2 bg-white rounded">
-                    <div class="flex flex-col sm:flex-row">
-                      <span class="font-medium text-primary_dark_light mb-1 sm:mb-0 sm:w-16 sm:flex-shrink-0 italic text-xs">
-                        {{ translate.instant('RESULT.STUDENT_LABEL') }}:
-                      </span>
-                      <span class="text-gray-900 break-words text-xs">{{ answer.studentResponse }}</span>
->>>>>>> 18e0c29ab73e3344502b4604b81fd2e19e578bd7
                     </div>
                   </div>
                 }

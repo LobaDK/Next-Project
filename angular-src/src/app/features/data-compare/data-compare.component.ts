@@ -54,21 +54,10 @@ interface TemplateSearchEntity extends SearchEntity<TemplateBase> {
 type SearchType = "student" | "template";
 
 @Component({
-<<<<<<< HEAD
-  selector: "app-data-compare",
-  standalone: true,
-  imports: [TranslateModule, CommonModule, FormsModule, AgCharts],
-  template: `
-    <ag-charts-angular [options]="chartOptions"></ag-charts-angular>
-  `,
-  templateUrl: "./data-compare.component.html",
-  styleUrl: "./data-compare.component.css",
-=======
     selector: "app-data-compare",
     imports: [TranslateModule, FormsModule, AgCharts],
     templateUrl: "./data-compare.component.html",
     styleUrl: "./data-compare.component.css"
->>>>>>> 18e0c29ab73e3344502b4604b81fd2e19e578bd7
 })
 /**
  * DataCompareComponent

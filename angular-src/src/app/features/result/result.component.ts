@@ -21,15 +21,6 @@ import { Subject, takeUntil } from "rxjs";
     template: `
     <button (click)="updateChart('stacked')">Stacked</button>
     <button (click)="updateChart('donut')">Donut</button>
-<<<<<<< HEAD
-    <ag-charts-angular
-      *ngIf="chartOptions"
-      [options]="chartOptions"
-    ></ag-charts-angular>
-  `,
-  styleUrls: ["./result.component.css"],
-  
-=======
     @if (chartOptions) {
       <ag-charts-angular
         [options]="chartOptions"
@@ -37,7 +28,6 @@ import { Subject, takeUntil } from "rxjs";
     }
     `,
     styleUrls: ["./result.component.css"]
->>>>>>> 18e0c29ab73e3344502b4604b81fd2e19e578bd7
 })
 export class ResultComponent implements OnInit, OnDestroy{
   result: Result | null = null;
