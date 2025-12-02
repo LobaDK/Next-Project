@@ -53,3 +53,4 @@ global using API.DTO.Requests.Settings;
 global using Microsoft.EntityFrameworkCore;
 global using API.FieldMappers;
 global using Database.Extensions;
+global using static API.Exceptions.LDAPException;
