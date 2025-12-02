@@ -23,7 +23,7 @@ import { Attempt, StudentResultHistory, AnswerInfo } from './models/result-histo
 import { PdfGenerationService } from '../result/services/pdf-generation.service';
 import { AgCharts } from 'ag-charts-angular';
 import type { AgCartesianChartOptions } from 'ag-charts-community';
-import { DataCompareService } from '../data-compare-overtime/services/data-compare-overtime.service';
+
 
 enum SearchEnum {
   Student = 'student',
@@ -50,7 +50,6 @@ interface SearchState<T> {
 export class ResultHistoryComponent implements OnInit {
   private resultHistoryService = inject(ResultHistoryService);
   private pdfGenerationService = inject(PdfGenerationService);
-  private dataCompareService = inject(DataCompareService);
   private authService = inject(AuthService);  // <-- ADD THIS
 
 
@@ -484,7 +483,7 @@ public TestGraf() {
 
   private loadGraphData(templateId: string, studentId: string, teacherId: string) {
     // Load questions
-    this.dataCompareService.getQuestionareOptiontsByID(templateId).subscribe({
+    this.resultHistoryService.getQuestionnaireOptionsByID(templateId).subscribe({
       next: (res) => {
         if (res?.questions?.length) {
           this.allQuestions = res.questions;
@@ -497,7 +496,7 @@ public TestGraf() {
   }
 
   private loadGraphResponses(templateId: string, studentId: string, teacherId: string) {
-    this.dataCompareService.getResponsesByID(studentId, teacherId, templateId).subscribe({
+    this.resultHistoryService.getResponsesByID(studentId, teacherId, templateId).subscribe({
       next: (res) => {
         console.log('Raw API responses:', res);
         this.allResponses = Array.isArray(res) ? res : [];
@@ -507,6 +506,7 @@ public TestGraf() {
       error: (err) => console.error('Error fetching responses:', err),
     });
   }
+
 
   private updateChartForQuestion(index: number) {
     const question = this.allQuestions[index];

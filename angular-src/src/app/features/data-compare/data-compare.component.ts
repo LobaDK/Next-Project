@@ -21,7 +21,6 @@ import { TemplateBase } from "../active-questionnaire-manager/models/active.mode
 import { AgCharts } from "ag-charts-angular";
 import { DataCompareService } from "./services/data-compare.service";
 import { HttpClient } from "@angular/common/http";
-import { DataCompareOvertimeComponent } from "../data-compare-overtime/data-compare-overtime.component";
 
 // ---- NEW: chart strategy imports ----
 import { ChartRegistry } from "./charts/chart-registry";
@@ -57,7 +56,7 @@ type SearchType = "student" | "template";
 @Component({
   selector: "app-data-compare",
   standalone: true,
-  imports: [TranslateModule, CommonModule, FormsModule, AgCharts,DataCompareOvertimeComponent],
+  imports: [TranslateModule, CommonModule, FormsModule, AgCharts],
   template: `
     <ag-charts-angular [options]="chartOptions"></ag-charts-angular>
   `,
