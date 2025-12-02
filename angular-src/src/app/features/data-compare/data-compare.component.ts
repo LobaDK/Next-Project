@@ -30,10 +30,8 @@ import {
   AnswerCounts,
 } from "./models/data-compare.model";
 
-// User or group result type for search
-type UserOrGroup =
-  | (User & { type: "user" })
-  | { groupId: string; name: string; type: "group" };
+// Group result type for search (users are no longer searchable)
+type UserOrGroup = { groupId: string; name: string; type: "group" };
 
 interface UserSearchEntity {
   selected: UserOrGroup[];
@@ -238,7 +236,7 @@ export class DataCompareComponent implements OnInit, OnDestroy {
             const userBases = response.userBases || [];
             userState.sessionId = response.sessionId;
 
-            // Also search groups
+            // Only search groups (no users)
             this.http
               .get<any[]>(`${this.DataCompareService.apiUrl}/groupsbasic`)
               .subscribe({
@@ -250,20 +248,14 @@ export class DataCompareComponent implements OnInit, OnDestroy {
                     ...g,
                     type: "group",
                   }));
-                  const userResults = userBases.map((u: any) => ({
-                    ...u,
-                    type: "user",
-                  }));
-                  userState.searchResults = [...userResults, ...groupResults];
+                  // Only show groups, no users
+                  userState.searchResults = groupResults;
                   userState.hasMore = false;
                   state.isLoading = false;
                 },
                 error: () => {
-                  // Fall back to users only
-                  userState.searchResults = userBases.map((u: any) => ({
-                    ...u,
-                    type: "user",
-                  }));
+                  // If groups fetch fails, show empty results
+                  userState.searchResults = [];
                   userState.hasMore = false;
                   state.isLoading = false;
                 },
@@ -278,7 +270,7 @@ export class DataCompareComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Selects or deselects a user or group from the search results
+   * Selects or deselects a group from the search results
    */
   select(entity: SearchType, item: any): void {
     const state = this.getState(entity);
@@ -286,9 +278,9 @@ export class DataCompareComponent implements OnInit, OnDestroy {
       state.selected = [];
     }
     // Only allow one selected item (keep last selected)
-    const idKey = item.type === "group" ? "groupId" : "id";
+    const idKey = "groupId";
     const idx = state.selected.findIndex(
-      (u: any) => u.type === item.type && u[idKey] === item[idKey]
+      (u: any) => u[idKey] === item[idKey]
     );
     if (idx === -1) {
       state.selected.push(item);
@@ -317,11 +309,24 @@ export class DataCompareComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Checks if a template is selected
+   */
+  isTemplateSelected(): boolean {
+    return this.template.selected.length > 0;
+  }
+
+  /**
    * Handles input change for search fields and triggers search
    */
   onInputChange(entity: SearchType, value: string): void {
     const state = this.getState(entity);
     state.searchInput = value;
+    
+    // Prevent searching for groups if no template is selected
+    if (entity === "student" && !this.isTemplateSelected()) {
+      return;
+    }
+    
     state.searchSubject.next(value);
 
     if (entity === "student") {
@@ -444,23 +449,18 @@ export class DataCompareComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Handles chart update: fetches data for selected template and (optionally) user/group
+   * Handles chart update: fetches data for selected template and (optionally) group
    */
   onCompareClick() {
     const templateId = this.template.selected[0]?.id;
-    let userId: string | undefined = undefined;
     let groupId: string | undefined = undefined;
 
     if (this.student.selected.length > 0) {
       const selected = this.student.selected[0];
-      if (selected.type === "user") {
-        userId = (selected as User).id;
-      } else if (selected.type === "group") {
-        groupId = selected.groupId;
-      }
+      groupId = selected.groupId;
     }
     if (templateId) {
-      this.fetchChartData(templateId, userId, groupId);
+      this.fetchChartData(templateId, undefined, groupId);
     }
   }
 

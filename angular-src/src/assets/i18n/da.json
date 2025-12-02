@@ -225,11 +225,11 @@
 
   "DATA_COMPARE" : {
     "TITLE": "Sammenlign Data",
-    "SEARCH_STUDENT_LABEL": "Søg efter elev eller gruppe:",
-    "SEARCH_STUDENT_PLACEHOLDER": "Indtast elev eller gruppe navn...",
-    "LOADING_STUDENTS": "Indlæser elever...",
-    "LOAD_MORE_STUDENTS": "Indlæs Flere Elever",
-    "SELECTED_STUDENTS": "Valgte Elever:",
+    "SEARCH_GROUP_LABEL": "Søg efter gruppe:",
+    "SEARCH_GROUP_PLACEHOLDER": "Indtast gruppe navn...",
+    "LOADING_GROUPS": "Indlæser grupper...",
+    "LOAD_MORE_GROUPS": "Indlæs Flere Grupper",
+    "SELECTED_GROUPS": "Valgte Grupper:",
     "REMOVE": "Fjern",
     "CLEAR_ALL": "Ryd Alle",
     "SEARCH_TEMPLATE_LABEL": "Søg efter Skabelon:",
