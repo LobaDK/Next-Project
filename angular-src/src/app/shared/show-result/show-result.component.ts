@@ -9,9 +9,10 @@ export interface ShowResultConfig {
   showTeacher?: boolean;
   showCompletionDates?: boolean;
   customHeaderTitle?: string;
-  hideTemplateName?: boolean; // When true, hides the template title and ID
-  showActions?: boolean; // When true, shows action buttons
-  useCardStyling?: boolean; // When true, shows full card styling (background, shadow, etc.)
+  hideTemplateName?: boolean;
+  showActions?: boolean;
+  useCardStyling?: boolean;
+  showTestButtons?: boolean;
 }
 
 @Component({
@@ -53,6 +54,8 @@ export class ShowResultComponent {
     
     // Try exact text match (case insensitive)
     if (response?.toLowerCase() === option.displayText?.toLowerCase()) return true;
+    
+
     
     return false;
   }

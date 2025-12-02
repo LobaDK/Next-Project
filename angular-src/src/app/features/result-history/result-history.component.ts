@@ -92,8 +92,10 @@ export class ResultHistoryComponent implements OnInit {
     showTeacher: true,
     showCompletionDates: true,
     useCardStyling: false,
-    showActions: false
+    showActions: false,
+    showTestButtons: false 
   };
+  
   public isFullView = true;
 
   private createSearchState<T>(): SearchState<T> {

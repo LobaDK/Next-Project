@@ -80,6 +80,7 @@
 
         <!-- Selected Template Chip -->
         <div *ngIf="template.selected" class="mt-2">
+          
           <div class="flex items-center justify-between bg-primary_orange_1 text-white p-2 rounded-lg">
             <span class="text-sm font-medium">{{ template.selected.title }}</span>
             <button 
@@ -218,22 +219,19 @@
   </div>
 </div>
 
-
-
     </div>
-
     <!-- canonical rendering of the current attempt -->
     <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
 
       <!-- Graph Section -->
-<div *ngIf="showGraph" class="mb-6 bg-gray-50 p-6 rounded-lg w-full">
-  <div class="flex items-center justify-center gap-4 mb-6">
-    <button 
-      (click)="prevGraphQuestion()" 
-      [disabled]="currentQuestionIndex === 0"
-      class="px-4 py-2 bg-primary_orange_1 text-white rounded-xl hover:bg-primary_orange_light disabled:opacity-50 disabled:cursor-not-allowed transition">
-      ◀ {{ 'COMMON.BUTTONS.PREVIOUS' | translate }}
-    </button>
+  <div *ngIf="showGraph" class="mb-6 bg-gray-50 p-6 rounded-lg w-full">
+    <div class="flex items-center justify-center gap-4 mb-6">
+      <button 
+        (click)="prevGraphQuestion()" 
+        [disabled]="currentQuestionIndex === 0"
+        class="px-4 py-2 bg-primary_orange_1 text-white rounded-xl hover:bg-primary_orange_light disabled:opacity-50 disabled:cursor-not-allowed transition">
+        ◀ {{ 'COMMON.BUTTONS.PREVIOUS' | translate }}
+      </button>
     <span class="text-lg font-semibold text-primary_orange_1 min-w-[200px] text-center">
       Spørgsmål {{ currentQuestionIndex + 1 }} / {{ totalQuestions }}
     </span>

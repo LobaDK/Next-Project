@@ -49,7 +49,13 @@
     <div *ngFor="let answer of result.answers; let i = index" class="question-answer-pair print:break-inside-avoid bg-secondary_background_gray rounded-lg shadow-sm border border-primary_orange_1 p-3 sm:p-4">
       <h3 class="text-sm sm:text-base font-semibold text-primary_dark_blue mb-3 print:text-black break-words">
         {{ i + 1 }}. {{ answer.question }}
+        <button 
+          *ngIf="config.showTestButtons"
+          class="px-3 py-1 text-xs sm:text-sm bg-primary_orange_1 hover:bg-primary_orange_light text-white rounded-lg transition-colors duration-150 font-medium shadow-sm flex-shrink-0">
+          Test
+        </button>
       </h3>
+
 
       <div class="answers-comparison grid grid-cols-1 lg:grid-cols-2 gap-3 print:grid-cols-1 print:border-b print:pb-3 print:mb-3">
         
@@ -75,7 +81,13 @@
     <div *ngFor="let answer of result.answers; let i = index" class="question-block print:break-inside-avoid bg-white rounded-lg shadow-sm border border-primary_orange_1 p-3 sm:p-4">
       <h3 class="text-sm sm:text-base font-semibold text-primary_dark_blue mb-3 print:text-black break-words">
         {{ i + 1 }}. {{ answer.question }}
-      </h3>
+        <button 
+          *ngIf="config.showTestButtons"
+          class="px-3 py-1 text-xs sm:text-sm bg-primary_orange_1 hover:bg-primary_orange_light text-white rounded-lg transition-colors duration-150 font-medium shadow-sm flex-shrink-0">
+          Test
+        </button>    
+    </h3>
+
 
       <ng-container *ngIf="getTemplateQuestionOptions(answer.question) as options">
         <!-- Matrix Table with horizontal scroll for mobile -->

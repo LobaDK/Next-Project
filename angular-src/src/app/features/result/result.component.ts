@@ -28,6 +28,7 @@ import { Subject, takeUntil } from "rxjs";
     ></ag-charts-angular>
   `,
   styleUrls: ["./result.component.css"],
+  
 })
 export class ResultComponent implements OnInit, OnDestroy{
   result: Result | null = null;
@@ -45,12 +46,14 @@ export class ResultComponent implements OnInit, OnDestroy{
   private destroy$ = new Subject<void>();
 
   // Configuration for ShowResultComponent
-  resultConfig: ShowResultConfig = {
+  readonly resultConfig: ShowResultConfig = {
     showTemplate: true,
     showStudent: true,
     showTeacher: true,
     showCompletionDates: true,
-    useCardStyling: false // We handle card styling in the parent component
+    useCardStyling: false,
+    showActions: false,
+    showTestButtons: false  // Enable test buttons in result history
   };
 
 
