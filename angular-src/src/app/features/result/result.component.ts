@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { ResultService } from "./services/result.service";
 import { PdfGenerationService } from "./services/pdf-generation.service";
 import { Result } from "../../shared/models/result.model";
-import { CommonModule } from "@angular/common";
+
 import { AgCharts } from "ag-charts-angular";
 import { AgBarSeriesOptions, AgChartOptions } from "ag-charts-community";
 import { RouterModule } from "@angular/router";
@@ -14,14 +14,14 @@ import { Subject, takeUntil } from "rxjs";
 
 
 @Component({
-  selector: "app-result",
-  standalone: true,
-  providers: [ResultService, PdfGenerationService],
-  imports: [CommonModule, AgCharts, RouterModule, FormsModule, TranslateModule, ShowResultComponent],
-  templateUrl: "./result.component.html",
-  template: `
+    selector: "app-result",
+    providers: [ResultService, PdfGenerationService],
+    imports: [RouterModule, FormsModule, TranslateModule, ShowResultComponent],
+    templateUrl: "./result.component.html",
+    template: `
     <button (click)="updateChart('stacked')">Stacked</button>
     <button (click)="updateChart('donut')">Donut</button>
+<<<<<<< HEAD
     <ag-charts-angular
       *ngIf="chartOptions"
       [options]="chartOptions"
@@ -29,6 +29,15 @@ import { Subject, takeUntil } from "rxjs";
   `,
   styleUrls: ["./result.component.css"],
   
+=======
+    @if (chartOptions) {
+      <ag-charts-angular
+        [options]="chartOptions"
+      ></ag-charts-angular>
+    }
+    `,
+    styleUrls: ["./result.component.css"]
+>>>>>>> 18e0c29ab73e3344502b4604b81fd2e19e578bd7
 })
 export class ResultComponent implements OnInit, OnDestroy{
   result: Result | null = null;
