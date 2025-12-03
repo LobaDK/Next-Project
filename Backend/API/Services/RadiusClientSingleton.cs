@@ -43,7 +43,7 @@ public sealed class RadiusClientSingleton : IRadiusClientSingleton, IDisposable
             { "User-Name", username },
             { "Acct-Session-Id", Guid.NewGuid().ToString() },
             { "NAS-Identifier", "NEXT Questionnaire" },
-            { "Calling-Station-Id", 1115551212 },
+            { "Calling-Station-Id", "1115551212" },
             { "User-Password", password }
         };
 
@@ -63,10 +63,6 @@ public sealed class RadiusClientSingleton : IRadiusClientSingleton, IDisposable
             else if (attr.Value is uint uIntValue)
             {
                 packet.AddAttribute(attr.Key, uIntValue);
-            }
-            else if (attr.Value.GetType() == typeof(int))
-            {
-                packet.AddAttribute(attr.Key, (uint)(int)attr.Value);
             }
             else if (attr.Value is byte[] byteArrayValue)
             {
