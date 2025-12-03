@@ -9,6 +9,8 @@
     <NoWarn>$(NoWarn);1591,1572</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Flexinets.Radius.Core" Version="3.0.1" />
+    <PackageReference Include="Flexinets.Radius.RadiusClient" Version="3.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

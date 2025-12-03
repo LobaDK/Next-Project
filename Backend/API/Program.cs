@@ -46,6 +46,7 @@ DatabaseSettings databaseSettings = ConfigurationBinderService.Bind<DatabaseSett
 JWTSettings jWTSettings = ConfigurationBinderService.Bind<JWTSettings>(builder.Configuration);
 SystemSettings systemSettings = ConfigurationBinderService.Bind<SystemSettings>(builder.Configuration);
 LoggerSettings loggerSettings = ConfigurationBinderService.Bind<LoggerSettings>(builder.Configuration);
+RadiusSettings radiusSettings = ConfigurationBinderService.Bind<RadiusSettings>(builder.Configuration);
 
 Serilog.ILogger seriLogger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration)
         .WriteTo.File(
@@ -68,7 +69,7 @@ if (builder.Configuration.GetSection("Mock")["UseMockedAuthentication"] == "True
 }
 else
 {
-    builder.Services.AddScoped<IAuthenticationBridge, ActiveDirectoryAuthenticationBridge>();
+    builder.Services.AddScoped<IAuthenticationBridge, RadiusAuthenticationBridge>();
 }
 
 builder.Services.AddScoped<SystemControllerService>();
@@ -79,6 +80,12 @@ builder.Services.AddScoped<IQuestionnaireTemplateService, QuestionnaireTemplateS
 builder.Services.AddScoped<IActiveQuestionnaireService, ActiveQuestionnaireService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSingleton<CacheService>();
+builder.Services.AddSingleton(
+    new RadiusClientSingleton(
+        radiusSettings.Host,
+        radiusSettings.Port,
+        radiusSettings.SecretKey
+    ));
 builder.Services.AddMemoryCache();
 builder.Services.AddAuthentication(cfg => {
     cfg.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

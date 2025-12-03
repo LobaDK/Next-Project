@@ -1,4 +1,3 @@
-
 namespace Settings.Models;
 
 public class RootSettings : Base, IRootSettings
@@ -6,11 +5,12 @@ public class RootSettings : Base, IRootSettings
     [JsonIgnore]
     public override string Key { get; } = "";
 
-    public int Version { get; set; } = 2;
+    public int Version { get; set; } = 3;
 
     public DatabaseSettings Database { get; set; } = new();
     public JWTSettings JWT { get; set; } = new();
     public LDAPSettings LDAP { get; set; } = new();
+    public RadiusSettings RADIUS { get; set; } = new();
     public LoggerSettings Logging { get; set; } = new();
     public SystemSettings System { get; set; } = new();
 }
