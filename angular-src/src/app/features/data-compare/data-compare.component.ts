@@ -30,13 +30,13 @@ import {
   AnswerCounts,
 } from "./models/data-compare.model";
 
-// Group result type for search (users are no longer searchable)
-type UserOrGroup = { groupId: string; name: string; type: "group" };
+// Group result type for search
+type Group = { groupId: string; name: string; type: "group" };
 
-interface UserSearchEntity {
-  selected: UserOrGroup[];
+interface GroupSearchEntity {
+  selected: Group[];
   searchInput: string;
-  searchResults: UserOrGroup[];
+  searchResults: Group[];
   page: number;
   totalPages: number;
   isLoading: boolean;
@@ -49,7 +49,7 @@ interface TemplateSearchEntity extends SearchEntity<TemplateBase> {
   queryCursor?: string;
 }
 
-type SearchType = "student" | "template";
+type SearchType = "group" | "template";
 
 @Component({
     selector: "app-data-compare",
@@ -81,8 +81,8 @@ export class DataCompareComponent implements OnInit, OnDestroy {
   private registry = new ChartRegistry();
 
   // References to search input areas for click-outside logic
-  @ViewChild("studentSearchArea", { static: false })
-  studentSearchArea!: ElementRef;
+  @ViewChild("groupSearchArea", { static: false })
+  groupSearchArea!: ElementRef;
   @ViewChild("templateSearchArea", { static: false })
   templateSearchArea!: ElementRef;
 
@@ -93,8 +93,8 @@ export class DataCompareComponent implements OnInit, OnDestroy {
   ) {}
   private activeService = inject(ActiveService);
 
-  // Controls visibility of student/template search results dropdowns
-  public showStudentResults = false;
+  // Controls visibility of group/template search results dropdowns
+  public showGroupResults = false;
   public showTemplateResults = false;
 
   // Misc state (not used in chart logic)
@@ -102,9 +102,9 @@ export class DataCompareComponent implements OnInit, OnDestroy {
   public isAnonymousMode = false;
 
   /**
-   * State for student search and selection
+   * State for group search and selection
    */
-  public student: UserSearchEntity = {
+  public group: GroupSearchEntity = {
     selected: [],
     searchInput: "",
     searchResults: [],
@@ -142,10 +142,10 @@ export class DataCompareComponent implements OnInit, OnDestroy {
    * Handles click events outside of search areas to close dropdowns
    */
   private handleDocumentClick = (event: MouseEvent) => {
-    const studentArea = this.studentSearchArea?.nativeElement;
+    const groupArea = this.groupSearchArea?.nativeElement;
     const templateArea = this.templateSearchArea?.nativeElement;
-    if (studentArea && !studentArea.contains(event.target as Node)) {
-      this.showStudentResults = false;
+    if (groupArea && !groupArea.contains(event.target as Node)) {
+      this.showGroupResults = false;
     }
     if (templateArea && !templateArea.contains(event.target as Node)) {
       this.showTemplateResults = false;
@@ -156,11 +156,11 @@ export class DataCompareComponent implements OnInit, OnDestroy {
    * Component initialization: subscribe to search subjects and set up click-outside handler
    */
   ngOnInit(): void {
-    // Debounced search for students
-    this.student.searchSubject
+    // Debounced search for groups
+    this.group.searchSubject
       .pipe(debounceTime(300), distinctUntilChanged())
       .subscribe((term) => {
-        this.fetch("student", term);
+        this.fetch("group", term);
       });
     // Debounced search for templates
     this.template.searchSubject
@@ -183,8 +183,8 @@ export class DataCompareComponent implements OnInit, OnDestroy {
    * Returns the state object for the given entity type
    */
   private getState(entity: SearchType): SearchEntity<any> {
-    if (entity === "student") {
-      return this.student;
+    if (entity === "group") {
+      return this.group;
     } else if (entity === "template") {
       return this.template;
     }
@@ -192,7 +192,7 @@ export class DataCompareComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Fetches users/templates and merges with groups (for students)
+   * Fetches groups or templates based on search term
    */
   private fetch(entity: SearchType, term: string): void {
     const state = this.getState(entity);
@@ -204,7 +204,7 @@ export class DataCompareComponent implements OnInit, OnDestroy {
 
     // Reset cursors
     if (entity !== "template") {
-      (state as UserSearchEntity).sessionId = undefined;
+      (state as GroupSearchEntity).sessionId = undefined;
     } else {
       (state as TemplateSearchEntity).queryCursor = undefined;
     }
@@ -228,41 +228,27 @@ export class DataCompareComponent implements OnInit, OnDestroy {
           },
         });
     } else {
-      const userState = state as UserSearchEntity;
-      this.activeService
-        .searchUsers(term, entity, this.searchAmount, userState.sessionId)
+      const groupState = state as GroupSearchEntity;
+      // Fetch groups directly
+      this.http
+        .get<any[]>(`${this.DataCompareService.apiUrl}/groupsbasic`)
         .subscribe({
-          next: (response) => {
-            const userBases = response.userBases || [];
-            userState.sessionId = response.sessionId;
-
-            // Only search groups (no users)
-            this.http
-              .get<any[]>(`${this.DataCompareService.apiUrl}/groupsbasic`)
-              .subscribe({
-                next: (groups) => {
-                  const filteredGroups = groups.filter((g) =>
-                    g.name.toLowerCase().includes(term.toLowerCase())
-                  );
-                  const groupResults = filteredGroups.map((g) => ({
-                    ...g,
-                    type: "group",
-                  }));
-                  // Only show groups, no users
-                  userState.searchResults = groupResults;
-                  userState.hasMore = false;
-                  state.isLoading = false;
-                },
-                error: () => {
-                  // If groups fetch fails, show empty results
-                  userState.searchResults = [];
-                  userState.hasMore = false;
-                  state.isLoading = false;
-                },
-              });
+          next: (groups) => {
+            const filteredGroups = groups.filter((g) =>
+              g.name.toLowerCase().includes(term.toLowerCase())
+            );
+            const groupResults = filteredGroups.map((g) => ({
+              ...g,
+              type: "group",
+            }));
+            groupState.searchResults = groupResults;
+            groupState.hasMore = false;
+            state.isLoading = false;
           },
           error: () => {
             state.errorMessage = `Failed to load ${entity}s.`;
+            groupState.searchResults = [];
+            groupState.hasMore = false;
             state.isLoading = false;
           },
         });
@@ -291,8 +277,8 @@ export class DataCompareComponent implements OnInit, OnDestroy {
     // Clear search input after selection
     state.searchInput = "";
 
-    if (entity === "student") {
-      this.showStudentResults = false;
+    if (entity === "group") {
+      this.showGroupResults = false;
     } else {
       this.showTemplateResults = false;
     }
@@ -323,14 +309,14 @@ export class DataCompareComponent implements OnInit, OnDestroy {
     state.searchInput = value;
     
     // Prevent searching for groups if no template is selected
-    if (entity === "student" && !this.isTemplateSelected()) {
+    if (entity === "group" && !this.isTemplateSelected()) {
       return;
     }
     
     state.searchSubject.next(value);
 
-    if (entity === "student") {
-      this.showStudentResults = true;
+    if (entity === "group") {
+      this.showGroupResults = true;
     } else {
       this.showTemplateResults = true;
     }
@@ -349,10 +335,9 @@ export class DataCompareComponent implements OnInit, OnDestroy {
    * @param userId User GUID (optional)
    * @param groupId Group GUID (optional)
    */
-  fetchChartData(templateId: string, userId?: string, groupId?: string) {
+  fetchChartData(templateId: string, groupId?: string) {
     this.DataCompareService.getAnonymisedResponses(
       templateId,
-      userId,
       groupId
     ).subscribe({
       next: (apiData) => {
@@ -455,12 +440,12 @@ export class DataCompareComponent implements OnInit, OnDestroy {
     const templateId = this.template.selected[0]?.id;
     let groupId: string | undefined = undefined;
 
-    if (this.student.selected.length > 0) {
-      const selected = this.student.selected[0];
+    if (this.group.selected.length > 0) {
+      const selected = this.group.selected[0];
       groupId = selected.groupId;
     }
     if (templateId) {
-      this.fetchChartData(templateId, undefined, groupId);
+      this.fetchChartData(templateId, groupId);
     }
   }
 

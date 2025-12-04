@@ -82,44 +82,44 @@ DataCompareComponent HTML
 
 
       <!-- Group search area -->
-      <div class="flex flex-col w-full relative" #studentSearchArea>
+      <div class="flex flex-col w-full relative" #groupSearchArea>
         <label class="text-gray-700 text-sm mb-1 sm:mb-2">{{ 'DATA_COMPARE.SEARCH_GROUP_LABEL' | translate
           }}</label>
         <!-- Group search input -->
-        <input type="text" placeholder="Indtast gruppenavn..." [(ngModel)]="student.searchInput"
-          (input)="onInputChange('student', studentSearch.value)" (focus)="showStudentResults = true"
+        <input type="text" placeholder="Indtast gruppenavn..." [(ngModel)]="group.searchInput"
+          (input)="onInputChange('group', groupSearch.value)" (focus)="showGroupResults = true"
           [disabled]="!isTemplateSelected()"
           class="px-4 py-2 border border-primary_orange_1 rounded-xl shadow-sm focus:ring-primary_orange_1 focus:border-primary_orange_1 text-sm w-full bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-          [placeholder]="'DATA_COMPARE.SEARCH_GROUP_PLACEHOLDER' | translate" #studentSearch />
+          [placeholder]="'DATA_COMPARE.SEARCH_GROUP_PLACEHOLDER' | translate" #groupSearch />
 
-        <!-- Loading indicator for student search -->
-        @if (student.isLoading) {
+        <!-- Loading indicator for group search -->
+        @if (group.isLoading) {
         <div class="text-blue-500 text-sm mt-2">
           {{ 'DATA_COMPARE.LOADING_GROUPS' | translate }}
         </div>
         }
 
-        <!-- Error message for student search -->
-        @if (student.errorMessage) {
+        <!-- Error message for group search -->
+        @if (group.errorMessage) {
         <div class="text-red-500 text-sm mt-2">
-          {{ student.errorMessage }}
+          {{ group.errorMessage }}
         </div>
         }
 
-        <!-- Student search results and load more button (between input and selected list, not absolute) -->
-        @if (student.searchResults.length > 0 && showStudentResults) {
+        <!-- Group search results and load more button (between input and selected list, not absolute) -->
+        @if (group.searchResults.length > 0 && showGroupResults) {
         <div
           class="absolute z-30 left-0 right-0 top-16 bg-white shadow-md rounded-lg p-2 w-full max-h-60 overflow-auto border border-primary_orange_1 mt-1">
           <ul class="space-y-1">
-            @for (stud of student.searchResults; track stud) {
-            <li (click)="select('student', stud)"
+            @for (grp of group.searchResults; track grp) {
+            <li (click)="select('group', grp)"
               class="py-2 px-4 hover:bg-secondary_background_hover cursor-pointer rounded">
-              <span class="font-semibold text-primary_dark_blue">{{ stud.name }}</span>
+              <span class="font-semibold text-primary_dark_blue">{{ grp.name }}</span>
             </li>
             }
           </ul>
           <!-- Load More Button -->
-          @if (student.page < student.totalPages) { <button
+          @if (group.page < group.totalPages) { <button
             class="mt-2 w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-center font-medium rounded-lg transition">
             {{ 'DATA_COMPARE.LOAD_MORE_GROUPS' | translate }}
             </button>
@@ -128,20 +128,20 @@ DataCompareComponent HTML
         }
 
         <!-- Selected groups list -->
-        @if (student.selected.length > 0) {
+        @if (group.selected.length > 0) {
         <div class="mt-2 text-sm font-medium text-gray-700 bg-gray-100 p-2 rounded-lg">
           <strong>{{ 'DATA_COMPARE.SELECTED_GROUPS' | translate }}</strong>
           <ul class="mt-1 space-y-1">
-            @for (stud of student.selected; track stud) {
+            @for (grp of group.selected; track grp) {
             <li class="flex justify-between items-center">
-              <span class="font-semibold text-primary_dark_blue">{{ stud.name }}</span>
-              <button (click)="select('student', stud)"
+              <span class="font-semibold text-primary_dark_blue">{{ grp.name }}</span>
+              <button (click)="select('group', grp)"
                 class="ml-2 px-2 py-1 text-xs bg-red-500 hover:bg-red-600 text-white rounded">{{
                 'DATA_COMPARE.REMOVE' | translate }}</button>
             </li>
             }
           </ul>
-          <button (click)="clearSelected('student')"
+          <button (click)="clearSelected('group')"
             class="mt-2 px-2 py-1 text-xs bg-gray-400 hover:bg-gray-500 text-white rounded">{{
             'DATA_COMPARE.CLEAR_ALL' | translate }}</button>
         </div>
