@@ -1,7 +1,7 @@
 namespace Database.Seeders;
 
 [SeederOrder(1)]
-public class MockStudentSeeder(ModelBuilder modelBuilder) : IDataSeeder<StudentModel>
+public class MockUserSeeder(ModelBuilder modelBuilder) : IDataSeeder<StudentModel>
 {
     private int _userId =  -1;
     public void InitializeData()
