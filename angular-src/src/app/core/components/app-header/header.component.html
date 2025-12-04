@@ -25,10 +25,15 @@
           <!-- Dropdown Menu (Mobile) -->
           @if (showProfileDropdown) {
             <div
-              class="profile-dropdown-menu absolute right-0 top-12 mt-2 w-48 bg-white border border-primary_orange_1 rounded-xl shadow-lg z-50 flex flex-col py-2">
-              <p class="px-2 py-2 whitespace-nowrap text-base font-medium text-primary_dark_blue"> {{ username() }}</p>
-              <p class="px-2 py-2 whitespace-nowrap text-base font-medium text-primary_dark_blue"> {{ userRole() }}</p>
-              <hr class="border-primary_orange_1">
+              class="profile-dropdown-menu absolute right-0 top-12 mt-2 w-52 bg-white border border-primary_orange_1 rounded-xl shadow-lg z-50 flex flex-col py-3">
+              <div class="px-3 py-2">
+                <p class="text-lg font-semibold text-primary_dark_blue truncate">{{ fullName() || username() }}</p>
+                @if (fullName() && fullName() !== username()) {
+                  <p class="text-sm text-gray-600 truncate">{{ username() }}</p>
+                }
+                <span class="inline-block mt-1 px-2 py-1 text-xs font-medium bg-primary_orange_1 text-white rounded-full capitalize">{{ userRole() }}</span>
+              </div>
+              <hr class="border-primary_orange_1 mx-2">
               <app-language-switcher class="px-2 py-2"></app-language-switcher>
               <button (click)="logout()"
                 class="px-4 py-2 text-primary_orange_1 hover:text-primary_orange_light text-left w-full shadow-black">
@@ -105,10 +110,15 @@
         <!-- Dropdown Menu -->
         @if (showProfileDropdown) {
           <div #profileMenu
-            class="profile-dropdown-menu absolute right-0 top-12 mt-2 w-48 bg-white border border-primary_orange_1 rounded-xl shadow-lg z-50 flex flex-col py-2">
-            <p class="px-2 py-2 whitespace-nowrap text-base font-medium text-primary_dark_blue"> {{ username() }}</p>
-            <p class="px-2 py-2 whitespace-nowrap text-base font-medium text-primary_dark_blue"> {{ userRole() }}</p>
-            <hr class="border-primary_orange_1">
+            class="profile-dropdown-menu absolute right-0 top-12 mt-2 w-52 bg-white border border-primary_orange_1 rounded-xl shadow-lg z-50 flex flex-col py-3">
+            <div class="px-3 py-2">
+              <p class="text-lg font-semibold text-primary_dark_blue truncate">{{ fullName() || username() }}</p>
+              @if (fullName() && fullName() !== username()) {
+                <p class="text-sm text-gray-600 truncate">{{ username() }}</p>
+              }
+              <span class="inline-block mt-1 px-2 py-1 text-xs font-medium bg-primary_orange_1 text-white rounded-full capitalize">{{ userRole() }}</span>
+            </div>
+            <hr class="border-primary_orange_1 mx-2">
             <app-language-switcher class="px-2 py-2"></app-language-switcher>
             <button (click)="logout()"
               class=" py-2 mx-2 text-white bg-primary_orange_1 hover:bg-primary_orange_light text-center rounded-md shadow-black">
