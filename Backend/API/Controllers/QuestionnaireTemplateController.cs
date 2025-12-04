@@ -45,6 +45,39 @@ namespace API.Controllers
         [ProducesResponseType(typeof(TemplateKeysetPaginationResult), StatusCodes.Status200OK)]
         public async Task<ActionResult<TemplateKeysetPaginationResult>> GetQuestionnaireTemplates([FromQuery] TemplateKeysetPaginationRequest request)
         {
+            string role;
+            Guid? teacherId = null;
+            try
+            {
+                var roleClaim = User.Claims.FirstOrDefault(x => x.Type == "role");
+                if (roleClaim == null)
+                {
+                    return Unauthorized("Missing role claim");
+                }
+                role = roleClaim.Value;
+
+                if (role.Equals(UserRoles.Teacher.ToString(), StringComparison.CurrentCultureIgnoreCase))
+                {
+                    try 
+                    {
+                        teacherId = Guid.Parse(User.Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub).Value);
+                    }
+                    catch (Exception)
+                    {
+                        return Unauthorized();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return Unauthorized();
+            }
+
+            if (teacherId is not null)
+            {
+                request.TeacherId = teacherId;
+            }
+
             return Ok(await _questionnaireTemplateService.GetTemplateBasesWithKeysetPagination(request));
         }
 
