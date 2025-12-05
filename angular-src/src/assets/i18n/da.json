@@ -68,6 +68,11 @@
 
   "TEMPLATE": {
 
+    "DUPLICATE_WARNING": {
+      "TITLE": "Duplikerede spørgsmål fundet",
+      "TEXT": "Din skabelon indeholder duplikerede spørgsmål. Ret venligst disse problemer før du gemmer."
+    },
+
     "NEW": {
       "TITLE": "Ny skabelon",
       "DESC": "Beskrivelse af den nye skabelon",
@@ -208,10 +213,13 @@
 
   "QUESTION_EDITOR": {
       "TITLE": "Rediger spørgsmål",
+      "VALIDATION_ERRORS": "Valideringsfejl",
       "LABEL_TITLE": "Titel:",
       "PLACEHOLDER_TITLE": "Indtast spørgsmålets titel",
+      "ERROR_DUPLICATE_QUESTION": "Dette spørgsmål har en duplikeret titel. Hvert spørgsmål skal have en unik titel.",
       "ALLOW_CUSTOM": "Tillad at skrive dit eget svar",
       "OPTIONS": "Valgmuligheder",
+      "DUPLICATE_ANSWER": "Denne valgmulighed er duplikeret i spørgsmålet.",
       "DELETE_OPTION": "Slet valgmulighed",
       "ADD_OPTION": "Tilføj ny valgmulighed",
       "SAVE": "Gem spørgsmål"

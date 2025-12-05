@@ -27,6 +27,11 @@
       "TITLE": "Error"
     },
 
+    "DUPLICATE_WARNING": {
+      "TITLE": "Duplicate Questions Detected",
+      "TEXT": "Your template contains duplicate questions. Please fix these issues before saving."
+    },
+
     "NEW": {
       "TITLE": "New Template",
       "DESC": "Description of the new template",
@@ -213,10 +218,13 @@
 
   "QUESTION_EDITOR": {
     "TITLE": "Edit Question",
+    "VALIDATION_ERRORS": "Validation Errors",
     "LABEL_TITLE": "Title:",
     "PLACEHOLDER_TITLE": "Enter the question title",
+    "ERROR_DUPLICATE_QUESTION": "This question has a duplicate title. Each question must have a unique title.",
     "ALLOW_CUSTOM": "Allow writing your own answer",
     "OPTIONS": "Options",
+    "DUPLICATE_ANSWER": "This option is duplicated within the question.",
     "DELETE_OPTION": "Delete Option",
     "ADD_OPTION": "Add New Option",
     "SAVE": "Save Question"

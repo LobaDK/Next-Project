@@ -4,7 +4,7 @@
 </h2>
 
 <!-- Duplicate modal shown when trying to save with duplicates -->
-<app-modal [isOpen]="duplicateModalOpen" [title]="'TMP_DUPLICATE_WARNING_TITLE' | translate" [text]="'TMP_DUPLICATE_WARNING_TEXT' | translate"
+<app-modal [isOpen]="duplicateModalOpen" [title]="'TEMPLATE.DUPLICATE_WARNING.TITLE' | translate" [text]="'TEMPLATE.DUPLICATE_WARNING.TEXT' | translate"
   [confirmText]="'OK' | translate" (confirm)="closeDuplicateModal()" (cancel)="closeDuplicateModal()"
   [cancelText]="'OK' | translate"
   >
@@ -79,7 +79,14 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
               </svg>
             </div>
-            <span class="text-primary_dark_blue font-semibold flex-1">{{ question.prompt }}</span>
+            <span class="text-primary_dark_blue font-semibold flex-1 flex items-center gap-2">
+              {{ question.prompt }}
+              @if (isQuestionDuplicate(question)) {
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+              }
+            </span>
           </div>
           <div class="flex space-x-2 mt-2 sm:mt-0">
             <button

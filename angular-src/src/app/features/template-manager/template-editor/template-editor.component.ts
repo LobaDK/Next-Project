@@ -22,6 +22,7 @@ import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-
  */
 @Component({
     selector: 'app-template-editor',
+    standalone: true,
     imports: [QuestionEditorComponent, FormsModule, ModalComponent, TranslateModule, DragDropModule],
     templateUrl: './template-editor.component.html',
     styleUrl: './template-editor.component.css'
@@ -96,7 +97,7 @@ export class TemplateEditorComponent implements OnChanges {
     /**
    * Validate the template for duplicates:
    * - No two questions may have the same prompt (case-insensitive, trimmed)
-   * - No two options across the template may have the same label (case-insensitive, trimmed)
+   * - No two options within the same question may have the same label (case-insensitive, trimmed)
    * Marks offending questions in duplicateQuestionIds and duplicateOptionQuestionIds.
    * Returns true if there are no duplicates, false otherwise.
    */
@@ -123,21 +124,23 @@ export class TemplateEditorComponent implements OnChanges {
       }
     });
 
-    // Check option label duplicates across all questions
-    const optionMap = new Map<string, { questionIds: Set<number> }>();
+    // Check option label duplicates WITHIN each question (not across questions)
     this.template.questions.forEach((q) => {
       const qid = q.id ?? -999999;
+      const optionLabels = new Map<string, number>();
+      
       q.options?.forEach((opt) => {
-        const k = (opt.displayText || "").trim().toLowerCase();
-        if (!optionMap.has(k)) optionMap.set(k, { questionIds: new Set<number>() });
-        optionMap.get(k)!.questionIds.add(qid);
+        const key = (opt.displayText || "").trim().toLowerCase();
+        if (key !== "") {
+          const count = optionLabels.get(key) || 0;
+          optionLabels.set(key, count + 1);
+        }
       });
-    });
 
-    optionMap.forEach((val, key) => {
-      // ignore empty labels for duplicate matching (other validators handle empties)
-      if (key !== "" && val.questionIds.size > 1) {
-        val.questionIds.forEach((qid) => this.duplicateOptionQuestionIds.push(qid));
+      // If any label appears more than once in this question, mark this question as having duplicates
+      const hasDuplicates = Array.from(optionLabels.values()).some(count => count > 1);
+      if (hasDuplicates) {
+        this.duplicateOptionQuestionIds.push(qid);
       }
     });
 
@@ -243,6 +246,37 @@ export class TemplateEditorComponent implements OnChanges {
   confirmFinalize() {
     this.closeFinalizeModal();
     this.onFinalize();
+  }
+
+  /**
+   * Get duplicate option IDs for a specific question.
+   * Returns an array of option IDs that are duplicated within the same question only.
+   * (Same options can exist in different questions, which is allowed)
+   */
+  getDuplicateOptionIdsForQuestion(question: Question): number[] {
+    if (!question.options) {
+      return [];
+    }
+
+    const duplicateIds: number[] = [];
+
+    // Check for duplicates WITHIN this question only
+    const labelCountInQuestion = new Map<string, number[]>();
+    question.options.forEach((opt) => {
+      const key = (opt.displayText || "").trim().toLowerCase();
+      const optId = opt.id ?? -999999;
+      if (!labelCountInQuestion.has(key)) labelCountInQuestion.set(key, []);
+      labelCountInQuestion.get(key)!.push(optId);
+    });
+
+    // Mark options with duplicate labels within the same question
+    labelCountInQuestion.forEach((ids, key) => {
+      if (key !== "" && ids.length > 1) {
+        duplicateIds.push(...ids);
+      }
+    });
+
+    return duplicateIds;
   }
 
 }

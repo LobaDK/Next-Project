@@ -31,7 +31,8 @@ import {
  */
 @Component({
     selector: 'app-question-editor',
-    imports: [FormsModule, TranslateModule, DragDropModule, DragDropModule],
+    standalone: true,
+    imports: [FormsModule, TranslateModule, DragDropModule],
     templateUrl: './question-editor.component.html',
     styleUrls: ['./question-editor.component.css']
 })
@@ -104,6 +105,7 @@ export class QuestionEditorComponent implements OnChanges {
    * - Prompt must not be empty.
    * - Must allow custom answers or have at least one option.
    * - All options must have non-empty labels.
+   * - No duplicate option labels within the same question.
    *
    * @returns `true` if valid, else `false`.
    */
@@ -137,6 +139,21 @@ export class QuestionEditorComponent implements OnChanges {
     );
     if (hasEmptyLabel) {
       this.validationErrors.push("All options must have non-empty labels.");
+    }
+
+    // 4. Check for duplicate option labels within this question
+    const optionLabels = new Map<string, number>();
+    this.question.options.forEach((opt) => {
+      const key = (opt.displayText || "").trim().toLowerCase();
+      if (key !== "") {
+        const count = optionLabels.get(key) || 0;
+        optionLabels.set(key, count + 1);
+      }
+    });
+
+    const hasDuplicates = Array.from(optionLabels.values()).some(count => count > 1);
+    if (hasDuplicates) {
+      this.validationErrors.push("This question has duplicate options. Each option must be unique.");
     }
 
     return this.validationErrors.length === 0; // Return true if no errors
