@@ -229,9 +229,19 @@ export class DataCompareComponent implements OnInit, OnDestroy {
         });
     } else {
       const groupState = state as GroupSearchEntity;
-      // Fetch groups directly
+      // Get selected template ID for the API call
+      const templateId = this.template.selected[0]?.id;
+      if (!templateId) {
+        state.errorMessage = "Please select a template first.";
+        state.isLoading = false;
+        return;
+      }
+      
+      // Fetch groups for the selected template
       this.http
-        .get<any[]>(`${this.DataCompareService.apiUrl}/groupsbasic`)
+        .get<any[]>(`${this.DataCompareService.apiUrl}/templateGroupsBasic`, {
+          params: { templateId }
+        })
         .subscribe({
           next: (groups) => {
             const filteredGroups = groups.filter((g) =>
