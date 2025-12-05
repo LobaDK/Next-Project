@@ -41,6 +41,12 @@ export class QuestionEditorComponent implements OnChanges {
   /** If true, disables all editing actions. */
   @Input() readonly = false;
 
+  /** If true, indicates this question has duplicate prompt or duplicate options elsewhere in the template. */
+  @Input() duplicate = false;
+  /** List of option ids which are duplicates within this question and should be highlighted. */
+  @Input() duplicateOptionIds: number[] = [];
+
+
   @Output() save = new EventEmitter<Question>();
   @Output() cancel = new EventEmitter<void>();
 
@@ -54,6 +60,11 @@ export class QuestionEditorComponent implements OnChanges {
     }
   }
 
+
+  isOptionDuplicate(option: Option): boolean {
+    const oid = option.id ?? -999999;
+    return (this.duplicateOptionIds ?? []).includes(oid);
+  }
   /** Reference to error message container for scrolling into view. */
   @ViewChild("errorContainer") errorContainer!: ElementRef;
 
@@ -97,9 +108,7 @@ export class QuestionEditorComponent implements OnChanges {
    * @returns `true` if valid, else `false`.
    */
   validateQuestion(): boolean {
-    console.log(this.question);
     this.validationErrors = []; // Clear previous errors
-
     // 1. Ensure the title is not empty
     if (!this.question.prompt || this.question.prompt.trim() === "") {
       this.validationErrors.push("The question title cannot be empty.");
