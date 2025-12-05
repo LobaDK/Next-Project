@@ -1,3 +1,4 @@
+using Database.DTO.ActiveQuestionnaire;
 
 namespace API.DTO.Responses.ActiveQuestionnaire;
 

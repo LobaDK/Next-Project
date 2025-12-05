@@ -1,3 +1,5 @@
+using System.ComponentModel;
+using Database.Enums;
 
 namespace API.DTO.Requests.ActiveQuestionnaire;
 

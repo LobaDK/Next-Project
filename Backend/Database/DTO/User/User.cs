@@ -1,3 +1,4 @@
+using Database.Enums;
 
 namespace Database.DTO.User;
 

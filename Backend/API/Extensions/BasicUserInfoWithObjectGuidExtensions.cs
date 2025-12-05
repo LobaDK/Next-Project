@@ -1,3 +1,5 @@
+using API.DTO.User;
+using API.DTO.Responses.User;
 
 namespace API.Extensions;
 

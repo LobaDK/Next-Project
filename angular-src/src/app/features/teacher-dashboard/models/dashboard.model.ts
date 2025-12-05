@@ -46,7 +46,6 @@ export interface ActiveQuestionnaireResponse {
 export interface QuestionnaireGroup {
   groupId: string;
   groupName: string;
-  createdAt: string;
   templateId: string;
   questionnaires: ActiveQuestionnaireBase[];
 }

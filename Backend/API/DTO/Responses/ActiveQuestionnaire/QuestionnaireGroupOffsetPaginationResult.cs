@@ -1,4 +1,6 @@
-﻿namespace API.DTO.Responses.ActiveQuestionnaire
+﻿using Database.DTO.ActiveQuestionnaire;
+
+namespace API.DTO.Responses.ActiveQuestionnaire
 {
     /// <summary>
     /// Represents the result of an offset-paginated query for questionnaire groups,

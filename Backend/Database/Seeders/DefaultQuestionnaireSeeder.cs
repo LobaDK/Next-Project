@@ -1,3 +1,6 @@
+using Database.Models;
+using Database.Utils;
+using Microsoft.EntityFrameworkCore;
 
 namespace Database.Seeders;
 

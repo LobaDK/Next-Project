@@ -1,3 +1,15 @@
+using API.DTO.User;
+using API.DTO.Requests.ActiveQuestionnaire;
+using API.DTO.Requests.User;
+using API.DTO.Responses.ActiveQuestionnaire;
+using API.DTO.Responses.User;
+using API.Extensions;
+using API.Interfaces;
+using Database.DTO.ActiveQuestionnaire;
+using Database.DTO.User;
+using Database.Enums;
+using Database.Extensions;
+using System.Collections.Generic;
 
 namespace API.Services;
 
@@ -15,16 +27,10 @@ namespace API.Services;
 /// </list>
 /// It provides a unified interface for user operations while maintaining security boundaries.
 /// </remarks>
-
-public class UserService : IUserService
+public class UserService(IAuthenticationBridge authenticationBridge, IUnitOfWork unitOfWork)
 {
-    private readonly IAuthenticationBridge _authenticationBridge;
-    private readonly IUnitOfWork _unitOfWork;
-    public UserService(IAuthenticationBridge authenticationBridge, IUnitOfWork unitOfWork)
-    {
-        _authenticationBridge = authenticationBridge;
-        _unitOfWork = unitOfWork;
-    }
+    private readonly IAuthenticationBridge _authenticationBridge = authenticationBridge;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     /// <summary>
     /// Queries the LDAP directory for users with pagination support and role-based filtering.
@@ -204,7 +210,6 @@ public class UserService : IUserService
         {
             GroupId = g.GroupId,
             Name = g.Name,
-            CreatedAt = g.CreatedAt,
             TemplateId = g.TemplateId,
             Questionnaires = g.Questionnaires
                 .Select(q =>

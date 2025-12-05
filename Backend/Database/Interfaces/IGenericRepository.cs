@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 
 namespace Database.Interfaces;
 
@@ -10,7 +11,7 @@ namespace Database.Interfaces;
 /// This interface provides a consistent data access layer across different entity types,
 /// promoting code reuse and standardizing database interaction patterns throughout the application.
 /// </remarks>
-public interface IGenericRepository<TEntity> where TEntity : class
+internal interface IGenericRepository<TEntity> where TEntity : class
 {
     /// <summary>
     /// Retrieves a list of entities matching the specified predicate with optional query customization.
@@ -22,7 +23,7 @@ public interface IGenericRepository<TEntity> where TEntity : class
     /// The queryModifier parameter allows for complex query operations like eager loading,
     /// ordering, and additional filtering without breaking the repository abstraction.
     /// </remarks>
-    public Task<List<TEntity>> GetAsync(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IQueryable<TEntity>>? queryModifier = null);
+    Task<List<TEntity>> GetAsync(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IQueryable<TEntity>>? queryModifier = null);
 
     /// <summary>
     /// Retrieves a single entity matching the specified predicate with optional query customization.
@@ -35,7 +36,7 @@ public interface IGenericRepository<TEntity> where TEntity : class
     /// This method uses SingleOrDefault semantics - it will throw an exception if multiple entities match.
     /// Use GetAsync if multiple results are expected.
     /// </remarks>
-    public Task<TEntity?> GetSingleAsync(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IQueryable<TEntity>>? queryModifier = null);
+    Task<TEntity?> GetSingleAsync(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IQueryable<TEntity>>? queryModifier = null);
 
     /// <summary>
     /// Retrieves all entities of the specified type with optional query customization.
@@ -46,7 +47,7 @@ public interface IGenericRepository<TEntity> where TEntity : class
     /// Use with caution on large datasets. Consider using pagination or filtering for better performance.
     /// The queryModifier can be used to include related data or apply ordering.
     /// </remarks>
-    public Task<List<TEntity>> GetAllAsync(Func<IQueryable<TEntity>, IQueryable<TEntity>>? queryModifier = null);
+    Task<List<TEntity>> GetAllAsync(Func<IQueryable<TEntity>, IQueryable<TEntity>>? queryModifier = null);
 
     /// <summary>
     /// Adds a new entity to the database context for insertion.
@@ -56,7 +57,7 @@ public interface IGenericRepository<TEntity> where TEntity : class
     /// The entity is added to the context but not persisted until SaveChanges is called.
     /// This allows for batching multiple operations within a single transaction.
     /// </remarks>
-    public Task AddAsync(TEntity entity);
+    Task AddAsync(TEntity entity);
 
     /// <summary>
     /// Adds multiple entities to the database context for bulk insertion.
@@ -66,7 +67,7 @@ public interface IGenericRepository<TEntity> where TEntity : class
     /// More efficient than multiple AddAsync calls for bulk operations.
     /// Entities are added to the context but not persisted until SaveChanges is called.
     /// </remarks>
-    public Task AddRangeAsync(List<TEntity> entities);
+    Task AddRangeAsync(List<TEntity> entities);
 
     /// <summary>
     /// Marks an entity for deletion from the database.
@@ -76,7 +77,7 @@ public interface IGenericRepository<TEntity> where TEntity : class
     /// The entity is marked for deletion but not removed until SaveChanges is called.
     /// The entity must be tracked by the context or an exception will be thrown.
     /// </remarks>
-    public void Delete(TEntity entity);
+    void Delete(TEntity entity);
 
     /// <summary>
     /// Marks multiple entities for deletion from the database.
@@ -86,7 +87,7 @@ public interface IGenericRepository<TEntity> where TEntity : class
     /// More efficient than multiple Delete calls for bulk operations.
     /// All entities must be tracked by the context or an exception will be thrown.
     /// </remarks>
-    public void DeleteRange(List<TEntity> entities);
+    void DeleteRange(List<TEntity> entities);
 
     /// <summary>
     /// Returns an IQueryable for advanced query composition and deferred execution.
@@ -97,7 +98,7 @@ public interface IGenericRepository<TEntity> where TEntity : class
     /// complex queries that cannot be easily expressed through the standard repository methods.
     /// Use with caution as it breaks some repository abstraction benefits.
     /// </remarks>
-    public IQueryable<TEntity> GetAsQueryable();
+    IQueryable<TEntity> GetAsQueryable();
 
     /// <summary>
     /// Counts the number of entities matching the specified criteria.
@@ -109,7 +110,7 @@ public interface IGenericRepository<TEntity> where TEntity : class
     /// This method executes a COUNT query at the database level for optimal performance.
     /// Avoid loading entities into memory when only a count is needed.
     /// </remarks>
-    public int Count(Expression<Func<TEntity, bool>>? predicate = null, Func<IQueryable<TEntity>, IQueryable<TEntity>>? queryModifier = null);
+    int Count(Expression<Func<TEntity, bool>>? predicate = null, Func<IQueryable<TEntity>, IQueryable<TEntity>>? queryModifier = null);
 
     /// <summary>
     /// Checks if any entities exist matching the specified predicate.
@@ -120,5 +121,5 @@ public interface IGenericRepository<TEntity> where TEntity : class
     /// This method is optimized for existence checking and will return as soon as the first
     /// matching entity is found, making it more efficient than Count() > 0 for this purpose.
     /// </remarks>
-    public bool Exists(Expression<Func<TEntity, bool>> predicate);
+    bool Exists(Expression<Func<TEntity, bool>> predicate);
 }

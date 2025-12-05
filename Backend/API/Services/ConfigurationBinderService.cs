@@ -1,3 +1,4 @@
+using Settings.Models;
 
 namespace API.Services;
 

@@ -14,7 +14,6 @@ import { Role } from './shared/models/user.model';
 import { ShowActiveQuestionnaireComponent } from './features/show-active-questionnaire/show-active-questionnaire.component';
 import { DataCompareComponent } from './features/data-compare/data-compare.component';
 import { ResultHistoryComponent } from './features/result-history/result-history.component';
-import { UserGuideComponent } from './features/user-guide/user-guide.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -66,11 +65,6 @@ export const routes: Routes = [
     component: ResultHistoryComponent,
     canActivate: [authGuard, roleGuard],
     data: { roles: [Role.Teacher] },
-  },
-  {
-    path: 'user-guide',
-    component: UserGuideComponent,
-    canActivate: [authGuard]
   },
   { path: '**', component: PageNotFoundComponent }
 ];

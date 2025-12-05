@@ -1,3 +1,4 @@
+using Novell.Directory.Ldap;
 
 namespace API.DTO.LDAP;
 

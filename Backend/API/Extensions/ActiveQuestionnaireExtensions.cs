@@ -1,3 +1,5 @@
+using API.DTO.Responses.ActiveQuestionnaire;
+using Database.DTO.ActiveQuestionnaire;
 
 namespace API.Extensions;
 

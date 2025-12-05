@@ -38,10 +38,11 @@ interface SearchState<T> {
 }
 
 @Component({
-    selector: 'app-result-history',
-    imports: [CommonModule, FormsModule, TranslateModule, ShowResultComponent, TranslateModule],
-    templateUrl: './result-history.component.html',
-    styleUrls: ['./result-history.component.css']
+  selector: 'app-result-history',
+  standalone: true,
+  imports: [CommonModule, FormsModule, TranslateModule, ShowResultComponent, TranslateModule],
+  templateUrl: './result-history.component.html',
+  styleUrls: ['./result-history.component.css']
 })
 export class ResultHistoryComponent implements OnInit {
   private resultHistoryService = inject(ResultHistoryService);
@@ -148,7 +149,7 @@ private fetch(type: SearchEnum, term: string): void {
         }));
         state.loading = false;
       },
-      error: () => handleError(this.translate.instant('RESULT_HISTORY.FAILED_TO_LOAD_STUDENTS'))
+      error: () => handleError(`Failed to load related ${type}s.`)
     });
   }
 }
@@ -200,11 +201,11 @@ private fetch(type: SearchEnum, term: string): void {
         this.template.loading = false;
         
         if (this.template.results.length === 0) {
-          this.template.error = this.translate.instant('RESULT_HISTORY.NO_COMPLETED_SHARED_QUESTIONNAIRES');
+          this.template.error = 'No shared questionnaire completions found with this student.';
         }
       },
       error: () => {
-        this.template.error = this.translate.instant('RESULT_HISTORY.FAILED_TO_LOAD_TEMPLATES');
+        this.template.error = 'Failed to load available templates.';
         this.template.loading = false;
       }
     });
@@ -243,13 +244,8 @@ private fetch(type: SearchEnum, term: string): void {
           this.currentAttemptIndex = 0;
           this.isLoading = false;
         },
-        error: (error) => {
-          // Handle the specific case where questionnaires are incomplete
-          if (error.status === 404 && error.error?.includes && error.error.includes('Both student and teacher must submit')) {
-            this.errorMessage = this.translate.instant('RESULT_HISTORY.NO_RESULTS_INCOMPLETE_RESPONSES');
-          } else {
-            this.errorMessage = this.translate.instant('RESULT_HISTORY.FAILED_TO_LOAD_HISTORY');
-          }
+        error: () => {
+          this.errorMessage = 'Failed to load student result history.';
           this.isLoading = false;
         }
       });

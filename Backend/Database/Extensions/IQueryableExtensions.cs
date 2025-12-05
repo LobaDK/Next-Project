@@ -1,3 +1,4 @@
+using Database.Models;
 
 namespace Database.Extensions;
 

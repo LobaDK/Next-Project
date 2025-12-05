@@ -4,17 +4,6 @@
     {{ 'QUESTION_EDITOR.TITLE' | translate }}
   </h3>
 
-
-  @if (validationErrors.length > 0) {
-    <div #errorContainer class="p-4 bg-red-100 border-2 border-red-400 rounded-xl">
-      <ul class="list-disc pl-5 text-sm text-red-700">
-        @for (error of validationErrors; track error) {
-          <li>{{ error }}</li>
-        }
-      </ul>
-    </div>
-  }
-
   <div>
     <label class="block text-sm font-medium text-primary_dark_blue mb-2">
       {{ 'QUESTION_EDITOR.LABEL_TITLE' | translate }}
@@ -25,15 +14,15 @@
       placeholder="{{ 'QUESTION_EDITOR.PLACEHOLDER_TITLE' | translate }}" />
     <p *ngIf="duplicate" class="text-red-600 text-sm mt-1">{{ 'QUESTION_EDITOR.ERROR_DUPLICATE_QUESTION' | translate }}</p>
 
-    </div>
+  </div>
 
-    <div class="flex items-center mb-4">
-      <input type="checkbox" id="custom-answer" [disabled]="readonly" [(ngModel)]="question.allowCustom"
-        class="h-4 w-4 text-primary_orange_1 focus:ring-primary_orange_1 border-primary_orange_1 rounded-xl" />
-        <label for="custom-answer" class="ml-2 text-sm font-medium text-primary_dark_blue">
-          {{ 'QUESTION_EDITOR.ALLOW_CUSTOM' | translate }}
-        </label>
-      </div>
+  <div class="flex items-center mb-4">
+    <input type="checkbox" id="custom-answer" [disabled]="readonly" [(ngModel)]="question.allowCustom"
+      class="h-4 w-4 text-primary_orange_1 focus:ring-primary_orange_1 border-primary_orange_1 rounded-xl" />
+    <label for="custom-answer" class="ml-2 text-sm font-medium text-primary_dark_blue">
+      {{ 'QUESTION_EDITOR.ALLOW_CUSTOM' | translate }}
+    </label>
+  </div>
 
       <!-- Options -->
       <div>
@@ -79,23 +68,21 @@
       <button (click)="addOption()" class="px-6 py-2 font-bold rounded-xl focus:ring-2
             bg-primary_orange_1 text-white hover:bg-primary_orange_light focus:ring-primary_orange_1
             disabled:bg-gray-400 disabled:text-gray-200 disabled:cursor-not-allowed" [disabled]="overOptionCount()">
-              {{ 'QUESTION_EDITOR.ADD_OPTION' | translate }}
-            </button>
-          </div>
-        }
-      </div>
+        {{ 'QUESTION_EDITOR.ADD_OPTION' | translate }}
+      </button>
 
-      <!-- Actions -->
-      <div class="flex justify-between flex-wrap gap-4">
-        @if (!readonly) {
-          <button (click)="onSave()"
-            class="px-4 py-2 bg-primary_orange_1 text-white rounded-xl hover:bg-primary_orange_light">
-            {{ 'QUESTION_EDITOR.SAVE' | translate }}
-          </button>
-        }
-        <button (click)="onCancel()"
-          class="px-4 py-2 bg-gray-300 text-primary_dark_blue rounded-xl hover:bg-gray-400 focus:ring-2 focus:ring-primary_dark_blue focus:outline-none">
-          {{'COMMON.BUTTONS.CANCEL' | translate}}
-        </button>
-      </div>
     </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="flex justify-between flex-wrap gap-4">
+    <button *ngIf="!readonly" (click)="onSave()"
+      class="px-4 py-2 bg-primary_orange_1 text-white rounded-xl hover:bg-primary_orange_light">
+      {{ 'QUESTION_EDITOR.SAVE' | translate }}
+    </button>
+    <button (click)="onCancel()"
+      class="px-4 py-2 bg-gray-300 text-primary_dark_blue rounded-xl hover:bg-gray-400 focus:ring-2 focus:ring-primary_dark_blue focus:outline-none">
+      {{'COMMON.BUTTONS.CANCEL' | translate}}
+    </button>
+  </div>
+</div>

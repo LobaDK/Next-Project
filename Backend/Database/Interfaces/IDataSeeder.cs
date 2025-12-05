@@ -1,5 +1,4 @@
-
-//using Newtonsoft.Json;
+using Newtonsoft.Json;
 
 namespace Database.Utils;
 
@@ -19,22 +18,16 @@ public interface IDataSeeder<T>
     /// </returns>
     /// <exception cref="FileNotFoundException">Thrown when the specified file path does not exist.</exception>
     /// <exception cref="JsonException">Thrown when the JSON content cannot be deserialized to the specified type T.</exception>
-
     public static T? LoadSeed(string path)
     {
         T? seed;
-        var options = new JsonSerializerOptions()
-        {
-            PropertyNameCaseInsensitive = true
 
-        };
         string json = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, path));
-
-        seed = JsonSerializer.Deserialize<T>(json, options);
+        seed = JsonConvert.DeserializeObject<T>(json);
 
         return seed;
     }
-   
+
     public static T LoadSeed(T model)
     {
         return model;

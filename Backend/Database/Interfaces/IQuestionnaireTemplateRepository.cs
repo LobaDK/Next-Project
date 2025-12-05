@@ -1,3 +1,5 @@
+using Database.DTO.QuestionnaireTemplate;
+using Database.Enums;
 
 namespace Database.Interfaces;
 

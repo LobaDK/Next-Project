@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 
 namespace Logging.LogEvents;
 

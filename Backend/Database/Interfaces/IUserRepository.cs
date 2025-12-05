@@ -1,3 +1,4 @@
+using Database.DTO.User;
 
 namespace Database.Interfaces;
 

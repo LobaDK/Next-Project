@@ -1,3 +1,5 @@
+using Database.DTO.User;
+using Database.DTO.QuestionnaireTemplate;
 
 namespace Database.DTO.ActiveQuestionnaire;
 

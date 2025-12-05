@@ -1,3 +1,7 @@
+using System.Collections.Concurrent;
+using Database.DTO.ApplicationLog;
+using Microsoft.Extensions.Logging;
+using Settings.Models;
 
 namespace Logging.DBLogger;
 

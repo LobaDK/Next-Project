@@ -1,3 +1,6 @@
+using System.ComponentModel;
+using System.Text.Json.Serialization;
+using Settings.Interfaces;
 
 namespace Settings.Models;
 
@@ -11,12 +14,6 @@ public class LDAPSettings : Base, ILDAPSettings
 
     [Description("The LDAP server port number.")]
     public int Port { get; set; } = 389;
-
-    [Description("The LDAP server SSL port number.")]
-    public int SSLPort { get; set; } = 636;
-    
-    [Description("Indicates whether to use SSL for LDAP connections.")]
-    public bool UseSSL { get; set; } = true;
 
     [Description("The Fully Qualified Domain Name for the LDAP server.")]
     public string FQDN { get; set; } = string.Empty;

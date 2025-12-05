@@ -1,3 +1,4 @@
+using Database.DTO.QuestionnaireTemplate;
 
 namespace API.DTO.Responses.QuestionnaireTemplate;
 
