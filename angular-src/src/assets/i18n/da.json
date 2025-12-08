@@ -92,7 +92,9 @@
       "TEMPLATE_DESCRIPTION": "Beskrivelse",
       "QUESTIONS": "Spørgsmål",
       "SAVE_TEMPLATE": "Gem Skabelon",
-      "ADD_QUESTION": "Tilføj Nyt Spørgsmål"
+      "ADD_QUESTION": "Tilføj Nyt Spørgsmål",
+      "CHECKING_TITLE": "Checker om titlen er tilgængelig...",
+      "TITLE_ALREADY_EXISTS": "En skabelon med denne titel findes allerede. Vælg venligst en anden titel."
     },
 
     "FINALIZE": {

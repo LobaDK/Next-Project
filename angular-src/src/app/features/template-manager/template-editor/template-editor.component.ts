@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, OnChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, inject } from '@angular/core';
 import { QuestionEditorComponent } from './question-editor/question-editor.component';
 import { Question, Template, TemplateStatus } from '../../../shared/models/template.model';
 
@@ -6,6 +6,9 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { ModalComponent } from '../../../shared/components/modal/modal.component';
 import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { TemplateService } from '../services/template.service';
+import { CommonModule } from '@angular/common';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 
 /**
@@ -22,7 +25,7 @@ import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-
  */
 @Component({
     selector: 'app-template-editor',
-    imports: [QuestionEditorComponent, FormsModule, ModalComponent, TranslateModule, DragDropModule],
+    imports: [QuestionEditorComponent, FormsModule, ModalComponent, TranslateModule, DragDropModule, CommonModule],
     templateUrl: './template-editor.component.html',
     styleUrl: './template-editor.component.css'
 })
@@ -49,6 +52,21 @@ export class TemplateEditorComponent implements OnChanges {
   /** Set to true when order changed via drag-drop; used to avoid auto-saving on drop */
   orderChanged = false;
 
+  /** Title validation state */
+  titleError: string | null = null;
+  isTitleChecking = false;
+  private titleCheckSubject = new Subject<string>();
+  private templateService = inject(TemplateService);
+
+  ngOnInit() {
+    // Set up debounced title checking (1 second delay)
+    this.titleCheckSubject
+      .pipe(debounceTime(1000), distinctUntilChanged())
+      .subscribe((title) => {
+        this.checkTitleAvailability(title);
+      });
+  }
+
   ngOnChanges() {
     this.readonly = this.template.templateStatus === TemplateStatus.Finalized;
     
@@ -56,6 +74,9 @@ export class TemplateEditorComponent implements OnChanges {
     if (this.template && this.template.questions) {
       this.sortTemplateData();
     }
+
+    // Reset title error when template changes
+    this.titleError = null;
   }
 
   /** Sorts questions and options by their sortOrder values. */
@@ -70,8 +91,55 @@ export class TemplateEditorComponent implements OnChanges {
     }
   }
 
+  /**
+   * Handles title input changes and triggers debounced validation.
+   */
+  onTitleChange(newTitle: string) {
+    const trimmedTitle = newTitle?.trim();
+    
+    if (!trimmedTitle) {
+      this.titleError = null;
+      return;
+    }
+
+    // Don't check if template already has an ID (editing existing template)
+    if (this.template.id) {
+      this.titleError = null;
+      return;
+    }
+
+    // Emit to subject for debounced checking
+    this.titleCheckSubject.next(trimmedTitle);
+  }
+
+  /**
+   * Performs the actual title availability check against the API.
+   */
+  private checkTitleAvailability(title: string) {
+    this.isTitleChecking = true;
+    this.templateService.checkTitleAvailability(title).subscribe({
+      next: (titleExists) => {
+        this.isTitleChecking = false;
+        if (titleExists) {
+          this.titleError = 'TEMPLATE.EDITOR.TITLE_ALREADY_EXISTS';
+        } else {
+          this.titleError = null;
+        }
+      },
+      error: (err) => {
+        console.error('Error checking title availability:', err);
+        this.isTitleChecking = false;
+        this.titleError = null; // Don't show error to user, just log it
+      }
+    });
+  }
+
   // Method to emit the saveTemplate event with the updated template
   onSave() {
+    // Prevent save if title is not available
+    if (this.titleError) {
+      return;
+    }
     this.saveTemplate.emit(this.template);
   }
 

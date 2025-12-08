@@ -132,4 +132,14 @@ export class TemplateService {
       map((response: Template) => this.sortTemplateData(response))
     );
   }
+
+  /**
+   * Checks if a template title is available (not already in use).
+   * @param title The title to check
+   * @returns Observable<boolean> - true if available, false if already exists
+   */
+  checkTitleAvailability(title: string): Observable<boolean> {
+    const params = new HttpParams().set('title', title);
+    return this.apiService.get<boolean>(`${this.apiUrl}/checkTitle`, params);
+  }
 }
