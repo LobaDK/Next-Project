@@ -102,12 +102,6 @@ export class TemplateEditorComponent implements OnChanges {
       return;
     }
 
-    // Don't check if template already has an ID (editing existing template)
-    if (this.template.id) {
-      this.titleError = null;
-      return;
-    }
-
     // Emit to subject for debounced checking
     this.titleCheckSubject.next(trimmedTitle);
   }
