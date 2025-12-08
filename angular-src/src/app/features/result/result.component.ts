@@ -317,4 +317,6 @@ export class ResultComponent implements OnInit, OnDestroy{
       animation: { enabled: true, duration: 800 },
     };
   }
+
+
 }

@@ -92,7 +92,7 @@ export class ResultHistoryComponent implements OnInit {
     showCompletionDates: true,
     useCardStyling: false,
     showActions: false,
-    showTestButtons: false 
+    showTestButtons: true
   };
   
   public isFullView = true;
@@ -638,6 +638,8 @@ public TestGraf() {
       this.updateChartForQuestion(this.currentQuestionIndex);
     }
   }
+
+  
 
 }
 

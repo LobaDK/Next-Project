@@ -250,11 +250,13 @@
 </div>
 
 
-      <app-show-result
-        [result]="getCurrentResultLikeResult()"
-        [isFullView]="isFullView"
-        [config]="resultConfig">
-      </app-show-result>
+<app-show-result
+  [result]="getCurrentResultLikeResult()"
+  [isFullView]="isFullView"
+  [studentId]="student.selected?.id"
+  [templateId]="template.selected?.id"
+  [config]="resultConfig">
+</app-show-result>
     </div>
 
   </div>
