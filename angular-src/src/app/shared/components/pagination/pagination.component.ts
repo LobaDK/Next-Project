@@ -33,6 +33,7 @@ export interface PageChangeEvent {
  */
 @Component({
     selector: 'app-pagination',
+    standalone: true,
     imports: [TranslateModule],
     templateUrl: './pagination.component.html',
     styleUrls: ['./pagination.component.css']

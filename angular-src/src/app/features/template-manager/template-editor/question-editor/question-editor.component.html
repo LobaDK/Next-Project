@@ -6,14 +6,14 @@
 
   <!-- Validation Errors -->
   @if (validationErrors.length > 0) {
-    <div #errorContainer class="bg-red-50 border-2 border-red-500 rounded-xl p-4 space-y-2">
-      <h4 class="font-bold text-red-700">{{ 'QUESTION_EDITOR.VALIDATION_ERRORS' | translate }}</h4>
-      <ul class="list-disc list-inside text-red-600">
-        @for (error of validationErrors; track error) {
-          <li>{{ error }}</li>
-        }
-      </ul>
-    </div>
+  <div #errorContainer class="bg-red-50 border-2 border-red-500 rounded-xl p-4 space-y-2">
+    <h4 class="font-bold text-red-700">{{ 'QUESTION_EDITOR.VALIDATION_ERRORS' | translate }}</h4>
+    <ul class="list-disc list-inside text-red-600">
+      @for (error of validationErrors; track error) {
+      <li>{{ error }}</li>
+      }
+    </ul>
+  </div>
   }
 
   <div>
@@ -25,7 +25,7 @@
       [class.border-primary_orange_1]="!duplicate" [class.border-red-500]="duplicate"
       placeholder="{{ 'QUESTION_EDITOR.PLACEHOLDER_TITLE' | translate }}" />
     @if (duplicate) {
-      <p class="text-red-600 text-sm mt-1">{{ 'QUESTION_EDITOR.ERROR_DUPLICATE_QUESTION' | translate }}</p>
+    <p class="text-red-600 text-sm mt-1">{{ 'QUESTION_EDITOR.ERROR_DUPLICATE_QUESTION' | translate }}</p>
     }
 
   </div>
@@ -58,18 +58,24 @@
             <div class="w-full sm:w-[600px] ">
               <label class="flex items-center gap-2 text-sm font-medium text-primary_dark_blue mb-2">
                 Label:
-                @if (isOptionDuplicate(option)) {
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                  </svg>
+                @if (hasOptionError(option)) {
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500 flex-shrink-0" viewBox="0 0 20 20"
+                  fill="currentColor">
+                  <path fill-rule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                    clip-rule="evenodd" />
+                </svg>
                 }
               </label>
               <textarea [(ngModel)]="option.displayText" [readOnly]="readonly"
                 class="block w-full px-4 py-3 border-2 rounded-xl shadow-sm focus:ring-primary_orange_1 focus:border-primary_orange_1 sm:text-sm bg-white min-h-[30px]"
-                [class.border-primary_orange_1]="!isOptionDuplicate(option) && !duplicate"
-                [class.border-red-500]="isOptionDuplicate(option)"></textarea>
-              @if (isOptionDuplicate(option)) {
-                <p class="text-red-600 text-sm mt-1">{{ 'QUESTION_EDITOR.DUPLICATE_ANSWER' | translate }}</p>
+                [class.border-primary_orange_1]="!hasOptionError(option) && !duplicate"
+                [class.border-red-500]="hasOptionError(option)"></textarea>
+              @if (isOptionDuplicate(option) && validationErrors.length > 0) {
+              <p class="text-red-600 text-sm mt-1">{{ 'QUESTION_EDITOR.DUPLICATE_ANSWER' | translate }}</p>
+              }
+              @if (isOptionBlank(option) && validationErrors.length > 0) {
+              <p class="text-red-600 text-sm mt-1">{{ 'QUESTION_EDITOR.ERROR_EMPTY_OPTION_LABELS' | translate }}</p>
               }
             </div>
           </div>
