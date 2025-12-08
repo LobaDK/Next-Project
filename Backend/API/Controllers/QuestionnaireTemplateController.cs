@@ -316,5 +316,15 @@ namespace API.Controllers
             var templates = await _questionnaireTemplateService.GetTemplateBasesAnsweredByStudentAsync(studentId, teacherId);
             return Ok(templates);
         }
+
+        [HttpGet("checkTitle")]
+        [Authorize(AuthenticationSchemes = "AccessToken", Policy = "AdminOnly")]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<bool>> CheckTitleAvailability([FromQuery] string title)
+        {
+            var isAvailable = await _questionnaireTemplateService.IsTitleAvailable(title);
+            return Ok(isAvailable);
+        }
     }
 }

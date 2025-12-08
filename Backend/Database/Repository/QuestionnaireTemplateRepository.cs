@@ -382,4 +382,9 @@ public class QuestionnaireTemplateRepository(Context context, ILoggerFactory log
 
         return templates.Select(t => t.ToBaseDto()).ToList();
     }
+
+    public async Task<bool> IsTitleAvailable(string templateTitle)
+    {
+        return await _context.QuestionnaireTemplates.AnyAsync(t => t.Title == templateTitle);
+    }
 }
