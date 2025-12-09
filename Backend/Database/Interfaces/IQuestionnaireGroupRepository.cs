@@ -26,6 +26,8 @@ namespace Database.Interfaces
         /// </remarks>
         Task<IEnumerable<QuestionnaireGroupModel>> GetAllAsync();
 
+        Task<IEnumerable<QuestionnaireGroupModel>> GetGroupsByTemplateIdAsync(Guid templateId);
+
         /// <summary>
         /// Retrieves a questionnaire group by its unique identifier.
         /// </summary>

@@ -176,12 +176,28 @@ namespace API.Controllers
         /// This endpoint requires admin authorization and uses access token authentication.
         /// </remarks>
         [HttpGet("groupsBasic")]
-        [Authorize(AuthenticationSchemes = "AccessToken", Policy = "AdminAndTeacherOnly")]
+        [Authorize(AuthenticationSchemes = "AccessToken", Policy = "AdminOnly")]
         public async Task<ActionResult<List<QuestionnaireGroupBasicResult>>> GetAllGroupsBasic()
         {
             try
             {
                 var results = await _questionnaireService.GetAllQuestionnaireGroupsBasic();
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching all questionnaire groups: {Message}", ex.Message);
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("templateGroupsBasic")]
+        [Authorize(AuthenticationSchemes = "AccessToken", Policy = "TeacherOnly")]
+        public async Task<ActionResult<List<QuestionnaireGroupBasicResult>>> GetTemplateGroupsBasic([FromQuery] Guid templateId)
+        {
+            try
+            {
+                var results = await _questionnaireService.GetQuestionnaireGroupsBasicForTemplate(templateId);
                 return Ok(results);
             }
             catch (Exception ex)
@@ -501,6 +517,27 @@ namespace API.Controllers
 
             return Ok(await _questionnaireService.GetResponsesFromStudentAndTemplateWithDateAsync(studentid, templateid));
         }
+
+        [HttpGet("{studentid},{teacherid},{templateid}/getResponsesFromTeacherAndStudentAndTemplateWithDate")]
+        [Authorize(AuthenticationSchemes = "AccessToken", Policy = "TeacherOnly")]
+        public async Task<ActionResult<List<FullResponse>>> GetResponsesFromTeacherAndStudentAndTemplateWithDateAsync(Guid studentid, Guid teacherid, Guid templateid)
+        {
+            Guid userId;
+            try
+            {
+                userId = Guid.Parse(User.Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub).Value);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error parsing user ID from claims: {Message}", e.Message);
+                return Unauthorized();
+            }
+
+            List<FullResponse> response = await _questionnaireService.GetResponsesFromTeacherAndStudentAndTemplateWithDateAsync(studentid, teacherid, templateid);
+
+            return Ok(await _questionnaireService.GetResponsesFromTeacherAndStudentAndTemplateWithDateAsync(studentid,teacherid, templateid));
+        }
+
 
 
         /// <summary>

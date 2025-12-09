@@ -285,6 +285,7 @@ public class QuestionnaireTemplateRepository(Context context, ILoggerFactory log
         TemplateOrderingOptions sortOrder,
         string? titleQuery,
         Guid? idQuery,
+        Guid? teacherId,
         TemplateStatus? templateStatus)
     {
         IQueryable<QuestionnaireTemplateModel> query = _genericRepository.GetAsQueryable();
@@ -299,6 +300,11 @@ public class QuestionnaireTemplateRepository(Context context, ILoggerFactory log
         if (idQuery is not null)
         {
             query = query.Where(q => q.Id.ToString().Contains(idQuery.ToString()!));
+        }
+
+        if (teacherId is not null)
+        {
+            query = query.Where(q => q.ActiveQuestionnaires.Any(aq => aq.Teacher!.Guid == teacherId));
         }
 
         if (templateStatus.HasValue)

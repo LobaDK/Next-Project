@@ -68,6 +68,11 @@
 
   "TEMPLATE": {
 
+    "DUPLICATE_WARNING": {
+      "TITLE": "Duplikerede spørgsmål fundet",
+      "TEXT": "Din skabelon indeholder duplikerede spørgsmål. Ret venligst disse problemer før du gemmer."
+    },
+
     "NEW": {
       "TITLE": "Ny skabelon",
       "DESC": "Beskrivelse af den nye skabelon",
@@ -149,6 +154,7 @@
       "DELETE": "Slet"
     },
     "GREETING": "Hej {{username}}!",
+    "QUESTION": "Spørgsmål",
     "ROLES": {
       "STUDENT": "Elev",
       "TEACHER": "Lærer",
@@ -210,10 +216,18 @@
 
   "QUESTION_EDITOR": {
       "TITLE": "Rediger spørgsmål",
+      "VALIDATION_ERRORS": "Valideringsfejl",
       "LABEL_TITLE": "Titel:",
       "PLACEHOLDER_TITLE": "Indtast spørgsmålets titel",
+      "ERROR_DUPLICATE_QUESTION": "Dette spørgsmål har en duplikeret titel. Hvert spørgsmål skal have en unik titel.",
+      "ERROR_EMPTY_TITLE": "Spørgsmålets titel kan ikke være tom.",
+      "ERROR_NO_OPTIONS_OR_CUSTOM": "Spørgsmålet skal tillade et brugerdefineret svar eller have mindst én valgmulighed.",
+      "ERROR_TOO_MANY_OPTIONS": "Spørgsmålet kan ikke have mere end {{max}} valgmuligheder.",
+      "ERROR_EMPTY_OPTION_LABELS": "Alle valgmuligheder skal have ikke-tomme etiketter.",
+      "ERROR_DUPLICATE_OPTIONS": "Dette spørgsmål har duplikerede valgmuligheder. Hver valgmulighed skal være unik.",
       "ALLOW_CUSTOM": "Tillad at skrive dit eget svar",
       "OPTIONS": "Valgmuligheder",
+      "DUPLICATE_ANSWER": "Denne valgmulighed er duplikeret i spørgsmålet.",
       "DELETE_OPTION": "Slet valgmulighed",
       "ADD_OPTION": "Tilføj ny valgmulighed",
       "SAVE": "Gem spørgsmål"
@@ -227,11 +241,11 @@
 
   "DATA_COMPARE" : {
     "TITLE": "Sammenlign Data",
-    "SEARCH_STUDENT_LABEL": "Søg efter elev eller gruppe:",
-    "SEARCH_STUDENT_PLACEHOLDER": "Indtast elev eller gruppe navn...",
-    "LOADING_STUDENTS": "Indlæser elever...",
-    "LOAD_MORE_STUDENTS": "Indlæs Flere Elever",
-    "SELECTED_STUDENTS": "Valgte Elever:",
+    "SEARCH_GROUP_LABEL": "Søg efter gruppe:",
+    "SEARCH_GROUP_PLACEHOLDER": "Indtast gruppe navn...",
+    "LOADING_GROUPS": "Indlæser grupper...",
+    "LOAD_MORE_GROUPS": "Indlæs Flere Grupper",
+    "SELECTED_GROUPS": "Valgte Grupper:",
     "REMOVE": "Fjern",
     "CLEAR_ALL": "Ryd Alle",
     "SEARCH_TEMPLATE_LABEL": "Søg efter Skabelon:",
@@ -287,7 +301,9 @@
     "CUSTOM_RESPONSES": "Brugerdefinerede svar:",
     "NO_OPTIONS_AVAILABLE": "Ingen valgmuligheder tilgængelige for dette spørgsmål",
     "SCROLL_HINT": "Scroll horisontalt for at se alle valgmuligheder →",
-    "DROPDOWN_SELECT_STUDENT": "Vælg Elev"
+    "DROPDOWN_SELECT_STUDENT": "Vælg Elev",
+    "GRAPH_OVERLAY_TITLE": " ",
+    "SHOW_GRAPH_BUTTON_LABEL":"Vis Graf"
   },
 
   "RESULT_HISTORY": {
@@ -318,7 +334,9 @@
     "FAILED_TO_LOAD_TEMPLATES": "Fejl ved indlæsning af tilgængelige skabeloner.",
     "NO_RESULTS_INCOMPLETE_RESPONSES": "Ingen resultater tilgængelige. Både du og eleven skal færdiggøre jeres spørgeskema-svar før historikken kan vises.",
     "FAILED_TO_LOAD_HISTORY": "Fejl ved indlæsning af elevens resultathistorik.",
-    "FAILED_TO_LOAD_STUDENTS": "Fejl ved indlæsning af relaterede elever."
+    "FAILED_TO_LOAD_STUDENTS": "Fejl ved indlæsning af relaterede elever.",
+    "SHOW_GRAPH_BUTTON_LABEL":"Vis Graf",
+    "HIDE_GRAPH_BUTTON_LABEL":"Skjul Graf"
   },
 
   "ACTIVE_BUILDER": {

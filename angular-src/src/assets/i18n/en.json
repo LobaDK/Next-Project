@@ -27,6 +27,11 @@
       "TITLE": "Error"
     },
 
+    "DUPLICATE_WARNING": {
+      "TITLE": "Duplicate Questions Detected",
+      "TEXT": "Your template contains duplicate questions. Please fix these issues before saving."
+    },
+
     "NEW": {
       "TITLE": "New Template",
       "DESC": "Description of the new template",
@@ -107,6 +112,7 @@
       "DELETE": "Delete"
     },
     "GREETING": "Hello {{username}}!",
+    "QUESTION": "Question",
     "ROLES": {
       "STUDENT": "Student",
       "TEACHER": "Teacher",
@@ -215,10 +221,18 @@
 
   "QUESTION_EDITOR": {
     "TITLE": "Edit Question",
+    "VALIDATION_ERRORS": "Validation Errors",
     "LABEL_TITLE": "Title:",
     "PLACEHOLDER_TITLE": "Enter the question title",
+    "ERROR_DUPLICATE_QUESTION": "This question has a duplicate title. Each question must have a unique title.",
+    "ERROR_EMPTY_TITLE": "The question title cannot be empty.",
+    "ERROR_NO_OPTIONS_OR_CUSTOM": "The question must allow a custom answer or have at least one option.",
+    "ERROR_TOO_MANY_OPTIONS": "The question cannot have more than {{max}} options.",
+    "ERROR_EMPTY_OPTION_LABELS": "All options must have non-empty labels.",
+    "ERROR_DUPLICATE_OPTIONS": "This question has duplicate options. Each option must be unique.",
     "ALLOW_CUSTOM": "Allow writing your own answer",
     "OPTIONS": "Options",
+    "DUPLICATE_ANSWER": "This option is duplicated within the question.",
     "DELETE_OPTION": "Delete Option",
     "ADD_OPTION": "Add New Option",
     "SAVE": "Save Question"
@@ -230,11 +244,11 @@
   },
   "DATA_COMPARE" : {
     "TITLE": "Data Compare",
-    "SEARCH_STUDENT_LABEL": "Search for student or group:",
-    "SEARCH_STUDENT_PLACEHOLDER": "Enter student or group name...",
-    "LOADING_STUDENTS": "Loading students...",
-    "LOAD_MORE_STUDENTS": "Load More Students",
-    "SELECTED_STUDENTS": "Selected Students:",
+    "SEARCH_GROUP_LABEL": "Search for group:",
+    "SEARCH_GROUP_PLACEHOLDER": "Enter group name...",
+    "LOADING_GROUPS": "Loading groups...",
+    "LOAD_MORE_GROUPS": "Load More Groups",
+    "SELECTED_GROUPS": "Selected Groups:",
     "REMOVE": "Remove",
     "CLEAR_ALL": "Clear All",
     "SEARCH_TEMPLATE_LABEL": "Search for Template:",
@@ -288,7 +302,9 @@
     "CUSTOM_RESPONSES": "Custom responses:",
     "NO_OPTIONS_AVAILABLE": "No options available for this question",
     "SCROLL_HINT": "Scroll horizontally to see all options →",
-    "DROPDOWN_SELECT_STUDENT": "Select Student"
+    "DROPDOWN_SELECT_STUDENT": "Select Student",
+    "GRAPH_OVERLAY_TITLE": " ",
+    "SHOW_GRAPH_BUTTON_LABEL":"Show Graph"
   },
 
   "RESULT_HISTORY": {
@@ -319,7 +335,10 @@
     "FAILED_TO_LOAD_TEMPLATES": "Failed to load available templates.",
     "NO_RESULTS_INCOMPLETE_RESPONSES": "No results available. Both you and the student must complete your questionnaire responses before viewing the results history.",
     "FAILED_TO_LOAD_HISTORY": "Failed to load student result history.",
-    "FAILED_TO_LOAD_STUDENTS": "Failed to load related students."
+    "FAILED_TO_LOAD_STUDENTS": "Failed to load related students.",
+    "SHOW_GRAPH_BUTTON_LABEL":"Show Graph",
+    "HIDE_GRAPH_BUTTON_LABEL":"Hide Graph"
+
   },
 
   "ACTIVE_BUILDER": {

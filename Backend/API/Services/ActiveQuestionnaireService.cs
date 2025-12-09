@@ -358,6 +358,23 @@ public class ActiveQuestionnaireService : IActiveQuestionnaireService
         return results;
     }
 
+    public async Task<List<QuestionnaireGroupBasicResult>> GetQuestionnaireGroupsBasicForTemplate(Guid templateId)
+    {
+        var groups = await _unitOfWork.QuestionnaireGroup.GetGroupsByTemplateIdAsync(templateId);
+        var results = new List<QuestionnaireGroupBasicResult>();
+
+        foreach (var group in groups)
+        {
+            results.Add(new QuestionnaireGroupBasicResult
+            {
+                GroupId = group.GroupId,
+                Name = group.Name
+            });
+        }
+
+        return results;
+    }
+
     /// <summary>
     /// Fetches an active questionnaire by its unique identifier.
     /// </summary>
@@ -538,7 +555,15 @@ public class ActiveQuestionnaireService : IActiveQuestionnaireService
 
     }
 
-    public async Task<SurveyResponseSummary> GetAnonymisedResponses(Guid templateId, List<Guid> users, List<Guid> groups)
+    public async Task<List<FullResponse>> GetResponsesFromTeacherAndStudentAndTemplateWithDateAsync(Guid studentid,Guid teacherid, Guid templateid)
+    {
+
+        return await _unitOfWork.ActiveQuestionnaire.GetResponsesFromTeacherAndStudentAndTemplateWithDateAsync(studentid, teacherid, templateid);
+
+    }
+
+
+public async Task<SurveyResponseSummary> GetAnonymisedResponses(Guid templateId, List<Guid> users, List<Guid> groups)
     {
         return await _unitOfWork.ActiveQuestionnaire.GetAnonymisedResponses(templateId, users, groups);
     }

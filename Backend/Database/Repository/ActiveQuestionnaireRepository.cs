@@ -364,7 +364,13 @@ public class ActiveQuestionnaireRepository(Context context, ILoggerFactory logge
     /// </remarks>
     public async Task<List<ActiveQuestionnaireBase>> GetPendingActiveQuestionnaires(Guid userId)
     {
-        UserBaseModel user = await _context.Users.SingleOrDefaultAsync(u => u.Guid == userId) ?? throw new InvalidOperationException("User not found.");
+        UserBaseModel? user = await _context.Users.SingleOrDefaultAsync(u => u.Guid == userId);
+
+        if (user is null)
+        {
+            return [];
+        }
+
         List<ActiveQuestionnaireModel> activeQuestionnaireBases;
         if (user.GetType().Equals(typeof(StudentModel)))
         {
@@ -432,6 +438,31 @@ public class ActiveQuestionnaireRepository(Context context, ILoggerFactory logge
             .ToListAsync();
 
         return [.. activeQuestionnaires.Select(a => a.ToFullStudentRespondsDate())];
+    }
+
+    public async Task<List<FullResponse>> GetResponsesFromTeacherAndStudentAndTemplateWithDateAsync(Guid studentid,Guid teacherid, Guid templateid)
+    {
+        QuestionnaireTemplateModel template = await _context.QuestionnaireTemplates.SingleAsync(t => t.Id == templateid);
+        if (template.Title.IsNullOrEmpty())
+        {
+            throw new Exception("The requested Template Questionnaire does not exsist.");
+        }
+
+        List<ActiveQuestionnaireModel> activeQuestionnaires = await _context.ActiveQuestionnaires
+            .Include(a => a.StudentAnswers)
+            .ThenInclude(a => a.Question)
+            .Include(a => a.StudentAnswers)
+            .ThenInclude(a => a.Option)
+            .Include(a => a.TeacherAnswers)
+            .ThenInclude(a => a.Question)
+            .Include(a => a.TeacherAnswers)
+            .ThenInclude(a => a.Option)
+            .Include(a => a.Student)
+            .Include(a => a.Teacher)
+            .Where(a => a.Student.Guid == studentid && a.QuestionnaireTemplate.Id == templateid && a.Teacher.Guid == teacherid && (a.StudentCompletedAt.HasValue && a.TeacherCompletedAt.HasValue))
+            .ToListAsync();
+
+        return [.. activeQuestionnaires.Select(a => a.ToFullResponseAll())];
     }
 
     public async Task<SurveyResponseSummary> GetAnonymisedResponses(Guid templateId, List<Guid> users, List<Guid> groups)
