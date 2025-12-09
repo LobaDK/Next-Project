@@ -45,12 +45,14 @@ export class ResultComponent implements OnInit, OnDestroy{
   private destroy$ = new Subject<void>();
 
   // Configuration for ShowResultComponent
-  resultConfig: ShowResultConfig = {
+  readonly resultConfig: ShowResultConfig = {
     showTemplate: true,
     showStudent: true,
     showTeacher: true,
     showCompletionDates: true,
-    useCardStyling: false // We handle card styling in the parent component
+    useCardStyling: false,
+    showActions: false,
+    showTestButtons: false  // Enable test buttons in result history
   };
 
 
@@ -314,4 +316,6 @@ export class ResultComponent implements OnInit, OnDestroy{
       animation: { enabled: true, duration: 800 },
     };
   }
+
+
 }

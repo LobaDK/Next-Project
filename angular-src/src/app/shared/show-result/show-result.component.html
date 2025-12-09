@@ -59,9 +59,18 @@
       <div class="questions-section space-y-6">
         @for (answer of result.answers; track answer; let i = $index) {
           <div class="question-answer-pair print:break-inside-avoid bg-secondary_background_gray rounded-lg shadow-sm border border-primary_orange_1 p-3 sm:p-4">
-            <h3 class="text-sm sm:text-base font-semibold text-primary_dark_blue mb-3 print:text-black break-words">
-              {{ i + 1 }}. {{ answer.question }}
-            </h3>
+            <div class="flex justify-between items-start mb-3">
+              <h3 class="text-sm sm:text-base font-semibold text-primary_dark_blue print:text-black break-words flex-1">
+                {{ i + 1 }}. {{ answer.question }}
+              </h3>
+              @if (config.showTestButtons){  
+                <button 
+                  (click)="showResultGraph(i)"
+                  class="ml-2 px-3 py-1 text-xs sm:text-sm bg-primary_orange_1 hover:bg-primary_orange_light text-white rounded-lg transition-colors duration-150 font-medium shadow-sm flex-shrink-0">
+                 {{ 'RESULT.SHOW_GRAPH_BUTTON_LABEL' | translate }}
+                </button>
+              }
+            </div>
             <div class="answers-comparison grid grid-cols-1 lg:grid-cols-2 gap-3 print:grid-cols-1 print:border-b print:pb-3 print:mb-3">
               <!-- Student Answer -->
               <div class="answer-container bg-primary_background_white/80 p-2 sm:p-3 rounded-lg print:bg-transparent print:p-0 order-1 border border-primary_orange_1">
@@ -89,9 +98,18 @@
       <div class="questions-section space-y-6">
         @for (answer of result.answers; track answer; let i = $index) {
           <div class="question-block print:break-inside-avoid bg-white rounded-lg shadow-sm border border-primary_orange_1 p-3 sm:p-4">
-            <h3 class="text-sm sm:text-base font-semibold text-primary_dark_blue mb-3 print:text-black break-words">
-              {{ i + 1 }}. {{ answer.question }}
-            </h3>
+            <div class="flex justify-between items-start mb-3">
+              <h3 class="text-sm sm:text-base font-semibold text-primary_dark_blue print:text-black break-words flex-1">
+                {{ i + 1 }}. {{ answer.question }}
+              </h3>
+              @if (config.showTestButtons){
+                <button 
+                  (click)="showResultGraph(i)"
+                  class="ml-2 px-3 py-1 text-xs sm:text-sm bg-primary_orange_1 hover:bg-primary_orange_light text-white rounded-lg transition-colors duration-150 font-medium shadow-sm flex-shrink-0">
+                  {{ 'RESULT.SHOW_GRAPH_BUTTON_LABEL' | translate }}
+                </button>
+              }
+            </div>
             @if (getTemplateQuestionOptions(answer.question); as options) {
               <!-- Matrix Table with horizontal scroll for mobile -->
               @if (options.length > 0 && (!answer.isStudentResponseCustom || !answer.isTeacherResponseCustom)) {
@@ -194,4 +212,40 @@
       </div>
     }
   </div>
+}
+
+<!-- Graph Overlay -->
+@if(showGraphOverlay){
+<div 
+     class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+     (click)="closeGraphOverlay()">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-auto p-6"
+       (click)="$event.stopPropagation()">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6 border-b pb-4">
+      <h3 class="text-2xl font-bold text-primary_dark_blue">
+        {{ 'RESULT.GRAPH_OVERLAY_TITLE' | translate }}
+      </h3>
+      <button 
+        (click)="closeGraphOverlay()"
+        class="text-gray-500 hover:text-gray-700 text-3xl font-bold leading-none">
+        &times;
+      </button>
+    </div>
+
+    <!-- Graph Container -->
+    <div class="w-full h-[500px] bg-gray-50 rounded-lg p-4">
+      <ag-charts [options]="chartOptions" style="display: block; width: 100%; height: 100%;"></ag-charts>
+    </div>
+
+    <!-- Footer -->
+    <div class="mt-6 flex justify-end">
+      <button 
+        (click)="closeGraphOverlay()"
+        class="px-6 py-2 bg-primary_orange_1 hover:bg-primary_orange_light text-white rounded-xl transition-colors duration-150 font-medium">
+        {{ 'COMMON.BUTTONS.CLOSE' | translate }}
+      </button>
+    </div>
+  </div>
+</div>
 }

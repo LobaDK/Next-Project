@@ -538,7 +538,15 @@ public class ActiveQuestionnaireService : IActiveQuestionnaireService
 
     }
 
-    public async Task<SurveyResponseSummary> GetAnonymisedResponses(Guid templateId, List<Guid> users, List<Guid> groups)
+    public async Task<List<FullResponse>> GetResponsesFromTeacherAndStudentAndTemplateWithDateAsync(Guid studentid,Guid teacherid, Guid templateid)
+    {
+
+        return await _unitOfWork.ActiveQuestionnaire.GetResponsesFromTeacherAndStudentAndTemplateWithDateAsync(studentid, teacherid, templateid);
+
+    }
+
+
+public async Task<SurveyResponseSummary> GetAnonymisedResponses(Guid templateId, List<Guid> users, List<Guid> groups)
     {
         return await _unitOfWork.ActiveQuestionnaire.GetAnonymisedResponses(templateId, users, groups);
     }
