@@ -26,7 +26,8 @@
         type="text"
         placeholder="{{ 'ACTIVE_LIST.SEARCH_PLACEHOLDER' | translate }}"
         [(ngModel)]="searchTitle"
-        (input)="onSearchTitleChange(searchTitle)"
+        appDebouncedInput
+        (debouncedInput)="onSearchTitleChange($event)"
         class="w-full sm:w-64 px-4 py-2 border-primary_orange rounded-lg focus:ring-primary_orange focus:border-primary_orange text-sm bg-primary_background_white/80" />
 
         <!-- Filters -->

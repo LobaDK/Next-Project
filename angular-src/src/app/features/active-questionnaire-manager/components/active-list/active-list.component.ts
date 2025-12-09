@@ -9,12 +9,14 @@ import { PageChangeEvent, PaginationComponent } from '../../../../shared/compone
 import { LoadingComponent } from '../../../../shared/loading/loading.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { UtcToLocalTimePipe } from '../../../../shared/pipes/UtcToLocalTimePipe';
+import { DebouncedInputDirective } from '../../../../shared/directives/debounced-input.directive';
 
 
 
 @Component({
     selector: 'app-active-list',
-    imports: [CommonModule, FormsModule, PaginationComponent, LoadingComponent, TranslateModule, UtcToLocalTimePipe],
+    standalone: true,
+    imports: [CommonModule, FormsModule, PaginationComponent, LoadingComponent, TranslateModule, UtcToLocalTimePipe, DebouncedInputDirective],
     templateUrl: './active-list.component.html',
     styleUrls: ['./active-list.component.css']
 })
