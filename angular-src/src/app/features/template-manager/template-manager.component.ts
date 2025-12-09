@@ -37,6 +37,7 @@ enum TemplateModalType {
  */
 @Component({
     selector: 'app-template-manager',
+    standalone: true,
     imports: [
         TemplateEditorComponent,
         FormsModule,
