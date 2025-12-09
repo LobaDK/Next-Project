@@ -12,6 +12,7 @@ namespace API.Interfaces
         Task<QuestionnaireGroupResult?> GetQuestionnaireGroup(Guid groupId);
         Task<List<QuestionnaireGroupResult>> GetAllQuestionnaireGroups();
         Task<List<QuestionnaireGroupBasicResult>> GetAllQuestionnaireGroupsBasic();
+        Task<List<QuestionnaireGroupBasicResult>> GetQuestionnaireGroupsBasicForTemplate(Guid templateId);
         Task<ActiveQuestionnaire> FetchActiveQuestionnaire(Guid id);
         Task<List<ActiveQuestionnaire>> ActivateTemplate(ActivateQuestionnaire request);
         Task<Guid?> GetOldestActiveQuestionnaireForUser(Guid id);

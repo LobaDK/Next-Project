@@ -54,7 +54,8 @@ public class QuestionnaireTemplateService : IQuestionnaireTemplateService
             request.Order,
             request.Title,
             request.Id,
-            request.templateStatus
+            request.TeacherId,
+            request.TemplateStatus
         );
 
         QuestionnaireTemplateBase? lastTemplate = questionnaireTemplateBases.Count != 0 ? questionnaireTemplateBases.Last() : null;
