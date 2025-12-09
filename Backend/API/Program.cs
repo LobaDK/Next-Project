@@ -17,6 +17,10 @@ using System.Net;
 using API.Services.Authentication;
 using System.Text.Json.Serialization;
 using Serilog;
+using FluentValidation;
+using API.Validators;
+using FluentValidation.AspNetCore;
+using Database.DTO.QuestionnaireTemplate;
 
 const string settingsFile = "config.json";
 
@@ -71,6 +75,8 @@ else
     builder.Services.AddScoped<IAuthenticationBridge, ActiveDirectoryAuthenticationBridge>();
 }
 
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddScoped<IValidator<QuestionnaireTemplateAdd>, CreateQuestionnaireTemplateSubmissionValidator>();
 builder.Services.AddScoped<SystemControllerService>();
 builder.Services.AddScoped<JsonSerializerService>();
 builder.Services.AddScoped<JwtService>();
