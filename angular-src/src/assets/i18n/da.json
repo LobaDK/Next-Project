@@ -234,7 +234,9 @@
   "QUESTIONAIRE": {
     "COLLABORATOR": "Samarbejdspartner",
     "CUSTOM_ANSWER_ERROR": "Indtast dit svar for at fortsætte.",
-    "CUSTOM_ANSWER_CHARACTER_COUNT": "tegn"
+    "CUSTOM_ANSWER_CHARACTER_COUNT": "tegn",
+    "CONFIRM_SUBMIT_TITLE":" Bekræft Indsendelse",
+    "CONFIRM_SUBMIT_TEXT":" Er du sikker på, at du vil indsende dine svar? Du kan ikke redigere dem efter indsendelse."
   },
 
   "DATA_COMPARE" : {
@@ -343,7 +345,7 @@
     "SWITCH_TO_EVALUATION": "Skift til evaluerings spørgeskema",
     "SWITCH_TO_ANONYMOUS": "Skift til anonymt Spørgeskema",
     "SEARCH_PARTICIPANTS": "Søg efter deltagere (navn, hold e.l.):",
-    "SEARCH_STUDENT": "Søg efter Elev:",
+    "SEARCH_STUDENT": "Find Elever",
     "SEARCH_TEACHER": "Søg efter Instruktør:",
     "SEARCH_TEMPLATE": "Søg efter Skabelon:",
     "PLACEHOLDER_STUDENTS": "Indtast navn på elever...",
@@ -355,13 +357,14 @@
     "LOAD_MORE_STUDENTS": "Indlæs Flere Elever",
     "LOAD_MORE_TEACHERS": "Indlæs Flere Instruktører",
     "LOAD_MORE_TEMPLATES": "Indlæs Flere Skabeloner",
-    "SELECTED_STUDENTS": "Valgte Elever:",
-    "SELECTED_TEACHERS": "Valgte Instruktører:",
-    "SELECTED_TEMPLATES": "Valgte Skabeloner:",
+    "SELECTED_STUDENTS": "Valgte Elever",
+    "SELECTED_PARTICIPANTS": "Valgte Deltagere",
+    "SELECT_TEACHER": "Vælg Instruktør",
+    "SELECT_TEMPLATE": "Vælg Skabelon",
     "NOTHING_SELECTED": "Intet er valgt",
     "REMOVE": "Fjern",
     "CLEAR_ALL": "Ryd Alle",
-    "CREATE_QUESTIONNAIRE_NAME": "Opret navn på spørgeskema:",
+    "CREATE_QUESTIONNAIRE_NAME": "Opret navn på spørgeskema",
     "PLACEHOLDER_EVALUATION_NAME": "f.eks. 'Hold123 - evaluering af elever'",
     "PLACEHOLDER_ANONYMOUS_NAME": "f.eks. 'Evaluering af undervisning - Alle Elever'",
     "FINISH": "Færdiggør",

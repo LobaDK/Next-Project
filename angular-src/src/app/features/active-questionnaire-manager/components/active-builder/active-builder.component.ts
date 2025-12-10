@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, inject, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, inject, OnInit, Output, ViewChild, AfterViewChecked, ChangeDetectorRef } from '@angular/core';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 import { FormsModule } from '@angular/forms';
@@ -32,8 +32,9 @@ type SearchType = 'student' | 'teacher' | 'template';
   templateUrl: './active-builder.component.html',
   styleUrls: ['./active-builder.component.css']
 })
-export class ActiveBuilderComponent implements OnInit {
+export class ActiveBuilderComponent implements OnInit, AfterViewChecked {
   private activeService = inject(ActiveService);
+  private cdr = inject(ChangeDetectorRef);
   public groupName: string = '';
   public isAnonymousMode = false;
   public groupNameError: string = '';
@@ -43,6 +44,8 @@ export class ActiveBuilderComponent implements OnInit {
   public showStudentResults = false;
   public showTeacherResults = false;
   public showTemplateResults = false;
+  public leftColumnHeight: number = 0;
+  public leftColumnAnonHeight: number = 0;
 
   public student: UserSearchEntity<User> = {
     selected: [],
@@ -88,6 +91,14 @@ export class ActiveBuilderComponent implements OnInit {
     teacherSearchArea!: ElementRef;
     @ViewChild("templateSearchArea", { static: false })
     templateSearchArea!: ElementRef;
+    @ViewChild("leftColumn", { static: false })
+    leftColumn!: ElementRef;
+    @ViewChild("rightColumn", { static: false })
+    rightColumn!: ElementRef;
+    @ViewChild("leftColumnAnon", { static: false })
+    leftColumnAnon!: ElementRef;
+    @ViewChild("rightColumnAnon", { static: false })
+    rightColumnAnon!: ElementRef;
 
   // Set the page size (10 results per search)
   searchAmount = 10;
@@ -139,6 +150,23 @@ private handleDocumentClick = (event: MouseEvent) => {
       });
 
   document.addEventListener("mousedown", this.handleDocumentClick, true);
+  }
+
+  ngAfterViewChecked(): void {
+    if (this.leftColumn && !this.isAnonymousMode) {
+      const newHeight = this.leftColumn.nativeElement.offsetHeight;
+      if (this.leftColumnHeight !== newHeight) {
+        this.leftColumnHeight = newHeight;
+        this.cdr.detectChanges();
+      }
+    }
+    if (this.leftColumnAnon && this.isAnonymousMode) {
+      const newHeight = this.leftColumnAnon.nativeElement.offsetHeight;
+      if (this.leftColumnAnonHeight !== newHeight) {
+        this.leftColumnAnonHeight = newHeight;
+        this.cdr.detectChanges();
+      }
+    }
   }
 
   ngOnDestroy(): void {

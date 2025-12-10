@@ -6,7 +6,7 @@
 <!-- Duplicate modal shown when trying to save with duplicates -->
 <app-modal [isOpen]="duplicateModalOpen" [title]="'TEMPLATE.DUPLICATE_WARNING.TITLE' | translate"
   [text]="'TEMPLATE.DUPLICATE_WARNING.TEXT' | translate" [confirmText]="'OK' | translate"
-  (confirm)="closeDuplicateModal()" (cancel)="closeDuplicateModal()" [cancelText]="'OK' | translate">
+  (confirm)="closeDuplicateModal()" (cancel)="closeDuplicateModal()" [cancelText]="'' | translate">
 </app-modal>
 
 <!-- Template Details -->
