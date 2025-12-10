@@ -272,4 +272,9 @@ public async Task<QuestionnaireTemplate> FinalizeTemplate(Guid id)
     {
         return await _unitOfWork.QuestionnaireTemplate.GetTemplateBasesAnsweredByStudentAsync(studentId, teacherId);
     }
+
+    public async Task<bool> IsTitleAvailable(string templateTitle)
+    {
+        return await _unitOfWork.QuestionnaireTemplate.IsTitleAvailable(templateTitle);
+    }
 }

@@ -56,7 +56,9 @@
       "TEMPLATE_DESCRIPTION": "Description",
       "QUESTIONS": "Questions",
       "SAVE_TEMPLATE": "Save Template",
-      "ADD_QUESTION": "Add New Question"
+      "ADD_QUESTION": "Add New Question",
+      "CHECKING_TITLE": "Checking title availability...",
+      "TITLE_ALREADY_EXISTS": "A template with this title already exists. Please choose a different title."
     },
 
     "FINALIZE": {

@@ -147,4 +147,5 @@ public interface IQuestionnaireTemplateRepository
     /// </remarks>
     Task<List<QuestionnaireTemplateBase>> GetTemplateBasesAnsweredByStudentAsync(Guid studentId, Guid teacherId);
 
+    Task<bool> IsTitleAvailable(string templateTitle);
 }
