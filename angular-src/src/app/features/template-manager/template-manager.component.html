@@ -31,9 +31,9 @@
         </select> -->
         <!-- Search Input -->
         <input
-          #search
           type="text"
-          (input)="onSearchChange(search.value)"
+          appDebouncedInput
+          (debouncedInput)="onSearchChange($event)"
           placeholder="{{ 'TEMPLATE.LIST.SEARCH_GROUP_PLACEHOLDER' | translate }}"
           class="w-full sm:w-64 px-4 py-2 border-primary_orange_1 rounded-lg focus:ring-primary_orange_1 focus:border-primary_orange_1 text-sm bg-primary_background_white/80" />
           <!-- Page Size Selector -->

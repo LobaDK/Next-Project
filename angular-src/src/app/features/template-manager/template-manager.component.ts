@@ -11,6 +11,7 @@ import { LoadingComponent } from '../../shared/loading/loading.component';
 import { Template, TemplateBase, TemplateStatus } from '../../shared/models/template.model';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ModalComponent } from '../../shared/components/modal/modal.component';
+import { DebouncedInputDirective } from '../../shared/directives/debounced-input.directive';
 
 /** Modal dialog purposes supported by this page. */
 enum TemplateModalType {
@@ -45,7 +46,8 @@ enum TemplateModalType {
         PaginationComponent,
         LoadingComponent,
         TranslateModule,
-        ModalComponent
+        ModalComponent,
+        DebouncedInputDirective
     ],
     templateUrl: './template-manager.component.html',
     styleUrls: ['./template-manager.component.css']

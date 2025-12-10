@@ -25,8 +25,8 @@
               {{ 'ACTIVE_BUILDER.SEARCH_PARTICIPANTS' | translate }}
             </h3>
             <input type="text" placeholder="{{ 'ACTIVE_BUILDER.PLACEHOLDER_STUDENTS' | translate }}" [(ngModel)]="student.searchInput"
-              (input)="onInputChange('student', studentSearch.value)" (focus)="showStudentResults = true"
-              class="px-4 py-3 border-2 border-primary_orange_1 rounded-xl shadow-sm focus:ring-2 focus:ring-primary_orange_1 focus:border-primary_orange_1 text-sm w-full bg-white transition-all"
+              appDebouncedInput (debouncedInput)="onInputChange('student', $event)" (focus)="showStudentResults = true"
+            class="px-4 py-3 border-2 border-primary_orange_1 rounded-xl shadow-sm focus:ring-2 focus:ring-primary_orange_1 focus:border-primary_orange_1 text-sm w-full bg-white transition-all"
               #studentSearch />
 
           @if (student.isLoading) {
@@ -74,8 +74,8 @@
               {{ 'ACTIVE_BUILDER.SEARCH_TEMPLATE' | translate }}
             </h3>
             <input type="text" placeholder="{{ 'ACTIVE_BUILDER.PLACEHOLDER_TEMPLATE' | translate }}" [(ngModel)]="template.searchInput"
-              (input)="onInputChange('template', templateSearch.value)" (focus)="showTemplateResults = true"
-              class="px-4 py-3 border-2 border-primary_orange_1 rounded-xl shadow-sm focus:ring-2 focus:ring-primary_orange_1 focus:border-primary_orange_1 text-sm w-full bg-white transition-all"
+              appDebouncedInput (debouncedInput)="onInputChange('template', $event)" (focus)="showTemplateResults = true"
+            class="px-4 py-3 border-2 border-primary_orange_1 rounded-xl shadow-sm focus:ring-2 focus:ring-primary_orange_1 focus:border-primary_orange_1 text-sm w-full bg-white transition-all"
               #templateSearch />
 
           @if (template.isLoading) {
@@ -221,8 +221,8 @@
               {{ 'ACTIVE_BUILDER.SEARCH_STUDENT' | translate }}
             </h3>
             <input type="text" placeholder="{{ 'ACTIVE_BUILDER.PLACEHOLDER_STUDENTS' | translate }}" [(ngModel)]="student.searchInput"
-              (input)="onInputChange('student', studentSearch.value)" (focus)="showStudentResults = true"
-              class="px-4 py-3 border-2 border-primary_orange_1 rounded-xl shadow-sm focus:ring-2 focus:ring-primary_orange_1 focus:border-primary_orange_1 text-sm w-full bg-white transition-all"
+              appDebouncedInput (debouncedInput)="onInputChange('student', $event)" (focus)="showStudentResults = true"
+            class="px-4 py-3 border-2 border-primary_orange_1 rounded-xl shadow-sm focus:ring-2 focus:ring-primary_orange_1 focus:border-primary_orange_1 text-sm w-full bg-white transition-all"
               #studentSearch />
           @if (studentError) {
             <div class="text-red-500 text-sm mt-2 font-medium">{{ studentError }}</div>
@@ -274,7 +274,7 @@
             {{ 'ACTIVE_BUILDER.SELECT_TEACHER' | translate }}
           </h3>
           <input type="text" placeholder="{{ 'ACTIVE_BUILDER.PLACEHOLDER_TEACHERS' | translate }}" [(ngModel)]="teacher.searchInput"
-            (input)="onInputChange('teacher', teacherSearch.value)" (focus)="showTeacherResults = true"
+            appDebouncedInput (debouncedInput)="onInputChange('teacher', $event)" (focus)="showTeacherResults = true"
             class="px-4 py-3 border-2 border-primary_orange_1 rounded-xl shadow-sm focus:ring-2 focus:ring-primary_orange_1 focus:border-primary_orange_1 text-sm w-full bg-white transition-all"
             #teacherSearch />
           @if (teacherError) {
@@ -346,9 +346,8 @@
           <!-- Search for Template -->
         <div class="flex flex-col w-full relative" #templateSearchArea>
           <input type="text" placeholder="{{ 'ACTIVE_BUILDER.PLACEHOLDER_TEMPLATE' | translate }}" [(ngModel)]="template.searchInput"
-            (input)="onInputChange('template', templateSearch.value)" (focus)="showTemplateResults = true"
-            class="px-4 py-3 border-2 border-primary_orange_1 rounded-xl shadow-sm focus:ring-2 focus:ring-primary_orange_1 focus:border-primary_orange_1 text-sm w-full bg-white transition-all"
-            #templateSearch />
+            appDebouncedInput (debouncedInput)="onInputChange('template', $event)" (focus)="showTemplateResults = true"
+            class="px-4 py-3 border-2 border-primary_orange_1 rounded-xl shadow-sm focus:ring-2 focus:ring-primary_orange_1 focus:border-primary_orange_1 text-sm w-full bg-white transition-all" />
           @if (templateError) {
             <div class="text-red-500 text-sm mt-2 font-medium">{{ templateError }}</div>
           }

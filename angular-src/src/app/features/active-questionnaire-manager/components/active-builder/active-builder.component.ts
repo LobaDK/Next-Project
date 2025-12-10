@@ -9,6 +9,7 @@ import { SearchEntity } from '../../models/searchEntity.model';
 import { TemplateBase } from '../../../../shared/models/template.model';
 import { ModalComponent } from '../../../../shared/components/modal/modal.component';
 import { CommonModule } from '@angular/common';
+import { DebouncedInputDirective } from '../../../../shared/directives/debounced-input.directive';
 
 
 // Extend the SearchEntity type for users to include sessionId and hasMore
@@ -27,7 +28,7 @@ type SearchType = 'student' | 'teacher' | 'template';
 @Component({
   selector: 'app-active-questionnaire-builder',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, ModalComponent],
+  imports: [CommonModule, FormsModule, TranslateModule, ModalComponent, DebouncedInputDirective],
   templateUrl: './active-builder.component.html',
   styleUrls: ['./active-builder.component.css']
 })

@@ -23,6 +23,7 @@ import { Attempt, StudentResultHistory, AnswerInfo } from './models/result-histo
 import { PdfGenerationService } from '../result/services/pdf-generation.service';
 import { AgCharts } from 'ag-charts-angular';
 import type { AgCartesianChartOptions } from 'ag-charts-community';
+import { DebouncedInputDirective } from '../../shared/directives/debounced-input.directive';
 
 
 enum SearchEnum {
@@ -43,7 +44,7 @@ interface SearchState<T> {
 @Component({
   selector: 'app-result-history',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, ShowResultComponent, TranslateModule, AgCharts],
+  imports: [CommonModule, FormsModule, TranslateModule, ShowResultComponent, TranslateModule, AgCharts, DebouncedInputDirective],
   templateUrl: './result-history.component.html',
   styleUrls: ['./result-history.component.css']
 })
