@@ -6,11 +6,13 @@ namespace API.Utils;
 /// and checking for settings file existence.
 /// </summary>
 /// <param name="settingsFile">The file path to the settings file to be managed</param>
-public class SettingsHelper(string settingsFile)
+/// <param name="logger">The logger instance for logging messages</param>
+public class SettingsHelper(string settingsFile, ILogger<SettingsHelper> logger)
 {
     private readonly string _settingsFile = settingsFile;
     private readonly RootSettings _defaultSettings = new();
     private readonly JsonSerializerOptions _jsonSerializerOptions = JsonSerializerUtility.ConfigureJsonSerializerSettings();
+    private readonly ILogger<SettingsHelper> _logger = logger;
 
     /// <summary>
     /// Determines whether the settings file exists on the file system.
@@ -37,16 +39,11 @@ public class SettingsHelper(string settingsFile)
         string json = JsonSerializer.Serialize(_defaultSettings, _jsonSerializerOptions);
         Write(_settingsFile, json);
 
-        // TODO: Maybe check if the required settings are actually set before allowing the user to continue?
-        Console.WriteLine(@"
-        A new default settings file has been generated. 
-        Some settings are required to be set for the application to work.
-        Press Enter to continue when completed.
-        ");
-
-        // Visual Studio Code can, depending on its configuration, redirect everything to the debug console. This catches that.
-        if (Console.IsInputRedirected) Console.Read();
-        else Console.ReadKey(true);
+        // Notify the user without blocking for input so automated runs are not halted.
+        _logger.LogWarning(@"
+        A default settings file has been created at '{settingsFile}'.
+        Please review and update the settings as necessary before restarting the application.
+        ", _settingsFile);
     }
 
     public void CheckSettingsVersion()
@@ -59,25 +56,17 @@ public class SettingsHelper(string settingsFile)
         }
         else if (currentSettings.Version > defaultSettings.Version)
         {
-            Console.WriteLine($@"
-            The current settings file version ({currentSettings.Version}) is newer than the application supports ({defaultSettings.Version}).
-            Unkown settings and values will be ignored.
-            Press Enter to continue.
-            ");
-
-            if (Console.IsInputRedirected) Console.Read();
-            else Console.ReadKey(true);
+            _logger.LogWarning(@"
+            The current settings file version ({currentVersion}) is newer than the application supports ({defaultVersion}).
+            Please update the application to a newer version that supports this settings file.
+            ", currentSettings.Version, defaultSettings.Version);
         }
         else
         {
-            Console.WriteLine($@"
-            The current settings file version ({currentSettings.Version}) is older than the application supports ({defaultSettings.Version}).
-            An attempt will be made to automatically upgrade the settings file.
-            Press Enter to continue.
-            ");
-
-            if (Console.IsInputRedirected) Console.Read();
-            else Console.ReadKey(true);
+            _logger.LogWarning(@"
+            The current settings file version ({currentVersion}) is older than the application supports ({defaultVersion}).
+            The settings file will be upgraded to the latest version.
+            ", currentSettings.Version, defaultSettings.Version);
 
             Upgrade();
         }
