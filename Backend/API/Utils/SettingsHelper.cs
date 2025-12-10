@@ -53,6 +53,15 @@ public class SettingsHelper(string settingsFile)
     {
         RootSettings currentSettings = JsonSerializer.Deserialize<RootSettings>(Read(_settingsFile), _jsonSerializerOptions) ?? throw new InvalidOperationException("Failed to deserialize settings file.");
         RootSettings defaultSettings = new();
+
+        using JsonDocument doc = JsonDocument.Parse(Read(_settingsFile));
+        JsonElement root = doc.RootElement;
+
+        if (!root.TryGetProperty("Version", out JsonElement versionElement))
+        {
+            currentSettings.Version = 0;
+        }
+
         if (currentSettings.Version == defaultSettings.Version)
         {
             return;
