@@ -10,6 +10,7 @@ import { TeacherService } from './services/teacher.service';
 import { LoadingComponent } from '../../shared/loading/loading.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { UtcToLocalTimePipe } from '../../shared/pipes/UtcToLocalTimePipe';
+import { DebouncedInputDirective } from '../../shared/directives/debounced-input.directive';
 
 /**
  * Teacher dashboard component.
@@ -25,7 +26,8 @@ import { UtcToLocalTimePipe } from '../../shared/pipes/UtcToLocalTimePipe';
  */
 @Component({
     selector: 'app-teacher-dashboard',
-    imports: [ClipboardModule, FormsModule, CommonModule, PaginationComponent, RouterLink, LoadingComponent, TranslateModule, UtcToLocalTimePipe],
+    standalone: true,
+    imports: [ClipboardModule, FormsModule, CommonModule, PaginationComponent, RouterLink, LoadingComponent, TranslateModule, UtcToLocalTimePipe, DebouncedInputDirective],
     templateUrl: './teacher-dashboard.component.html',
     styleUrls: ['./teacher-dashboard.component.css']
 })

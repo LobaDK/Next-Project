@@ -21,6 +21,8 @@ import { TemplateBase } from "../active-questionnaire-manager/models/active.mode
 import { AgCharts } from "ag-charts-angular";
 import { DataCompareService } from "./services/data-compare.service";
 import { HttpClient } from "@angular/common/http";
+import { DebouncedInputDirective } from '../../shared/directives/debounced-input.directive';
+
 
 // ---- NEW: chart strategy imports ----
 import { ChartRegistry } from "./charts/chart-registry";
@@ -53,7 +55,8 @@ type SearchType = "group" | "template";
 
 @Component({
     selector: "app-data-compare",
-    imports: [TranslateModule, FormsModule, AgCharts],
+    standalone: true,
+    imports: [TranslateModule, FormsModule, AgCharts, DebouncedInputDirective],
     templateUrl: "./data-compare.component.html",
     styleUrl: "./data-compare.component.css"
 })

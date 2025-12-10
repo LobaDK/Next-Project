@@ -21,9 +21,9 @@ DataCompareComponent HTML
           translate }}</label>
         <!-- Template search input -->
         <input type="text" placeholder="Indtast skabelontitel..." [(ngModel)]="template.searchInput"
-          (input)="onInputChange('template', templateSearch.value)" (focus)="showTemplateResults = true"
+          appDebouncedInput (debouncedInput)="onInputChange('template', $event)" (focus)="showTemplateResults = true"
           class="px-4 py-2 border border-primary_orange_1 rounded-xl shadow-sm focus:ring-primary_orange_1 focus:border-primary_orange_1 text-sm w-full bg-gray-50"
-          [placeholder]="'DATA_COMPARE.SEARCH_TEMPLATE_PLACEHOLDER' | translate" #templateSearch />
+          [placeholder]="'DATA_COMPARE.SEARCH_TEMPLATE_PLACEHOLDER' | translate" />
 
         <!-- Loading indicator for template search -->
         @if (template.isLoading) {
@@ -88,10 +88,10 @@ DataCompareComponent HTML
           }}</label>
         <!-- Group search input -->
         <input type="text" placeholder="Indtast gruppenavn..." [(ngModel)]="group.searchInput"
-          (input)="onInputChange('group', groupSearch.value)" (focus)="showGroupResults = true"
+          appDebouncedInput (debouncedInput)="onInputChange('group', $event)" (focus)="showGroupResults = true"
           [disabled]="!isTemplateSelected()"
           class="px-4 py-2 border border-primary_orange_1 rounded-xl shadow-sm focus:ring-primary_orange_1 focus:border-primary_orange_1 text-sm w-full bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-          [placeholder]="'DATA_COMPARE.SEARCH_GROUP_PLACEHOLDER' | translate" #groupSearch />
+          [placeholder]="'DATA_COMPARE.SEARCH_GROUP_PLACEHOLDER' | translate" />
 
         <!-- Loading indicator for group search -->
         @if (group.isLoading) {
