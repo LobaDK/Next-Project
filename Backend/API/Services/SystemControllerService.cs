@@ -10,11 +10,11 @@ using API.Utils;
 
 namespace API.Services;
 
-public class SystemControllerService(IConfiguration configuration, ILogger<SystemControllerService> logger, IHostApplicationLifetime hostApplicationLifetime)
+public class SystemControllerService(IConfiguration configuration, ILogger<SystemControllerService> logger, IHostApplicationLifetime hostApplicationLifetime) : ISystemControllerService
 {
     private readonly RootSettings _RootSettings = ConfigurationBinderService.Bind<RootSettings>(configuration);
     private readonly RootSettings _DefaultSettings = new();
-    private readonly ILogger<SystemControllerService> _Logger = logger;
+    private readonly ILogger<ISystemControllerService> _Logger = logger;
     private readonly JsonSerializerOptions _SerializerOptions = JsonSerializerUtility.ConfigureJsonSerializerSettings();
     private readonly IHostApplicationLifetime _HostApplicationLifetime = hostApplicationLifetime;
 
