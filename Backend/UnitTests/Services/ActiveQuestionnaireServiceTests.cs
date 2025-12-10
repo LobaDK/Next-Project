@@ -31,9 +31,9 @@ namespace UnitTests.Services
             {
                 ["LDAP:SA"] = "sa",
                 ["LDAP:SAPassword"] = "password",
-                ["JWT:Roles:Student"] = "Student",
-                ["JWT:Roles:Teacher"] = "Teacher"
-                //["JWT:Roles"] = "Student,Teacher"
+                ["LDAP:RoleMappingsCN:Student"] = "Student",
+                ["LDAP:RoleMappingsCN:Teacher"] = "Teacher"
+                //["LDAP:RoleMappingsCN"] = "Student,Teacher"
             };
 
             _config = new ConfigurationBuilder()
