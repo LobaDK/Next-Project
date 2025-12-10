@@ -6,23 +6,39 @@ DataCompareComponent HTML
 - Chart display
 -->
 
-<div class="flex flex-col items-center w-full px-4">
-  <!-- Main card container -->
-  <div
-    class="flex flex-col w-full max-w-full sm:max-w-4xl bg-primary_background_white/80 shadow-xl rounded-2xl sm:p-10 border-primary_dark_blue: px-4 py-2 border-2 border-primary_orange_1  focus:ring-primary_orange_1 focus:border-primary_orange_1 text-sm  bg-gray-50">
+
+
+
+  
+
+
+    <!-- Navigation Button (shown when embedded in results page) -->
+
+    
+      <div class="flex mb-6 justify-end">
+        <button
+          (click)="onNavigateToEvaluation()"
+          class="px-6 py-3 rounded-lg font-semibold transition-all bg-primary_orange_1 text-white shadow-lg hover:bg-primary_orange_light">
+          {{ 'DATA_COMPARE.VIEW_EVALUATION_RESULTS' | translate }}
+        </button>
+      </div>
+
+
     <!-- Title -->
-    <h2 class="text-3xl font-bold text-primary_dark_blue mb-6 text-center">{{'DATA_COMPARE.TITLE' | translate}}
+    <h2 class="text-2xl font-bold text-primary_dark_blue mb-6">
+      {{'DATA_COMPARE.TITLE' | translate}}
     </h2>
     <!-- Search areas for students and templates -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
       <!-- Template search area -->
-      <div class="flex flex-col w-full mt-4 sm:mt-0 relative" #templateSearchArea>
-        <label class="text-primary_dark_blue text-sm mb-1 sm:mb-2">{{ 'DATA_COMPARE.SEARCH_TEMPLATE_LABEL' |
+      <div class="space-y-2" #templateSearchArea>
+        <label class="block text-sm font-medium text-primary_dark_blue">{{ 'DATA_COMPARE.SELECT_TEMPLATE_LABEL' |
           translate }}</label>
+        <div class="relative">
         <!-- Template search input -->
         <input type="text" placeholder="Indtast skabelontitel..." [(ngModel)]="template.searchInput"
           appDebouncedInput (debouncedInput)="onInputChange('template', $event)" (focus)="showTemplateResults = true"
-          class="px-4 py-2 border border-primary_orange_1 rounded-xl shadow-sm focus:ring-primary_orange_1 focus:border-primary_orange_1 text-sm w-full bg-gray-50"
+          class="w-full px-3 py-2 border border-primary_orange_1/50 rounded-lg focus:outline-none focus:border-primary_orange_1 transition-colors duration-150"
           [placeholder]="'DATA_COMPARE.SEARCH_TEMPLATE_PLACEHOLDER' | translate" />
 
         <!-- Loading indicator for template search -->
@@ -42,55 +58,64 @@ DataCompareComponent HTML
         <!-- Template search results and load more button (between input and selected list, not absolute) -->
         @if (template.searchResults.length > 0 && showTemplateResults) {
         <div
-          class="absolute z-30 left-0 right-0 top-16 bg-white shadow-md rounded-lg p-2 w-full max-h-60 overflow-auto border border-primary_orange_1 mt-1">
-          <ul class="space-y-1">
-            @for (temp of template.searchResults; track temp) {
-            <li (click)="select('template', temp)"
-              class="py-2 px-4 hover:bg-secondary_background_hover cursor-pointer rounded">
-              {{ temp.title }}
-            </li>
-            }
-          </ul>
+          class="absolute z-10 w-full mt-1 bg-primary_background_white border border-primary_orange_1 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+          @for (temp of template.searchResults; track temp) {
+            <div (click)="select('template', temp)"
+              class="px-3 py-2 hover:bg-primary_orange_light/10 cursor-pointer border-b border-primary_orange_1/20 last:border-b-0 transition-colors duration-150">
+              <div class="font-medium text-primary_dark_blue">{{ temp.title }}</div>
+            </div>
+          }
           <!-- Load More Button -->
-          @if (template.page < template.totalPages) { <button
-            class="mt-2 w-full px-4 py-2 bg-primary_orange_1 hover:bg-primary_orange_light text-white text-center font-medium rounded-xl border-2 border-primary_orange_1 hover:border-primary_dark_blue transition-colors">
-            {{ 'DATA_COMPARE.LOAD_MORE_TEMPLATES' | translate }}
+          @if (template.page < template.totalPages) {
+            <button
+              class="w-full px-4 py-2 bg-primary_orange_1 hover:bg-primary_orange_light text-white text-center font-medium border-t-2 border-primary_orange_1 transition-colors">
+              {{ 'DATA_COMPARE.LOAD_MORE_TEMPLATES' | translate }}
             </button>
-            }
+          }
         </div>
         }
 
         <!-- Selected templates list -->
         @if (template.selected.length > 0) {
-        <div class="mt-2 text-sm font-medium text-gray-700 bg-gray-100 p-2 rounded-lg">
-          <strong>{{ 'DATA_COMPARE.SELECTED_TEMPLATES' | translate }}</strong>
-          <ul class="mt-1 space-y-1">
+        <div class="mt-2">
+          <div class="space-y-1">
             @for (temp of template.selected; track temp) {
-            <li class="flex justify-between items-center">
-              <span>{{ temp.title }}</span>
+            <div class="flex items-center justify-between bg-primary_orange_1 text-white p-2 rounded-lg">
+              <span class="text-m font-medium text-white">{{ temp.title }}</span>
               <button (click)="select('template', temp)"
-                class="ml-2 px-2 py-1 text-xs bg-red-500 hover:bg-red-600 text-white rounded">{{
-                'DATA_COMPARE.REMOVE' | translate }}</button>
-            </li>
+                class="text-red-500 hover:text-red-700 ml-2 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+              </button>
+            </div>
             }
-          </ul>
-          <button (click)="clearSelected('template')"
-            class="mt-2 px-2 py-1 text-xs bg-gray-400 hover:bg-gray-500 text-white rounded">{{
-            'DATA_COMPARE.CLEAR_ALL' | translate }}</button>
+          </div>
+          
         </div>
         }
+        </div>
       </div>
 
 
       <!-- Group search area -->
-      <div class="flex flex-col w-full relative" #groupSearchArea>
-        <label class="text-gray-700 text-sm mb-1 sm:mb-2">{{ 'DATA_COMPARE.SEARCH_GROUP_LABEL' | translate
+      <div class="space-y-2" #groupSearchArea>
+        <label class="block text-sm font-medium text-primary_dark_blue">{{ 'DATA_COMPARE.SELECT_GROUP_LABEL' | translate
           }}</label>
-        <!-- Group search input -->
+
+        <!-- Helper text when no template selected -->
+        @if (!isTemplateSelected()) {
+          <div class="text-sm text-gray-600 bg-secondary_background_gray/50 border border-primary_orange_1/30 p-3 rounded-lg">
+            {{ 'DATA_COMPARE.SELECT_TEMPLATE_FIRST_DESC' | translate }}
+          </div>
+        }
+
+        <!-- Group search input (only when template selected) -->
+        @if (isTemplateSelected()) {
+        <div class="relative">
         <input type="text" placeholder="Indtast gruppenavn..." [(ngModel)]="group.searchInput"
           appDebouncedInput (debouncedInput)="onInputChange('group', $event)" (focus)="showGroupResults = true"
-          [disabled]="!isTemplateSelected()"
-          class="px-4 py-2 border border-primary_orange_1 rounded-xl shadow-sm focus:ring-primary_orange_1 focus:border-primary_orange_1 text-sm w-full bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="w-full px-3 py-2 border border-primary_orange_1/50 rounded-lg focus:outline-none focus:border-primary_orange_1 transition-colors duration-150"
           [placeholder]="'DATA_COMPARE.SEARCH_GROUP_PLACEHOLDER' | translate" />
 
         <!-- Loading indicator for group search -->
@@ -110,41 +135,43 @@ DataCompareComponent HTML
         <!-- Group search results and load more button (between input and selected list, not absolute) -->
         @if (group.searchResults.length > 0 && showGroupResults) {
         <div
-          class="absolute z-30 left-0 right-0 top-16 bg-white shadow-md rounded-lg p-2 w-full max-h-60 overflow-auto border border-primary_orange_1 mt-1">
-          <ul class="space-y-1">
-            @for (grp of group.searchResults; track grp) {
-            <li (click)="select('group', grp)"
-              class="py-2 px-4 hover:bg-secondary_background_hover cursor-pointer rounded">
-              <span class="font-semibold text-primary_dark_blue">{{ grp.name }}</span>
-            </li>
-            }
-          </ul>
+          class="absolute z-10 w-full mt-1 bg-primary_background_white border border-primary_orange_1 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+          @for (grp of group.searchResults; track grp) {
+            <div (click)="select('group', grp)"
+              class="px-3 py-2 hover:bg-primary_orange_light/10 cursor-pointer border-b border-primary_orange_1/20 last:border-b-0 transition-colors duration-150">
+              <div class="font-medium text-primary_dark_blue">{{ grp.name }}</div>
+            </div>
+          }
           <!-- Load More Button -->
-          @if (group.page < group.totalPages) { <button
-            class="mt-2 w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-center font-medium rounded-lg transition">
-            {{ 'DATA_COMPARE.LOAD_MORE_GROUPS' | translate }}
+          @if (group.page < group.totalPages) {
+            <button
+              class="w-full px-4 py-2 bg-primary_orange_1 hover:bg-primary_orange_light text-white text-center font-medium border-t-2 border-primary_orange_1 transition-colors">
+              {{ 'DATA_COMPARE.LOAD_MORE_GROUPS' | translate }}
             </button>
-            }
+          }
         </div>
         }
 
         <!-- Selected groups list -->
         @if (group.selected.length > 0) {
-        <div class="mt-2 text-sm font-medium text-gray-700 bg-gray-100 p-2 rounded-lg">
-          <strong>{{ 'DATA_COMPARE.SELECTED_GROUPS' | translate }}</strong>
-          <ul class="mt-1 space-y-1">
+        <div class="mt-2">
+     
+          <div class="space-y-1">
             @for (grp of group.selected; track grp) {
-            <li class="flex justify-between items-center">
-              <span class="font-semibold text-primary_dark_blue">{{ grp.name }}</span>
+            <div class="flex items-center justify-between bg-primary_orange_1 text-white p-2 rounded-lg">
+              <span class="text-m font-medium text-white">{{ grp.name }}</span>
               <button (click)="select('group', grp)"
-                class="ml-2 px-2 py-1 text-xs bg-red-500 hover:bg-red-600 text-white rounded">{{
-                'DATA_COMPARE.REMOVE' | translate }}</button>
-            </li>
+                class="text-red-500 hover:text-red-700 ml-2 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+              </button>
+            </div>
             }
-          </ul>
-          <button (click)="clearSelected('group')"
-            class="mt-2 px-2 py-1 text-xs bg-gray-400 hover:bg-gray-500 text-white rounded">{{
-            'DATA_COMPARE.CLEAR_ALL' | translate }}</button>
+          </div>
+          
+        </div>
+        }
         </div>
         }
       </div>
@@ -231,7 +258,9 @@ DataCompareComponent HTML
       </div>
     </div>
     <!-- Chart display -->
-    <div class=" flex justify-center mt-8 w-full">
-      <ag-charts class="w-[1000px] h-[500px]" [options]="chartOptions"></ag-charts>
+    <div class="flex justify-center mt-8 w-full">
+      <ag-charts class="w-full h-[600px] rounded-xl" [options]="chartOptions"></ag-charts>
     </div>
-  </div>
+
+
+

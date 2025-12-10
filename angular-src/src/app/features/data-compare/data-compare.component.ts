@@ -9,6 +9,7 @@ import {
   ViewChild,
   inject,
   Output,
+  Input,
 } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { TranslateModule } from "@ngx-translate/core";
@@ -137,6 +138,12 @@ export class DataCompareComponent implements OnInit, OnDestroy {
 
   // Number of results per search
   searchAmount = 10;
+
+  // Input to control whether to show the navigation button
+  @Input() showNavigationButton: boolean = false;
+
+  // Output to emit when user wants to navigate to evaluation results
+  @Output() navigateToEvaluation = new EventEmitter<void>();
 
   // Emits event to parent when returning to list view
   @Output() backToListEvent = new EventEmitter<void>();
@@ -572,5 +579,12 @@ export class DataCompareComponent implements OnInit, OnDestroy {
       this.currentYearIndex--;
       this.updateChartForCurrentQuestion();
     }
+  }
+
+  /**
+   * Emits navigation event to switch to evaluation results view
+   */
+  onNavigateToEvaluation() {
+    this.navigateToEvaluation.emit();
   }
 }

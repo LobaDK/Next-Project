@@ -5,7 +5,7 @@
       {{ isAnonymousMode ? ('ACTIVE_BUILDER.ANONYMOUS_QUESTIONNAIRE' | translate) : ('ACTIVE_BUILDER.EVALUATION_QUESTIONNAIRE' | translate) }}
     </h2>
     <button (click)="isAnonymousMode = !isAnonymousMode"
-      class="bg-yellow-300  hover:bg-yellow-400 text-primary_dark_blue font-semibold py-2.5 px-6 rounded-xl transition-colors shadow-md w-full sm:w-auto">
+      class="px-6 py-3 rounded-lg font-semibold transition-all bg-primary_orange_1 text-white shadow-lg hover:bg-primary_orange_light">
       {{ isAnonymousMode ? ('ACTIVE_BUILDER.SWITCH_TO_EVALUATION' | translate) : ('ACTIVE_BUILDER.SWITCH_TO_ANONYMOUS' | translate) }}
     </button>
   </div>
