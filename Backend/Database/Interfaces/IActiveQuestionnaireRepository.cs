@@ -1,5 +1,3 @@
-using Database.DTO.ActiveQuestionnaire;
-using Database.Enums;
 
 namespace Database.Interfaces;
 
@@ -146,6 +144,8 @@ public interface IActiveQuestionnaireRepository
     Task<List<FullStudentRespondsDate>> GetResponsesFromStudentAndTemplateAsync(Guid studentid, Guid templateid);
     Task<List<FullStudentRespondsDate>> GetResponsesFromStudentAndTemplateWithDateAsync(Guid studentid, Guid templateid);
 
+    Task<List<FullResponse>> GetResponsesFromTeacherAndStudentAndTemplateWithDateAsync(Guid studentid, Guid teacherid, Guid templateid);
+    
     /// <summary>
     /// Retrieves the response history for a specific student and questionnaire template.
     /// </summary>

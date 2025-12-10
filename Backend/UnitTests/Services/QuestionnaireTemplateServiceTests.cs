@@ -138,7 +138,7 @@ namespace UnitTests.Services
                 Title = "Test",
                 Order = TemplateOrderingOptions.TitleAsc, 
                 Id = null,
-                templateStatus = null
+                TemplateStatus = null
 
             };
 
@@ -155,6 +155,7 @@ namespace UnitTests.Services
                     It.IsAny<TemplateOrderingOptions>(),
                     It.IsAny<string>(),
                     It.IsAny<Guid?>(),
+                    It.IsAny<Guid>(),
                     It.IsAny<TemplateStatus?>()
                 ))
                 .ReturnsAsync((templates, templates.Count));

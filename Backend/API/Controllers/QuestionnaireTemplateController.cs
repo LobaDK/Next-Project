@@ -1,11 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
-using API.DTO.Requests.QuestionnaireTemplate;
-using API.DTO.Responses.QuestionnaireTemplate;
-using API.Exceptions;
-using API.Interfaces;
-using Database.DTO.QuestionnaireTemplate;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
@@ -53,6 +45,39 @@ namespace API.Controllers
         [ProducesResponseType(typeof(TemplateKeysetPaginationResult), StatusCodes.Status200OK)]
         public async Task<ActionResult<TemplateKeysetPaginationResult>> GetQuestionnaireTemplates([FromQuery] TemplateKeysetPaginationRequest request)
         {
+            string role;
+            Guid? teacherId = null;
+            try
+            {
+                var roleClaim = User.Claims.FirstOrDefault(x => x.Type == "role");
+                if (roleClaim == null)
+                {
+                    return Unauthorized("Missing role claim");
+                }
+                role = roleClaim.Value;
+
+                if (role.Equals(UserRoles.Teacher.ToString(), StringComparison.CurrentCultureIgnoreCase))
+                {
+                    try 
+                    {
+                        teacherId = Guid.Parse(User.Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub).Value);
+                    }
+                    catch (Exception)
+                    {
+                        return Unauthorized();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return Unauthorized();
+            }
+
+            if (teacherId is not null)
+            {
+                request.TeacherId = teacherId;
+            }
+
             return Ok(await _questionnaireTemplateService.GetTemplateBasesWithKeysetPagination(request));
         }
 
@@ -106,7 +131,7 @@ namespace API.Controllers
         /// This endpoint requires admin authorization and uses access token authentication.
         /// </remarks>
         [HttpGet("{id}")]
-        [Authorize(AuthenticationSchemes = "AccessToken", Policy = "AdminOnly")]
+        [Authorize(AuthenticationSchemes = "AccessToken", Policy = "AdminAndTeacherOnly")]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(QuestionnaireTemplate), StatusCodes.Status200OK)]

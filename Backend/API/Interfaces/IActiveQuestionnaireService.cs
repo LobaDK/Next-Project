@@ -12,6 +12,7 @@ namespace API.Interfaces
         Task<QuestionnaireGroupResult?> GetQuestionnaireGroup(Guid groupId);
         Task<List<QuestionnaireGroupResult>> GetAllQuestionnaireGroups();
         Task<List<QuestionnaireGroupBasicResult>> GetAllQuestionnaireGroupsBasic();
+        Task<List<QuestionnaireGroupBasicResult>> GetQuestionnaireGroupsBasicForTemplate(Guid templateId);
         Task<ActiveQuestionnaire> FetchActiveQuestionnaire(Guid id);
         Task<List<ActiveQuestionnaire>> ActivateTemplate(ActivateQuestionnaire request);
         Task<Guid?> GetOldestActiveQuestionnaireForUser(Guid id);
@@ -21,6 +22,9 @@ namespace API.Interfaces
         Task<bool> IsActiveQuestionnaireComplete(Guid activeQuestionnaireId, Guid? userId = null);
         Task<List<FullStudentRespondsDate>> GetResponsesFromStudentAndTemplateAsync(Guid studentid, Guid templateid);
         Task<List<FullStudentRespondsDate>> GetResponsesFromStudentAndTemplateWithDateAsync(Guid studentid, Guid templateid);
+
+        Task<List<FullResponse>> GetResponsesFromTeacherAndStudentAndTemplateWithDateAsync(Guid studentid,Guid teacherid,Guid templateid);
+
         Task<SurveyResponseSummary> GetAnonymisedResponses(Guid templateId, List<Guid> users, List<Guid> groups);
         Task<StudentResultHistory?> GetResponseHistoryAsync(Guid studentId, Guid teacherId, Guid templateId);
         Task<IEnumerable<CompletedStudentDto>> GetCompletedStudentsByGroup(Guid activeQuestionnaireId);

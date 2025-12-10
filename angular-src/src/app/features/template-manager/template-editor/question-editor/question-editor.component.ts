@@ -6,11 +6,12 @@ import {
   Output,
   ViewChild,
   OnChanges,
+  inject,
 } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 
 import { Question, Option } from "../../../../shared/models/template.model";
-import { TranslateModule } from "@ngx-translate/core";
+import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import {
   DragDropModule,
   CdkDragDrop,
@@ -31,15 +32,24 @@ import {
  */
 @Component({
     selector: 'app-question-editor',
-    imports: [FormsModule, TranslateModule, DragDropModule, DragDropModule],
+    standalone: true,
+    imports: [FormsModule, TranslateModule, DragDropModule],
     templateUrl: './question-editor.component.html',
     styleUrls: ['./question-editor.component.css']
 })
 export class QuestionEditorComponent implements OnChanges {
+  private translate = inject(TranslateService);
+  
   @Input() question!: Question;
 
   /** If true, disables all editing actions. */
   @Input() readonly = false;
+
+  /** If true, indicates this question has duplicate prompt or duplicate options elsewhere in the template. */
+  @Input() duplicate = false;
+  /** List of option ids which are duplicates within this question and should be highlighted. */
+  @Input() duplicateOptionIds: number[] = [];
+
 
   @Output() save = new EventEmitter<Question>();
   @Output() cancel = new EventEmitter<void>();
@@ -52,6 +62,24 @@ export class QuestionEditorComponent implements OnChanges {
     if (this.question && this.question.options) {
       this.question.options.sort((a, b) => a.sortOrder - b.sortOrder);
     }
+  }
+
+
+  isOptionDuplicate(option: Option): boolean {
+    const oid = option.id ?? -999999;
+    return (this.duplicateOptionIds ?? []).includes(oid);
+  }
+
+  isOptionBlank(option: Option): boolean {
+    return !option.displayText || option.displayText.trim() === "";
+  }
+
+  hasOptionError(option: Option): boolean {
+    // Only show errors if validation has been run (validationErrors is not empty)
+    if (this.validationErrors.length === 0) {
+      return false;
+    }
+    return this.isOptionDuplicate(option) || this.isOptionBlank(option);
   }
 
   /** Reference to error message container for scrolling into view. */
@@ -93,16 +121,15 @@ export class QuestionEditorComponent implements OnChanges {
    * - Prompt must not be empty.
    * - Must allow custom answers or have at least one option.
    * - All options must have non-empty labels.
+   * - No duplicate option labels within the same question.
    *
    * @returns `true` if valid, else `false`.
    */
   validateQuestion(): boolean {
-    console.log(this.question);
     this.validationErrors = []; // Clear previous errors
-
     // 1. Ensure the title is not empty
     if (!this.question.prompt || this.question.prompt.trim() === "") {
-      this.validationErrors.push("The question title cannot be empty.");
+      this.validationErrors.push(this.translate.instant('QUESTION_EDITOR.ERROR_EMPTY_TITLE'));
     }
 
     // 2. Ensure there are options or a custom answer is allowed
@@ -111,14 +138,14 @@ export class QuestionEditorComponent implements OnChanges {
       (!this.question.options || this.question.options.length === 0)
     ) {
       this.validationErrors.push(
-        "The question must allow a custom answer or have at least one option."
+        this.translate.instant('QUESTION_EDITOR.ERROR_NO_OPTIONS_OR_CUSTOM')
       );
     }
 
     // If question options are over 10 in length then add a validation error
     if (this.question.options.length > this.questionOptionsMaxCount) {
       this.validationErrors.push(
-        `The question cannot have more than ${this.questionOptionsMaxCount} options.`
+        this.translate.instant('QUESTION_EDITOR.ERROR_TOO_MANY_OPTIONS', { max: this.questionOptionsMaxCount })
       );
     }
 
@@ -127,7 +154,22 @@ export class QuestionEditorComponent implements OnChanges {
       (option) => option.displayText.trim() === ""
     );
     if (hasEmptyLabel) {
-      this.validationErrors.push("All options must have non-empty labels.");
+      this.validationErrors.push(this.translate.instant('QUESTION_EDITOR.ERROR_EMPTY_OPTION_LABELS'));
+    }
+
+    // 4. Check for duplicate option labels within this question
+    const optionLabels = new Map<string, number>();
+    this.question.options.forEach((opt) => {
+      const key = (opt.displayText || "").trim().toLowerCase();
+      if (key !== "") {
+        const count = optionLabels.get(key) || 0;
+        optionLabels.set(key, count + 1);
+      }
+    });
+
+    const hasDuplicates = Array.from(optionLabels.values()).some(count => count > 1);
+    if (hasDuplicates) {
+      this.validationErrors.push(this.translate.instant('QUESTION_EDITOR.ERROR_DUPLICATE_OPTIONS'));
     }
 
     return this.validationErrors.length === 0; // Return true if no errors

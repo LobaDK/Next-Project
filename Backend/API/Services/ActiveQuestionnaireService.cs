@@ -1,14 +1,3 @@
-using System.Net;
-using API.DTO.User;
-using API.DTO.Requests.ActiveQuestionnaire;
-using API.DTO.Responses.ActiveQuestionnaire;
-using API.Exceptions;
-using API.Interfaces;
-using Database.DTO.ActiveQuestionnaire;
-using Database.DTO.User;
-using Database.Enums;
-using Database.Models;
-using Settings.Models;
 
 namespace API.Services;
 
@@ -369,6 +358,23 @@ public class ActiveQuestionnaireService : IActiveQuestionnaireService
         return results;
     }
 
+    public async Task<List<QuestionnaireGroupBasicResult>> GetQuestionnaireGroupsBasicForTemplate(Guid templateId)
+    {
+        var groups = await _unitOfWork.QuestionnaireGroup.GetGroupsByTemplateIdAsync(templateId);
+        var results = new List<QuestionnaireGroupBasicResult>();
+
+        foreach (var group in groups)
+        {
+            results.Add(new QuestionnaireGroupBasicResult
+            {
+                GroupId = group.GroupId,
+                Name = group.Name
+            });
+        }
+
+        return results;
+    }
+
     /// <summary>
     /// Fetches an active questionnaire by its unique identifier.
     /// </summary>
@@ -549,7 +555,15 @@ public class ActiveQuestionnaireService : IActiveQuestionnaireService
 
     }
 
-    public async Task<SurveyResponseSummary> GetAnonymisedResponses(Guid templateId, List<Guid> users, List<Guid> groups)
+    public async Task<List<FullResponse>> GetResponsesFromTeacherAndStudentAndTemplateWithDateAsync(Guid studentid,Guid teacherid, Guid templateid)
+    {
+
+        return await _unitOfWork.ActiveQuestionnaire.GetResponsesFromTeacherAndStudentAndTemplateWithDateAsync(studentid, teacherid, templateid);
+
+    }
+
+
+public async Task<SurveyResponseSummary> GetAnonymisedResponses(Guid templateId, List<Guid> users, List<Guid> groups)
     {
         return await _unitOfWork.ActiveQuestionnaire.GetAnonymisedResponses(templateId, users, groups);
     }
@@ -628,16 +642,29 @@ public class ActiveQuestionnaireService : IActiveQuestionnaireService
     /// <param name="teacherId">The unique identifier of the teacher making the request.</param>
     /// <param name="templateId">The unique identifier of the questionnaire template.</param>
     /// <returns>
-    /// A <see cref="StudentResultHistory"/> object containing the student's response history for the specified template,
-    /// or null if no history is found.
+    /// A <see cref="StudentResultHistory"/> object containing the student's response history for the specified template.
     /// </returns>
+    /// <exception cref="HttpResponseException">
+    /// Thrown when no completed questionnaires are found for the specified student-teacher-template combination.
+    /// This ensures that both student and teacher have submitted their responses before allowing access to the history.
+    /// </exception>
     /// <remarks>
     /// This method retrieves all historical responses from a student for a specific questionnaire template,
-    /// providing teachers with insight into student progress over time.
+    /// providing teachers with insight into student progress over time. Only returns questionnaires where both
+    /// the student and teacher have completed their responses to prevent bias in assessment.
     /// </remarks>
     public async Task<StudentResultHistory?> GetResponseHistoryAsync(Guid studentId, Guid teacherId, Guid templateId)
     {
-        return await _unitOfWork.ActiveQuestionnaire.GetResponseHistoryAsync(studentId, teacherId, templateId);
+        var history = await _unitOfWork.ActiveQuestionnaire.GetResponseHistoryAsync(studentId, teacherId, templateId);
+        
+        if (history == null)
+        {
+            throw new HttpResponseException(
+                HttpStatusCode.NotFound, 
+                "No completed questionnaires found. Both student and teacher must submit their responses before viewing results history.");
+        }
+        
+        return history;
     }
 
     public async Task<IEnumerable<CompletedStudentDto>> GetCompletedStudentsByGroup(Guid activeQuestionnaireId)

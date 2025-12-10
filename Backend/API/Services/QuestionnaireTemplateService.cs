@@ -1,10 +1,3 @@
-using API.DTO.Requests.QuestionnaireTemplate;
-using API.Exceptions;
-using API.Interfaces;
-using Database.DTO.QuestionnaireTemplate;
-using Database.Models;
-using API.DTO.Responses.QuestionnaireTemplate;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Services;
 
@@ -61,7 +54,8 @@ public class QuestionnaireTemplateService : IQuestionnaireTemplateService
             request.Order,
             request.Title,
             request.Id,
-            request.templateStatus
+            request.TeacherId,
+            request.TemplateStatus
         );
 
         QuestionnaireTemplateBase? lastTemplate = questionnaireTemplateBases.Count != 0 ? questionnaireTemplateBases.Last() : null;
