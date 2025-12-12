@@ -4,7 +4,9 @@
     {
         private class NullKeyConfig : Base
         {
+#pragma warning disable CS8764 // Nullability of return type doesn't match overridden member (possibly because of nullability attributes).
             public override string? Key => null;
+#pragma warning restore CS8764 // Nullability of return type doesn't match overridden member (possibly because of nullability attributes).
             public string? Value { get; set; }
         }
 
