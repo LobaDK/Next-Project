@@ -124,7 +124,7 @@ namespace Database.Repository
                     bool? pendingStudent = false,
                     bool? pendingTeacher = false,
                     int? teacherFK = null,
-                    int? pageNumber = 1)
+                    int pageNumber = 1)
         {
             IQueryable<QuestionnaireGroupModel> query = _genericRepository.GetAsQueryable();
 
@@ -155,7 +155,7 @@ namespace Database.Repository
 
 
             // Offset-based pagination
-            int skip = (pageNumber.Value - 1) * amount;
+            int skip = (pageNumber - 1) * amount;
             query = query.Skip(skip).Take(amount);
 
             List<QuestionnaireGroupModel> groupEntities = await query

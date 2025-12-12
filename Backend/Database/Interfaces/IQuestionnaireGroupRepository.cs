@@ -72,7 +72,7 @@ namespace Database.Interfaces
             bool? pendingStudent = false,
             bool? pendingTeacher = false,
             int? teacherFK = null,
-            int? pageNumber = null);
+            int pageNumber = 1);
 
 
     }
