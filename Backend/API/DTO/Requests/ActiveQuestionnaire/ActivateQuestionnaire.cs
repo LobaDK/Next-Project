@@ -8,7 +8,7 @@ namespace API.DTO.Requests.ActiveQuestionnaire;
 /// <param name="TemplateId">The unique identifier of the questionnaire template to be used.</param>
 public record class ActivateQuestionnaire
 {
-    public List<Guid> StudentIds { get; set; }
-    public List<Guid> TeacherIds { get; set; }
+    public required List<Guid> StudentIds { get; set; }
+    public required List<Guid> TeacherIds { get; set; }
     public required Guid TemplateId { get; set; }
 }
