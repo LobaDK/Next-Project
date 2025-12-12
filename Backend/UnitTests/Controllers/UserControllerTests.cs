@@ -44,7 +44,7 @@ namespace UnitTests.Controllers
             {
                 PageSize = 10,
                 User = "test",
-                Role = API.DTO.Requests.User.Roles.Student
+                Role = Roles.Student
             };
 
             // Directly use LdapUserBase instead of UserBase
@@ -83,6 +83,7 @@ namespace UnitTests.Controllers
                 new ActiveQuestionnaireBase
                 {
                     Id = Guid.NewGuid(),
+                    GroupId = Guid.NewGuid(),
                     Title = "Test Questionnaire",
                     Description = "Optional description",
                     ActivatedAt = DateTime.UtcNow,
@@ -115,6 +116,7 @@ namespace UnitTests.Controllers
                 new ActiveQuestionnaireBase
                 {
                     Id = Guid.NewGuid(),
+                    GroupId = Guid.NewGuid(),
                     Title = "Test Questionnaire",
                     Description = "Optional description",
                     ActivatedAt = DateTime.UtcNow,

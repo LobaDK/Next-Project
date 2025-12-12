@@ -43,7 +43,7 @@
       "FAIL_LOAD_LIST": "Failed to load templates. Please try again.",
       "NO_ACTIVE_QUESTIONNAIRES": "There are no active questionnaires",
       "ITEMS_PER_PAGE": "Items per page:",
-      "SEARCH_GROUP_PLACEHOLDER": "Search by Group...",
+      "SEARCH_TEMPLATE_PLACEHOLDER": "Search for Template...",
       "SEARCH_BY_ID": "Search by ID",
       "SEARCH_BY_NAME": "Search by Name",
       "BUTTON_CREATE_NEW": "Create New Template",
