@@ -47,7 +47,7 @@
         [Fact]
         public void Bind_ShouldBindSection_WhenKeyIsSet()
         {
-            var inMemorySettings = new Dictionary<string, string>
+            var inMemorySettings = new Dictionary<string, string?>
     {
         {"MySection:Value", "HelloWorld"}
     };
