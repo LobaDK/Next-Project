@@ -24,7 +24,6 @@ public class JWTPatchRequest
     public string? RefreshTokenSecret { get; set; }
     public int? TokenTTLMinutes { get; set; }
     public int? RenewTokenTTLDays { get; set; }
-    public Dictionary<string, string>? Roles { get; set; }
     public string? Issuer { get; set; }
     public string? Audience { get; set; }
 }
@@ -37,6 +36,7 @@ public class LDAPPatchRequest
     public string? BaseDN { get; set; }
     public string? SA { get; set; }
     public string? SAPassword { get; set; }
+    public Dictionary<string, string>? RoleMappingsCN { get; set; }
 }
 
 public class LoggerPatchRequest

@@ -127,7 +127,7 @@ namespace UnitTests.Controllers
             var result = await _controller.AddQuestionnaireTemplate(addRequest);
 
             // Assert
-            Assert.IsType<ConflictResult>(result.Result);
+            Assert.IsType<ConflictObjectResult>(result.Result);
         }
 
         #endregion

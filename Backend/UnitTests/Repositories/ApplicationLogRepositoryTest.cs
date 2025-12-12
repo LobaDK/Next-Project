@@ -1,12 +1,4 @@
-﻿using Database;
-using Database.DTO.ApplicationLog;
-using Database.Models;
-using Database.Repository;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-
-namespace UnitTests.Repositories
+﻿﻿namespace UnitTests.Repositories
 {
     public class ApplicationLogRepositoryTest
     {
@@ -30,9 +22,10 @@ namespace UnitTests.Repositories
             {
                 Message = "Test log",
                 Category = "Test",
-                LogLevel = LogLevel.Information,   
-                EventId = 1,                      
-                Timestamp = DateTime.UtcNow         
+                LogLevel = LogLevel.Information,
+                EventId = 1,
+                EventDescription = "Test event",
+                Timestamp = DateTime.UtcNow
             };
 
             // Act
@@ -59,6 +52,7 @@ namespace UnitTests.Repositories
             Category = "Cat1",
             LogLevel = LogLevel.Information,  // required
             EventId = 1,                      // required
+            EventDescription = "Cat event 1",   // required
             Timestamp = DateTime.UtcNow       // required, not CreatedAt
         },
         new ApplicationLog
@@ -67,6 +61,7 @@ namespace UnitTests.Repositories
             Category = "Cat2",
             LogLevel = LogLevel.Warning,
             EventId = 2,
+            EventDescription = "Cat event 2",
             Timestamp = DateTime.UtcNow
         }
     };
@@ -93,6 +88,7 @@ namespace UnitTests.Repositories
                     Category = "Cat1",
                     LogLevel = LogLevel.Information,
                     EventId = 1,
+                    EventDescription = "Cat event 1",
                     Timestamp = DateTime.UtcNow
                 },
                 new ApplicationLogsModel
@@ -101,6 +97,7 @@ namespace UnitTests.Repositories
                     Category = "Cat2",
                     LogLevel = LogLevel.Warning,
                     EventId = 2,
+                    EventDescription = "Cat event 2",
                     Timestamp = DateTime.UtcNow
                 },
                 new ApplicationLogsModel
@@ -109,6 +106,7 @@ namespace UnitTests.Repositories
                     Category = "Cat1", // duplicate category
                     LogLevel = LogLevel.Error,
                     EventId = 3,
+                    EventDescription = "Cat event 3",
                     Timestamp = DateTime.UtcNow
                 }
             );

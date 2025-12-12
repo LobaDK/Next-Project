@@ -84,7 +84,7 @@
       "FAIL_LOAD_LIST": "Indlæsning af skabeloner mislykkedes. Prøv igen.",
       "NO_ACTIVE_QUESTIONNAIRES": "Der er ingen aktive spørgeskemaer",
       "ITEMS_PER_PAGE": "Elementer pr. side:",
-      "SEARCH_GROUP_PLACEHOLDER": "Søg efter gruppe...",
+      "SEARCH_TEMPLATE_PLACEHOLDER": "Søg efter skabelon...",
       "SEARCH_BY_ID": "Søg efter ID",
       "SEARCH_BY_NAME": "Søg efter Navn",
       "BUTTON_CREATE_NEW": "Opret Ny Skabelon",
@@ -97,7 +97,9 @@
       "TEMPLATE_DESCRIPTION": "Beskrivelse",
       "QUESTIONS": "Spørgsmål",
       "SAVE_TEMPLATE": "Gem Skabelon",
-      "ADD_QUESTION": "Tilføj Nyt Spørgsmål"
+      "ADD_QUESTION": "Tilføj Nyt Spørgsmål",
+      "CHECKING_TITLE": "Checker om titlen er tilgængelig...",
+      "TITLE_ALREADY_EXISTS": "En skabelon med denne titel findes allerede. Vælg venligst en anden titel."
     },
 
     "FINALIZE": {
@@ -348,6 +350,8 @@
     "EVALUATION_QUESTIONNAIRE": "Evaluerings spørgeskema",
     "SWITCH_TO_EVALUATION": "Skift til evaluerings spørgeskema",
     "SWITCH_TO_ANONYMOUS": "Skift til anonymt Spørgeskema",
+    "UNDER_CONSTRUCTION": "Under Konstruktion",
+    "UNDER_CONSTRUCTION_DESC": "Denne funktion er i øjeblikket under udvikling og vil være tilgængelig snart.",
     "SEARCH_PARTICIPANTS": "Søg efter deltagere (navn, hold e.l.):",
     "SEARCH_STUDENT": "Find Elever",
     "SEARCH_TEACHER": "Søg efter Instruktør:",

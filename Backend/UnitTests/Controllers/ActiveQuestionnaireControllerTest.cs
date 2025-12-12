@@ -92,6 +92,7 @@ namespace UnitTests.Controllers
                 new ActiveQuestionnaire
                 {
                     Id = Guid.NewGuid(),
+                    GroupId = Guid.NewGuid(),
                     Title = "Test Questionnaire",
                     Description = "Demo questionnaire for testing",
                     Student = new UserBase
@@ -114,19 +115,22 @@ namespace UnitTests.Controllers
                             Id = 1,
                             Prompt = "Sample question?",
                             AllowCustom = true,
+                            SortOrder = 1,
                             Options = new List<QuestionnaireTemplateOption>
                             {
                                 new QuestionnaireTemplateOption
                                 {
                                     Id = 1,
                                     OptionValue = 10,
-                                    DisplayText = "Option 1"
+                                    DisplayText = "Option 1",
+                                    SortOrder = 1
                                 },
                                 new QuestionnaireTemplateOption
                                 {
                                     Id = 2,
                                     OptionValue = 20,
-                                    DisplayText = "Option 2"
+                                    DisplayText = "Option 2",
+                                    SortOrder = 2
                                 }
                             }
                         }

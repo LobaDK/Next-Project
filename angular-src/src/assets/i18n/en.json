@@ -43,7 +43,7 @@
       "FAIL_LOAD_LIST": "Failed to load templates. Please try again.",
       "NO_ACTIVE_QUESTIONNAIRES": "There are no active questionnaires",
       "ITEMS_PER_PAGE": "Items per page:",
-      "SEARCH_GROUP_PLACEHOLDER": "Search by Group...",
+      "SEARCH_TEMPLATE_PLACEHOLDER": "Search for Template...",
       "SEARCH_BY_ID": "Search by ID",
       "SEARCH_BY_NAME": "Search by Name",
       "BUTTON_CREATE_NEW": "Create New Template",
@@ -56,7 +56,9 @@
       "TEMPLATE_DESCRIPTION": "Description",
       "QUESTIONS": "Questions",
       "SAVE_TEMPLATE": "Save Template",
-      "ADD_QUESTION": "Add New Question"
+      "ADD_QUESTION": "Add New Question",
+      "CHECKING_TITLE": "Checking title availability...",
+      "TITLE_ALREADY_EXISTS": "A template with this title already exists. Please choose a different title."
     },
 
     "FINALIZE": {
@@ -350,6 +352,8 @@
     "EVALUATION_QUESTIONNAIRE": "Evaluation Questionnaire",
     "SWITCH_TO_EVALUATION": "Switch to evaluation questionnaire",
     "SWITCH_TO_ANONYMOUS": "Switch to anonymous questionnaire",
+    "UNDER_CONSTRUCTION": "Under Construction",
+    "UNDER_CONSTRUCTION_DESC": "This feature is currently being developed and will be available soon.",
     "SEARCH_PARTICIPANTS": "Search for participants (name, class, etc.)",
     "SEARCH_STUDENT": "Search for Student",
     "SEARCH_TEACHER": "Search for Teacher",

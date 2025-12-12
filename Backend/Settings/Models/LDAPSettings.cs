@@ -29,4 +29,7 @@ public class LDAPSettings : Base, ILDAPSettings
 
     [Description("The Service Account (SA) password for LDAP authentication.")]
     public string SAPassword { get; set; } = string.Empty;
+
+    [Description("A dictionary mapping the internal roles to the LDAP CN (Common Names) of groups.")]
+    public Dictionary<string, string> RoleMappingsCN { get; set; } = new Dictionary<string, string>() { { "student", "" }, {"teacher", ""}, {"admin", ""} };
 }

@@ -47,7 +47,6 @@ public record class JWTSettingsFetchResponse : IJWTSettings
     public required string RefreshTokenSecret { get; set; }
     public required int TokenTTLMinutes { get; set; }
     public required int RenewTokenTTLDays { get; set; }
-    public required Dictionary<string, string> Roles { get; set; }
     public required string Issuer { get; set; }
     public required string Audience { get; set; }
 }
@@ -62,6 +61,7 @@ public record class LDAPSettingsFetchResponse : ILDAPSettings
     public required string BaseDN { get; set; }
     public required string SA { get; set; }
     public required string SAPassword { get; set; }
+    public required Dictionary<string, string> RoleMappingsCN { get; set; }
 }
 
 public record class LoggerSettingsFetchResponse : ILoggerSettings<ConsoleLoggerSettingsFetchResponse, FileLoggerSettingsFetchResponse, DBLoggerSettingsFetchResponse>

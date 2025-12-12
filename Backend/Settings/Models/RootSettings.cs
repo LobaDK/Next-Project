@@ -6,7 +6,7 @@ public class RootSettings : Base, IRootSettings
     [JsonIgnore]
     public override string Key { get; } = "";
 
-    public int Version { get; set; } = 2;
+    public int Version { get; set; } = 3;
 
     public DatabaseSettings Database { get; set; } = new();
     public JWTSettings JWT { get; set; } = new();
