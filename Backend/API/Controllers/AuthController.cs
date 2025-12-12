@@ -163,7 +163,7 @@ namespace API.Controllers
         /// <summary>
         /// Refreshes an expired access token using a valid refresh token.
         /// </summary>
-        /// <param name="expiredToken">The expired access token that needs to be refreshed.</param>
+        /// <param name="request">The refresh request containing the expired access token</param>
         /// <returns>
         /// Returns an <see cref="AuthenticationResponse"/> containing a new access token and refresh token if successful.
         /// Returns 401 Unauthorized if:
