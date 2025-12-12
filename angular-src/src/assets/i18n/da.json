@@ -346,6 +346,8 @@
     "EVALUATION_QUESTIONNAIRE": "Evaluerings spørgeskema",
     "SWITCH_TO_EVALUATION": "Skift til evaluerings spørgeskema",
     "SWITCH_TO_ANONYMOUS": "Skift til anonymt Spørgeskema",
+    "UNDER_CONSTRUCTION": "Under Konstruktion",
+    "UNDER_CONSTRUCTION_DESC": "Denne funktion er i øjeblikket under udvikling og vil være tilgængelig snart.",
     "SEARCH_PARTICIPANTS": "Søg efter deltagere (navn, hold e.l.):",
     "SEARCH_STUDENT": "Find Elever",
     "SEARCH_TEACHER": "Søg efter Instruktør:",

@@ -348,6 +348,8 @@
     "EVALUATION_QUESTIONNAIRE": "Evaluation Questionnaire",
     "SWITCH_TO_EVALUATION": "Switch to evaluation questionnaire",
     "SWITCH_TO_ANONYMOUS": "Switch to anonymous questionnaire",
+    "UNDER_CONSTRUCTION": "Under Construction",
+    "UNDER_CONSTRUCTION_DESC": "This feature is currently being developed and will be available soon.",
     "SEARCH_PARTICIPANTS": "Search for participants (name, class, etc.)",
     "SEARCH_STUDENT": "Search for Student",
     "SEARCH_TEACHER": "Search for Teacher",
