@@ -52,7 +52,8 @@ namespace Database.Repository
         /// </remarks>
         public async Task<QuestionnaireGroupModel> GetByIdAsync(Guid groupId)
         {
-            return await _context.Set<QuestionnaireGroupModel>().FindAsync(groupId);
+            return await _context.Set<QuestionnaireGroupModel>().FindAsync(groupId) 
+                ?? throw new KeyNotFoundException($"Questionnaire group with ID '{groupId}' not found.");
         }
         public async Task<List<QuestionnaireGroupModel>> GetByIdsAsync(IEnumerable<Guid> ids)
         {
