@@ -135,16 +135,13 @@ namespace UnitTests.Services
             var request = new TemplateKeysetPaginationRequest
             {
                 PageSize = 10,
-                Title = "Test",
                 Order = TemplateOrderingOptions.TitleAsc, 
-                Id = null,
-                TemplateStatus = null
-
+                TemplateStatus = TemplateStatus.Draft
             };
 
             var templates = new List<QuestionnaireTemplateBase>
             {
-                new() { Id = Guid.NewGuid(), Title = "Template1", CreatedAt = DateTime.UtcNow, LastUpdated = DateTime.UtcNow, IsLocked = false }
+                new() { Id = Guid.NewGuid(), Title = "Template1", CreatedAt = DateTime.UtcNow, LastUpdated = DateTime.UtcNow, IsLocked = false, TemplateStatus = TemplateStatus.Draft }
             };
 
             _mockUnitOfWork
@@ -153,9 +150,9 @@ namespace UnitTests.Services
                     It.IsAny<Guid?>(),
                     It.IsAny<DateTime?>(),
                     It.IsAny<TemplateOrderingOptions>(),
-                    It.IsAny<string>(),
+                    It.IsAny<string?>(),
                     It.IsAny<Guid?>(),
-                    It.IsAny<Guid>(),
+                    It.IsAny<Guid?>(),
                     It.IsAny<TemplateStatus?>()
                 ))
                 .ReturnsAsync((templates, templates.Count));
