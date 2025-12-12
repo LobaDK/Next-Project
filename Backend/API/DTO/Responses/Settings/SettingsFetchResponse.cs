@@ -8,7 +8,6 @@ public record class SettingsFetchResponse
     public required DatabaseSettingsFetchResponse Database { get; set; }
     public required JWTSettingsFetchResponse JWT { get; set; }
     public required LDAPSettingsFetchResponse LDAP { get; set; }
-    public required LoggerSettingsFetchResponse Logging { get; set; }
     public required SystemSettingsFetchResponse System { get; set; }
 }
 
