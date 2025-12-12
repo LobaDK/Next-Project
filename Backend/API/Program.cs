@@ -2,7 +2,11 @@ const string settingsFile = "config.json";
 
 var builder = WebApplication.CreateBuilder(args);
 
-SettingsHelper settingsHelper = new(settingsFile);
+// Bootstrap logger for settings helper before the main logging pipeline is configured
+using var bootstrapLoggerFactory = LoggerFactory.Create(logging => logging.AddConsole());
+ILogger<SettingsHelper> settingsLogger = bootstrapLoggerFactory.CreateLogger<SettingsHelper>();
+
+SettingsHelper settingsHelper = new(settingsFile, settingsLogger);
 
 if (!settingsHelper.SettingsExists())
 {
