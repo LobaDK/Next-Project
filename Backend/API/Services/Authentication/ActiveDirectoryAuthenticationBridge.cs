@@ -268,7 +268,7 @@ public partial class ActiveDirectoryAuthenticationBridge(
         {
             _Logger.LogDebug("Applying role filter for: {UserRole}", userRole);
             // Converts internal role to ldap role
-            KeyValuePair<string, string>? matchedRole = _JwtSettings.Roles.FirstOrDefault(x => userRole.Contains(x.Key, StringComparison.CurrentCultureIgnoreCase));
+            KeyValuePair<string, string>? matchedRole = _LdapSettings.RoleMappingsCN.FirstOrDefault(x => userRole.Contains(x.Key, StringComparison.CurrentCultureIgnoreCase));
             if (matchedRole is null || matchedRole.Equals(default(KeyValuePair<string, string>)))
             {
                 _Logger.LogError("Role mapping not found for: {UserRole}", userRole);

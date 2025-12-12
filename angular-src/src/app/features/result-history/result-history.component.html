@@ -1,6 +1,19 @@
-<div class="px-4">
+
   <div class="bg-primary_background_white/80 p-4 mb-4 sm:p-10 max-w-7xl mx-auto shadow-xl rounded-2xl border-2 border-primary_orange_1 print:bg-white print:shadow-none print:p-0 print:overflow-visible ">
 
+    <!-- Single Toggle Button -->
+    @if (currentView === 'evaluation') {
+      <div class="flex mb-6 justify-end">
+        <button
+          (click)="switchView('anonymous')"
+          class="px-6 py-3 rounded-lg font-semibold transition-all bg-primary_orange_1 text-white shadow-lg hover:bg-primary_orange_light">
+          {{ 'RESULT_HISTORY.VIEW_ANONYMOUS_RESULTS' | translate }}
+        </button>
+      </div>
+    }
+
+    <!-- Evaluation Results View -->
+    @if (currentView === 'evaluation') {
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
       <h1 class="text-2xl font-bold text-primary_dark_blue">{{ 'RESULT_HISTORY.TITLE' | translate }}</h1>
@@ -18,20 +31,25 @@
           <input
             type="text"
             [value]="student.query"
-            (input)="onInputChange(searchEnum.Student, $any($event.target).value)"
+            appDebouncedInput
+            (debouncedInput)="onInputChange(searchEnum.Student, $event)"
             (focus)="showDropdown[searchEnum.Student] = true"
             placeholder="{{ 'RESULT_HISTORY.SEARCH_STUDENTS' | translate }}"
-            class="w-full px-3 py-2 border border-primary_orange_1/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary_orange_1 focus:border-primary_orange_1 transition-colors duration-150"
+            class="w-full px-3 py-2 border border-primary_orange_1/50 rounded-lg focus:outline-none focus:ring focus:ring-primary_orange_1 focus:border-primary_orange_1 transition-colors duration-150"
             />
 
             <!-- Selected Student Chip -->
             @if (student.selected) {
               <div class="mt-2">
-                <div class="flex items-center justify-between bg-primary_orange_light/20 border border-primary_orange_1 p-2 rounded-lg">
-                  <span class="text-sm font-medium text-primary_dark_blue">{{ student.selected.fullName }}</span>
+                <div class="flex items-center justify-between bg-primary_orange_1 text-white p-2 rounded-lg">
+                  <span class="text-m font-medium text-white">{{ student.selected.fullName }}</span>
                   <button
                     (click)="clearSelected(searchEnum.Student)"
-                  class="text-red-500 hover:text-red-700 ml-2">×</button>
+                    class="text-white/80 hover:text-white ml-2 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                  </button>
                 </div>
               </div>
             }
@@ -62,8 +80,7 @@
           <!-- Helper text when no student selected -->
           @if (!student.selected) {
             <div class="text-sm text-gray-600 bg-secondary_background_gray/50 border border-primary_orange_1/30 p-3 rounded-lg">
-              <span class="font-medium text-primary_dark_blue">{{ 'RESULT_HISTORY.SELECT_STUDENT_FIRST' | translate }}</span>
-              <br>{{ 'RESULT_HISTORY.SELECT_STUDENT_FIRST_DESC' | translate }}
+              {{ 'RESULT_HISTORY.SELECT_STUDENT_FIRST_DESC' | translate }}
               </div>
             }
 
@@ -72,7 +89,7 @@
               <div class="relative" data-search="template">
                 <!-- Available templates info -->
                 @if (template.results.length > 0) {
-                  <div class="text-sm text-primary_dark_blue bg-primary_orange_light/20 border border-primary_orange_1 p-2 rounded-lg mb-2">
+                  <div class="text-m text-primary_dark_blue bg-primary_orange_light/20 border border-primary_orange_1 p-2 rounded-lg mb-2">
                     <span class="font-medium">{{ template.results.length }}</span> {{ 'RESULT_HISTORY.SHARED_QUESTIONNAIRES_AVAILABLE' | translate }} <span class="font-medium">{{ student.selected.fullName }}</span>
                   </div>
                 }
@@ -93,10 +110,14 @@
                 @if (template.selected) {
                   <div class="mt-2">
                     <div class="flex items-center justify-between bg-primary_orange_1 text-white p-2 rounded-lg">
-                      <span class="text-sm font-medium">{{ template.selected.title }}</span>
+                      <span class="text-m font-medium">{{ template.selected.title }}</span>
                       <button
                         (click)="clearSelected(searchEnum.Template)"
-                      class="text-white/80 hover:text-white ml-2">×</button>
+                        class="text-white/80 hover:text-white ml-2 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                      </button>
                     </div>
                   </div>
                 }
@@ -194,11 +215,19 @@
                 }
                 <!-- action buttons + view toggle -->
                 <div class="flex flex-wrap justify-center sm:justify-end gap-2 w-full sm:w-auto">
+                  
+                <!-- Toggle Graph Button -->
+                    <button 
+                      (click)="TestGraf()"
+                      class="px-6 py-3 bg-primary_orange_1 text-white rounded-xl hover:bg-primary_orange_light transition-all duration-150 font-medium shadow-sm">
+                      {{ showGraph ? ('RESULT_HISTORY.HIDE_GRAPH_BUTTON_LABEL' | translate) : ('RESULT_HISTORY.SHOW_GRAPH_BUTTON_LABEL' | translate) }}
+                    </button>
+                  
                   <!-- Open PDF -->
                   @if (hasResult()) {
                     <button
                       (click)="openPdf()"
-      class="bg-primary_orange_1 text-white px-3 py-2 text-sm rounded-xl hover:bg-primary_orange_light 
+      class="bg-emerald-700 text-white px-3 py-2 text-sm rounded-xl hover:bg-emerald-600 
              flex-1 sm:flex-none transition font-medium shadow-sm"
                       >
                       <span class="hidden sm:inline">{{ 'RESULT_HISTORY.OPEN_PDF' | translate }}</span>
@@ -219,7 +248,7 @@
                   <!-- Toggle Compact / Full View -->
                   <button
                     (click)="isFullView = !isFullView"
-                    class="bg-primary_dark_blue text-white px-3 py-2 text-sm rounded-xl hover:bg-primary_dark_light hover:text-white flex-1 sm:flex-none min-w-0 transition"
+                    class="bg-primary_dark_blue text-white px-3 py-2 text-sm rounded-xl hover:bg-primary_dark_light hover:text-white flex-1 sm:flex-none min-w-0 transition font-medium shadow-sm"
                     >
                     <span class="hidden sm:inline">{{ isFullView ? ('RESULT_HISTORY.COMPACT_VIEW' | translate) : ('RESULT_HISTORY.FULL_VIEW' | translate) }}</span>
                     <span class="sm:hidden">{{ isFullView ? ('RESULT_HISTORY.COMPACT_VIEW_SHORT' | translate) : ('RESULT_HISTORY.FULL_VIEW_SHORT' | translate) }}</span>
@@ -227,12 +256,43 @@
                 </div>
               </div>
             </div>
+
+                  <!-- Graph Section -->
+                  <div *ngIf="showGraph" class="mb-6 bg-gray-50 p-6 rounded-lg w-full">
+                    <div class="flex items-center justify-center gap-4 mb-6">
+                      <button 
+                        (click)="prevGraphQuestion()" 
+                        [disabled]="currentQuestionIndex === 0"
+                        class="px-4 py-2 bg-primary_orange_1 text-white rounded-xl hover:bg-primary_orange_light disabled:opacity-50 disabled:cursor-not-allowed transition">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-5 w-5"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                        
+                      </button>
+                    <span class="text-lg font-semibold text-primary_orange_1 min-w-[200px] text-center">
+                      {{ 'COMMON.QUESTION' | translate }} {{ currentQuestionIndex + 1 }} / {{ totalQuestions }}
+                    </span>
+                    <button 
+                      (click)="nextGraphQuestion()" 
+                      [disabled]="currentQuestionIndex === totalQuestions - 1"
+                      class="px-4 py-2 bg-primary_orange_1 text-white rounded-xl hover:bg-primary_orange_light disabled:opacity-50 disabled:cursor-not-allowed transition">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-5 w-5"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                      
+                    </button>
+                  </div>
+                  <div class="w-full flex justify-center">
+                    <div class="w-full max-w-5xl h-[500px] bg-white rounded-lg shadow-sm p-4">
+                      <ag-charts [options]="chartOptions" style="display: block; width: 100%; height: 100%;"></ag-charts>
+                    </div>
+                  </div>
+                </div>
+
+
             <!-- canonical rendering of the current attempt -->
             <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
               <app-show-result
                 [result]="getCurrentResultLikeResult()"
-                [isFullView]="true"
                 [isFullView]="isFullView"
+                [studentId]="student.selected?.id"
+                [templateId]="template.selected?.id"
                 [config]="resultConfig">
               </app-show-result>
             </div>
@@ -258,5 +318,14 @@
             <div class="text-gray-400 text-sm">{{ 'RESULT_HISTORY.INSTRUCTIONS_DESC' | translate }}</div>
           </div>
         }
-      </div>
-    </div>
+    }
+
+    <!-- Anonymous Results View -->
+    @if (currentView === 'anonymous') {
+      <app-data-compare 
+        [showNavigationButton]="true" 
+        (navigateToEvaluation)="switchView('evaluation')">
+      </app-data-compare>
+    }
+
+  </div>

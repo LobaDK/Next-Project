@@ -15,5 +15,6 @@ namespace API.Interfaces
         Task<QuestionnaireTemplate> FinalizeTemplate(Guid id);
         Task<QuestionnaireTemplate> UndeleteTemplate(Guid id);
         Task<List<QuestionnaireTemplateBase>> GetTemplateBasesAnsweredByStudentAsync(Guid studentId, Guid teacherId);
+        Task<bool> IsTitleAvailable(string templateTitle);
     }
 }

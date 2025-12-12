@@ -129,6 +129,7 @@ public interface IQuestionnaireTemplateRepository
         TemplateOrderingOptions sortOrder,
         string? titleQuery,
         Guid? idQuery,
+        Guid? teacherId,
         TemplateStatus? templateStatus);
         Task<QuestionnaireTemplate> FinalizeAsync(Guid id);
 
@@ -146,4 +147,5 @@ public interface IQuestionnaireTemplateRepository
     /// </remarks>
     Task<List<QuestionnaireTemplateBase>> GetTemplateBasesAnsweredByStudentAsync(Guid studentId, Guid teacherId);
 
+    Task<bool> IsTitleAvailable(string templateTitle);
 }

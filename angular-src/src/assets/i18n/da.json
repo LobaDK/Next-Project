@@ -19,7 +19,7 @@
     "LOG_OUT": "Log ud",
     "ACTIVE_QUESTIONNAIRES": "Aktive spørgeskemaer",
     "DATA_COMPARE": "Sammenlign Data",
-    "RESULT_HISTORY": "Resultat Historik",
+    "RESULTS": "Resultater",
     "OVERVIEW": "Oversigt",
     "TEMPLATES": "Skabeloner",
     "HOME" : "Hjem",
@@ -68,6 +68,11 @@
 
   "TEMPLATE": {
 
+    "DUPLICATE_WARNING": {
+      "TITLE": "Duplikerede spørgsmål fundet",
+      "TEXT": "Din skabelon indeholder duplikerede spørgsmål. Ret venligst disse problemer før du gemmer."
+    },
+
     "NEW": {
       "TITLE": "Ny skabelon",
       "DESC": "Beskrivelse af den nye skabelon",
@@ -79,7 +84,7 @@
       "FAIL_LOAD_LIST": "Indlæsning af skabeloner mislykkedes. Prøv igen.",
       "NO_ACTIVE_QUESTIONNAIRES": "Der er ingen aktive spørgeskemaer",
       "ITEMS_PER_PAGE": "Elementer pr. side:",
-      "SEARCH_GROUP_PLACEHOLDER": "Søg efter gruppe...",
+      "SEARCH_TEMPLATE_PLACEHOLDER": "Søg efter skabelon...",
       "SEARCH_BY_ID": "Søg efter ID",
       "SEARCH_BY_NAME": "Søg efter Navn",
       "BUTTON_CREATE_NEW": "Opret Ny Skabelon",
@@ -92,7 +97,9 @@
       "TEMPLATE_DESCRIPTION": "Beskrivelse",
       "QUESTIONS": "Spørgsmål",
       "SAVE_TEMPLATE": "Gem Skabelon",
-      "ADD_QUESTION": "Tilføj Nyt Spørgsmål"
+      "ADD_QUESTION": "Tilføj Nyt Spørgsmål",
+      "CHECKING_TITLE": "Checker om titlen er tilgængelig...",
+      "TITLE_ALREADY_EXISTS": "En skabelon med denne titel findes allerede. Vælg venligst en anden titel."
     },
 
     "FINALIZE": {
@@ -147,6 +154,7 @@
       "DELETE": "Slet"
     },
     "GREETING": "Hej {{username}}!",
+    "QUESTION": "Spørgsmål",
     "ROLES": {
       "STUDENT": "Elev",
       "TEACHER": "Lærer",
@@ -213,10 +221,18 @@
 
   "QUESTION_EDITOR": {
       "TITLE": "Rediger spørgsmål",
+      "VALIDATION_ERRORS": "Valideringsfejl",
       "LABEL_TITLE": "Titel:",
       "PLACEHOLDER_TITLE": "Indtast spørgsmålets titel",
+      "ERROR_DUPLICATE_QUESTION": "Dette spørgsmål har en duplikeret titel. Hvert spørgsmål skal have en unik titel.",
+      "ERROR_EMPTY_TITLE": "Spørgsmålets titel kan ikke være tom.",
+      "ERROR_NO_OPTIONS_OR_CUSTOM": "Spørgsmålet skal tillade et brugerdefineret svar eller have mindst én valgmulighed.",
+      "ERROR_TOO_MANY_OPTIONS": "Spørgsmålet kan ikke have mere end {{max}} valgmuligheder.",
+      "ERROR_EMPTY_OPTION_LABELS": "Alle valgmuligheder skal have ikke-tomme etiketter.",
+      "ERROR_DUPLICATE_OPTIONS": "Dette spørgsmål har duplikerede valgmuligheder. Hver valgmulighed skal være unik.",
       "ALLOW_CUSTOM": "Tillad at skrive dit eget svar",
       "OPTIONS": "Valgmuligheder",
+      "DUPLICATE_ANSWER": "Denne valgmulighed er duplikeret i spørgsmålet.",
       "DELETE_OPTION": "Slet valgmulighed",
       "ADD_OPTION": "Tilføj ny valgmulighed",
       "SAVE": "Gem spørgsmål"
@@ -225,23 +241,27 @@
   "QUESTIONAIRE": {
     "COLLABORATOR": "Samarbejdspartner",
     "CUSTOM_ANSWER_ERROR": "Indtast dit svar for at fortsætte.",
-    "CUSTOM_ANSWER_CHARACTER_COUNT": "tegn"
+    "CUSTOM_ANSWER_CHARACTER_COUNT": "tegn",
+    "CONFIRM_SUBMIT_TITLE":" Bekræft Indsendelse",
+    "CONFIRM_SUBMIT_TEXT":" Er du sikker på, at du vil indsende dine svar? Du kan ikke redigere dem efter indsendelse."
   },
 
   "DATA_COMPARE" : {
-    "TITLE": "Sammenlign Data",
-    "SEARCH_STUDENT_LABEL": "Søg efter elev eller gruppe:",
-    "SEARCH_STUDENT_PLACEHOLDER": "Indtast elev eller gruppe navn...",
-    "LOADING_STUDENTS": "Indlæser elever...",
-    "LOAD_MORE_STUDENTS": "Indlæs Flere Elever",
-    "SELECTED_STUDENTS": "Valgte Elever:",
+    "TITLE": "Vis resultater på anonyme spørgeskemaer",
+    "VIEW_EVALUATION_RESULTS": "Vis Evaluerings Resultater",
+    "SELECT_GROUP_LABEL": "Vælg Gruppe",
+    "SEARCH_GROUP_PLACEHOLDER": "Søg grupper...",
+    "SELECT_TEMPLATE_FIRST_DESC": "Du skal vælge mindst én skabelon, før du kan søge efter grupper.",
+    "LOADING_GROUPS": "Indlæser grupper...",
+    "LOAD_MORE_GROUPS": "Indlæs Flere Grupper",
+    "SELECTED_GROUPS": "Valgte Grupper",
     "REMOVE": "Fjern",
     "CLEAR_ALL": "Ryd Alle",
-    "SEARCH_TEMPLATE_LABEL": "Søg efter Skabelon:",
-    "SEARCH_TEMPLATE_PLACEHOLDER": "Indtast skabelontitel...",
+    "SELECT_TEMPLATE_LABEL": "Vælg Skabelon",
+    "SEARCH_TEMPLATE_PLACEHOLDER": "Søg skabeloner...",
     "LOADING_TEMPLATES": "Indlæser skabeloner...",
     "LOAD_MORE_TEMPLATES": "Indlæs Flere Skabeloner",
-    "SELECTED_TEMPLATES": "Valgte Skabeloner:",
+    "SELECTED_TEMPLATES": "Valgte Skabeloner",
     "UPDATE_CHART": "Opdater Graf",
     "PIE_CHART": "Pie",
     "BAR_CHART": "Bar"
@@ -290,11 +310,16 @@
     "CUSTOM_RESPONSES": "Brugerdefinerede svar:",
     "NO_OPTIONS_AVAILABLE": "Ingen valgmuligheder tilgængelige for dette spørgsmål",
     "SCROLL_HINT": "Scroll horisontalt for at se alle valgmuligheder →",
-    "DROPDOWN_SELECT_STUDENT": "Vælg Elev"
+    "DROPDOWN_SELECT_STUDENT": "Vælg Elev",
+    "GRAPH_OVERLAY_TITLE": " ",
+    "SHOW_GRAPH_BUTTON_LABEL":"Vis Graf"
   },
 
   "RESULT_HISTORY": {
     "TITLE": "Elev Resultat Historik",
+    "EVALUATION_RESULTS": "Evaluerings Resultater",
+    "ANONYMOUS_RESULTS": "Anonyme Resultater",
+    "VIEW_ANONYMOUS_RESULTS": "Vis Anonyme Resultater",
     "SELECT_STUDENT": "Vælg Elev",
     "SELECT_QUESTIONNAIRE": "Vælg Spørgeskema",
     "SEARCH_STUDENTS": "Søg elever...",
@@ -303,7 +328,6 @@
     "NO_RESULTS_DESC": "Ingen resultater fundet for den valgte elev og spørgeskema kombination.",
     "INSTRUCTIONS": "Vælg en elev og et spørgeskema for at se resultater",
     "INSTRUCTIONS_DESC": "Brug søgefelterne ovenfor til at finde og vælge en elev og en spørgeskema skabelon for at se de historiske resultater.",
-    "SELECT_STUDENT_FIRST": "Vælg venligst en elev først",
     "SELECT_STUDENT_FIRST_DESC": "Du skal vælge en elev, før du kan vælge en spørgeskema skabelon.",
     "SHARED_QUESTIONNAIRES_AVAILABLE": "delte spørgeskema(er) tilgængelige med",
     "LOADING_SHARED_QUESTIONNAIRES": "Indlæser delte spørgeskemaer...",
@@ -321,7 +345,9 @@
     "FAILED_TO_LOAD_TEMPLATES": "Fejl ved indlæsning af tilgængelige skabeloner.",
     "NO_RESULTS_INCOMPLETE_RESPONSES": "Ingen resultater tilgængelige. Både du og eleven skal færdiggøre jeres spørgeskema-svar før historikken kan vises.",
     "FAILED_TO_LOAD_HISTORY": "Fejl ved indlæsning af elevens resultathistorik.",
-    "FAILED_TO_LOAD_STUDENTS": "Fejl ved indlæsning af relaterede elever."
+    "FAILED_TO_LOAD_STUDENTS": "Fejl ved indlæsning af relaterede elever.",
+    "SHOW_GRAPH_BUTTON_LABEL":"Vis Graf",
+    "HIDE_GRAPH_BUTTON_LABEL":"Skjul Graf"
   },
 
   "ACTIVE_BUILDER": {
@@ -329,8 +355,10 @@
     "EVALUATION_QUESTIONNAIRE": "Evaluerings spørgeskema",
     "SWITCH_TO_EVALUATION": "Skift til evaluerings spørgeskema",
     "SWITCH_TO_ANONYMOUS": "Skift til anonymt Spørgeskema",
+    "UNDER_CONSTRUCTION": "Under Konstruktion",
+    "UNDER_CONSTRUCTION_DESC": "Denne funktion er i øjeblikket under udvikling og vil være tilgængelig snart.",
     "SEARCH_PARTICIPANTS": "Søg efter deltagere (navn, hold e.l.):",
-    "SEARCH_STUDENT": "Søg efter Elev:",
+    "SEARCH_STUDENT": "Find Elever",
     "SEARCH_TEACHER": "Søg efter Instruktør:",
     "SEARCH_TEMPLATE": "Søg efter Skabelon:",
     "PLACEHOLDER_STUDENTS": "Indtast navn på elever...",
@@ -342,13 +370,14 @@
     "LOAD_MORE_STUDENTS": "Indlæs Flere Elever",
     "LOAD_MORE_TEACHERS": "Indlæs Flere Instruktører",
     "LOAD_MORE_TEMPLATES": "Indlæs Flere Skabeloner",
-    "SELECTED_STUDENTS": "Valgte Elever:",
-    "SELECTED_TEACHERS": "Valgte Instruktører:",
-    "SELECTED_TEMPLATES": "Valgte Skabeloner:",
+    "SELECTED_STUDENTS": "Valgte Elever",
+    "SELECTED_PARTICIPANTS": "Valgte Deltagere",
+    "SELECT_TEACHER": "Vælg Instruktør",
+    "SELECT_TEMPLATE": "Vælg Skabelon",
     "NOTHING_SELECTED": "Intet er valgt",
     "REMOVE": "Fjern",
     "CLEAR_ALL": "Ryd Alle",
-    "CREATE_QUESTIONNAIRE_NAME": "Opret navn på spørgeskema:",
+    "CREATE_QUESTIONNAIRE_NAME": "Opret navn på spørgeskema",
     "PLACEHOLDER_EVALUATION_NAME": "f.eks. 'Hold123 - evaluering af elever'",
     "PLACEHOLDER_ANONYMOUS_NAME": "f.eks. 'Evaluering af undervisning - Alle Elever'",
     "FINISH": "Færdiggør",

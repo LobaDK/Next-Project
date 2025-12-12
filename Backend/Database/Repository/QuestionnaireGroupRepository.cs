@@ -84,6 +84,13 @@ namespace Database.Repository
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<QuestionnaireGroupModel>> GetGroupsByTemplateIdAsync(Guid templateId)
+        {
+            return await _context.QuestionnaireGroups
+                .Where(g => g.TemplateId == templateId)
+                .ToListAsync();
+        }
+
         /// <summary>
         /// Retrieves a paginated list of questionnaire groups using keyset pagination with
         /// optional filtering, ordering, and cursor-based continuation.

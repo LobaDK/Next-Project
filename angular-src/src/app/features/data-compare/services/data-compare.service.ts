@@ -35,11 +35,9 @@ export class DataCompareService {
    * @param groupId Group GUID (optional)
    * @returns Observable with anonymised response data
    */
-  getAnonymisedResponses(templateId: string, userId?: string, groupId?: string) {
+  getAnonymisedResponses(templateId: string, groupId?: string) {
     let url = `${environment.apiUrl}/active-questionnaire/getanonymisedresponses?QuestionnaireId=${templateId}`;
-    if (userId) {
-      url += `&Users=${userId}`;
-    }
+
     if (groupId) {
       url += `&Groups=${groupId}`;
     }

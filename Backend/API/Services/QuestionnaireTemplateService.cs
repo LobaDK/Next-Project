@@ -54,7 +54,8 @@ public class QuestionnaireTemplateService : IQuestionnaireTemplateService
             request.Order,
             request.Title,
             request.Id,
-            request.templateStatus
+            request.TeacherId,
+            request.TemplateStatus
         );
 
         QuestionnaireTemplateBase? lastTemplate = questionnaireTemplateBases.Count != 0 ? questionnaireTemplateBases.Last() : null;
@@ -270,5 +271,10 @@ public async Task<QuestionnaireTemplate> FinalizeTemplate(Guid id)
     public async Task<List<QuestionnaireTemplateBase>> GetTemplateBasesAnsweredByStudentAsync(Guid studentId, Guid teacherId)
     {
         return await _unitOfWork.QuestionnaireTemplate.GetTemplateBasesAnsweredByStudentAsync(studentId, teacherId);
+    }
+
+    public async Task<bool> IsTitleAvailable(string templateTitle)
+    {
+        return await _unitOfWork.QuestionnaireTemplate.IsTitleAvailable(templateTitle);
     }
 }

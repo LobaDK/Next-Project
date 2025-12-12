@@ -11,6 +11,7 @@ import { ActiveBuilderComponent } from './components/active-builder/active-build
  */
 @Component({
     selector: 'app-active-questionnaire-manager',
+    standalone: true,
     imports: [FormsModule, ActiveListComponent, ActiveBuilderComponent],
     templateUrl: './active-questionnaire-manager.component.html',
     styleUrl: './active-questionnaire-manager.component.css'

@@ -69,6 +69,7 @@ export class HeaderComponent {
   readonly isAuthenticated = this.authService.isAuthenticated; // already a computed in the service
   readonly userRole = computed<Role | null>( () => this.authService.user()?.role ?? null );
   readonly username = computed(() => this.authService.user()?.userName ?? '');
+  readonly fullName = computed(() => this.authService.user()?.fullName ?? '');
 
   isMenuOpen = false;
 
@@ -94,8 +95,7 @@ export class HeaderComponent {
         name: "NAV.ACTIVE_QUESTIONNAIRES",
         route: "/show-active-questionnaires",
       },
-      { name: "NAV.DATA_COMPARE", route: "/data-compare" },
-      { name: "NAV.RESULT_HISTORY", route: "/result-history" },
+      { name: "NAV.RESULTS", route: "/result-history" },
       { name: "NAV.USER_GUIDE", route: "/user-guide" }
     ],
     [Role.Admin]: [

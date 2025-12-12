@@ -27,6 +27,11 @@
       "TITLE": "Error"
     },
 
+    "DUPLICATE_WARNING": {
+      "TITLE": "Duplicate Questions Detected",
+      "TEXT": "Your template contains duplicate questions. Please fix these issues before saving."
+    },
+
     "NEW": {
       "TITLE": "New Template",
       "DESC": "Description of the new template",
@@ -38,7 +43,7 @@
       "FAIL_LOAD_LIST": "Failed to load templates. Please try again.",
       "NO_ACTIVE_QUESTIONNAIRES": "There are no active questionnaires",
       "ITEMS_PER_PAGE": "Items per page:",
-      "SEARCH_GROUP_PLACEHOLDER": "Search by Group...",
+      "SEARCH_TEMPLATE_PLACEHOLDER": "Search for Template...",
       "SEARCH_BY_ID": "Search by ID",
       "SEARCH_BY_NAME": "Search by Name",
       "BUTTON_CREATE_NEW": "Create New Template",
@@ -51,7 +56,9 @@
       "TEMPLATE_DESCRIPTION": "Description",
       "QUESTIONS": "Questions",
       "SAVE_TEMPLATE": "Save Template",
-      "ADD_QUESTION": "Add New Question"
+      "ADD_QUESTION": "Add New Question",
+      "CHECKING_TITLE": "Checking title availability...",
+      "TITLE_ALREADY_EXISTS": "A template with this title already exists. Please choose a different title."
     },
 
     "FINALIZE": {
@@ -105,6 +112,7 @@
       "DELETE": "Delete"
     },
     "GREETING": "Hello {{username}}!",
+    "QUESTION": "Question",
     "ROLES": {
       "STUDENT": "Student",
       "TEACHER": "Teacher",
@@ -150,7 +158,7 @@
     "LOG_OUT": "Log out",
     "ACTIVE_QUESTIONNAIRES": "Active Questionnaires",
     "DATA_COMPARE": "Data Compare",
-    "RESULT_HISTORY": "Result History",
+    "RESULTS": "Results",
     "OVERVIEW": "Overview",
     "TEMPLATES": "Templates",
     "HOME": "Home",
@@ -218,10 +226,18 @@
 
   "QUESTION_EDITOR": {
     "TITLE": "Edit Question",
+    "VALIDATION_ERRORS": "Validation Errors",
     "LABEL_TITLE": "Title:",
     "PLACEHOLDER_TITLE": "Enter the question title",
+    "ERROR_DUPLICATE_QUESTION": "This question has a duplicate title. Each question must have a unique title.",
+    "ERROR_EMPTY_TITLE": "The question title cannot be empty.",
+    "ERROR_NO_OPTIONS_OR_CUSTOM": "The question must allow a custom answer or have at least one option.",
+    "ERROR_TOO_MANY_OPTIONS": "The question cannot have more than {{max}} options.",
+    "ERROR_EMPTY_OPTION_LABELS": "All options must have non-empty labels.",
+    "ERROR_DUPLICATE_OPTIONS": "This question has duplicate options. Each option must be unique.",
     "ALLOW_CUSTOM": "Allow writing your own answer",
     "OPTIONS": "Options",
+    "DUPLICATE_ANSWER": "This option is duplicated within the question.",
     "DELETE_OPTION": "Delete Option",
     "ADD_OPTION": "Add New Option",
     "SAVE": "Save Question"
@@ -229,22 +245,26 @@
   "QUESTIONAIRE": {
     "COLLABORATOR": "Collaborator",
     "CUSTOM_ANSWER_ERROR": "Too few characters to proceed.",
-    "CUSTOM_ANSWER_CHARACTER_COUNT": "characters"
+    "CUSTOM_ANSWER_CHARACTER_COUNT": "characters",
+    "CONFIRM_SUBMIT_TITLE":" Confirm Submission",
+    "CONFIRM_SUBMIT_TEXT":" Are you sure you want to submit your answers? You won't be able to change them later."
   },
   "DATA_COMPARE" : {
-    "TITLE": "Data Compare",
-    "SEARCH_STUDENT_LABEL": "Search for student or group:",
-    "SEARCH_STUDENT_PLACEHOLDER": "Enter student or group name...",
-    "LOADING_STUDENTS": "Loading students...",
-    "LOAD_MORE_STUDENTS": "Load More Students",
-    "SELECTED_STUDENTS": "Selected Students:",
+    "TITLE": "Show Results for Anonymous Questionnaires",
+    "VIEW_EVALUATION_RESULTS": "View Evaluation Results",
+    "SELECT_GROUP_LABEL": "Select Group",
+    "SEARCH_GROUP_PLACEHOLDER": "Search groups...",
+    "LOADING_GROUPS": "Loading groups...",
+    "LOAD_MORE_GROUPS": "Load More Groups",
+    "SELECTED_GROUPS": "Selected Groups",
     "REMOVE": "Remove",
     "CLEAR_ALL": "Clear All",
+    "SELECT_TEMPLATE_LABEL": "Select Template",
     "SEARCH_TEMPLATE_LABEL": "Search for Template:",
-    "SEARCH_TEMPLATE_PLACEHOLDER": "Enter template title...",
+    "SEARCH_TEMPLATE_PLACEHOLDER": "Search templates...",
     "LOADING_TEMPLATES": "Loading templates...",
     "LOAD_MORE_TEMPLATES": "Load More Templates",
-    "SELECTED_TEMPLATES": "Selected Templates:",
+    "SELECTED_TEMPLATES": "Selected Templates",
     "UPDATE_CHART": "Update Chart",
     "PIE_CHART": "Pie Chart",
     "BAR_CHART": "Bar Chart"
@@ -291,11 +311,16 @@
     "CUSTOM_RESPONSES": "Custom responses:",
     "NO_OPTIONS_AVAILABLE": "No options available for this question",
     "SCROLL_HINT": "Scroll horizontally to see all options →",
-    "DROPDOWN_SELECT_STUDENT": "Select Student"
+    "DROPDOWN_SELECT_STUDENT": "Select Student",
+    "GRAPH_OVERLAY_TITLE": " ",
+    "SHOW_GRAPH_BUTTON_LABEL":"Show Graph"
   },
 
   "RESULT_HISTORY": {
     "TITLE": "Student Result History",
+    "EVALUATION_RESULTS": "Evaluation Results",
+    "ANONYMOUS_RESULTS": "Anonymous Results",
+    "VIEW_ANONYMOUS_RESULTS": "View Anonymous Results",
     "SELECT_STUDENT": "Select Student",
     "SELECT_QUESTIONNAIRE": "Select Questionnaire",
     "SEARCH_STUDENTS": "Search students...",
@@ -304,7 +329,6 @@
     "NO_RESULTS_DESC": "No results found for the selected student and questionnaire combination.",
     "INSTRUCTIONS": "Select a student and questionnaire to view results",
     "INSTRUCTIONS_DESC": "Use the search fields above to find and select a student and questionnaire template to view the historical results.",
-    "SELECT_STUDENT_FIRST": "Please select a student first",
     "SELECT_STUDENT_FIRST_DESC": "You need to select a student before you can choose a questionnaire template.",
     "SHARED_QUESTIONNAIRES_AVAILABLE": "shared questionnaire(s) available with",
     "LOADING_SHARED_QUESTIONNAIRES": "Loading shared questionnaires...",
@@ -322,7 +346,10 @@
     "FAILED_TO_LOAD_TEMPLATES": "Failed to load available templates.",
     "NO_RESULTS_INCOMPLETE_RESPONSES": "No results available. Both you and the student must complete your questionnaire responses before viewing the results history.",
     "FAILED_TO_LOAD_HISTORY": "Failed to load student result history.",
-    "FAILED_TO_LOAD_STUDENTS": "Failed to load related students."
+    "FAILED_TO_LOAD_STUDENTS": "Failed to load related students.",
+    "SHOW_GRAPH_BUTTON_LABEL":"Show Graph",
+    "HIDE_GRAPH_BUTTON_LABEL":"Hide Graph"
+
   },
 
   "ACTIVE_BUILDER": {
@@ -330,10 +357,12 @@
     "EVALUATION_QUESTIONNAIRE": "Evaluation Questionnaire",
     "SWITCH_TO_EVALUATION": "Switch to evaluation questionnaire",
     "SWITCH_TO_ANONYMOUS": "Switch to anonymous questionnaire",
-    "SEARCH_PARTICIPANTS": "Search for participants (name, class, etc.):",
-    "SEARCH_STUDENT": "Search for Student:",
-    "SEARCH_TEACHER": "Search for Teacher:",
-    "SEARCH_TEMPLATE": "Search for Template:",
+    "UNDER_CONSTRUCTION": "Under Construction",
+    "UNDER_CONSTRUCTION_DESC": "This feature is currently being developed and will be available soon.",
+    "SEARCH_PARTICIPANTS": "Search for participants (name, class, etc.)",
+    "SEARCH_STUDENT": "Search for Student",
+    "SEARCH_TEACHER": "Search for Teacher",
+    "SEARCH_TEMPLATE": "Search for Template",
     "PLACEHOLDER_STUDENTS": "Enter student names...",
     "PLACEHOLDER_TEACHERS": "Enter teacher names...",
     "PLACEHOLDER_TEMPLATE": "Enter template title...",
@@ -343,13 +372,14 @@
     "LOAD_MORE_STUDENTS": "Load More Students",
     "LOAD_MORE_TEACHERS": "Load More Teachers",
     "LOAD_MORE_TEMPLATES": "Load More Templates",
-    "SELECTED_STUDENTS": "Selected Students:",
-    "SELECTED_TEACHERS": "Selected Teachers:",
-    "SELECTED_TEMPLATES": "Selected Templates:",
+    "SELECTED_PARTICIPANTS": "Selected Participants",
+    "SELECTED_STUDENTS": "Selected Students",
+    "SELECT_TEACHER": "Select Teacher",
+    "SELECT_TEMPLATE": "Select Template",
     "NOTHING_SELECTED": "Nothing is selected",
     "REMOVE": "Remove",
     "CLEAR_ALL": "Clear All",
-    "CREATE_QUESTIONNAIRE_NAME": "Create questionnaire name:",
+    "CREATE_QUESTIONNAIRE_NAME": "Create questionnaire name",
     "PLACEHOLDER_EVALUATION_NAME": "e.g. 'Class123 - student evaluation'",
     "PLACEHOLDER_ANONYMOUS_NAME": "e.g. 'Teaching Evaluation - All Students'",
     "FINISH": "Finish",

@@ -31,6 +31,7 @@ namespace API.Controllers
         private readonly IJwtService _jwtService;
         private readonly IAuthenticationBridge _authenticationBridge;
         private readonly JWTSettings _JWTSettings;
+        private readonly LDAPSettings _LDAPSettings;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger _logger;
 
@@ -44,6 +45,7 @@ namespace API.Controllers
             _jwtService = jwtService;
             _authenticationBridge = ldapService;
             _JWTSettings = ConfigurationBinderService.Bind<JWTSettings>(configuration);
+            _LDAPSettings = ConfigurationBinderService.Bind<LDAPSettings>(configuration);
             _unitOfWork = unitOfWork;
             _logger = loggerFactory.CreateLogger(GetType());
         }
@@ -120,7 +122,7 @@ namespace API.Controllers
                 try
                 {
                     // Converts ldap role to an internal role
-                    userRole = _JWTSettings.Roles.First(x => ldapUser.MemberOf.Any(y => y.Contains(x.Value, StringComparison.OrdinalIgnoreCase))).Key;
+                    userRole = _LDAPSettings.RoleMappingsCN.First(x => ldapUser.MemberOf.Any(y => y.Contains(x.Value, StringComparison.OrdinalIgnoreCase))).Key;
                 }
                 catch (Exception e)
                 {
