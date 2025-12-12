@@ -155,7 +155,8 @@
             var gid = Guid.NewGuid();
             var fake = new QuestionnaireGroupResult
             {
-                Name = "Group 1"
+                Name = "Group 1",
+                Questionnaires = []
             };
 
             _mockService.Setup(s => s.GetQuestionnaireGroup(gid)).ReturnsAsync(fake);
