@@ -1,6 +1,3 @@
-using Database.DTO.QuestionnaireTemplate;
-using FluentValidation;
-
 namespace API.Validators;
 
 public class CreateQuestionnaireTemplateSubmissionValidator : AbstractValidator<QuestionnaireTemplateAdd>

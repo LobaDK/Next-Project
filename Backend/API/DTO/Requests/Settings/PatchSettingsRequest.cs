@@ -1,5 +1,3 @@
-using Serilog;
-
 namespace API.DTO.Requests.Settings;
 
 public class PatchSettingsRequest

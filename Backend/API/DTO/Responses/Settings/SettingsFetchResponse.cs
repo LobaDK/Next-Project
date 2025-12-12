@@ -1,6 +1,3 @@
-using Serilog;
-using Settings.Interfaces;
-
 namespace API.DTO.Responses.Settings;
 
 public record class SettingsFetchResponse
