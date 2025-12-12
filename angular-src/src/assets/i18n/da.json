@@ -84,7 +84,7 @@
       "FAIL_LOAD_LIST": "Indlæsning af skabeloner mislykkedes. Prøv igen.",
       "NO_ACTIVE_QUESTIONNAIRES": "Der er ingen aktive spørgeskemaer",
       "ITEMS_PER_PAGE": "Elementer pr. side:",
-      "SEARCH_GROUP_PLACEHOLDER": "Søg efter gruppe...",
+      "SEARCH_TEMPLATE_PLACEHOLDER": "Søg efter skabelon...",
       "SEARCH_BY_ID": "Søg efter ID",
       "SEARCH_BY_NAME": "Søg efter Navn",
       "BUTTON_CREATE_NEW": "Opret Ny Skabelon",
