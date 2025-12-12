@@ -1,11 +1,16 @@
 
-namespace UnitTests.Repos
+namespace UnitTests.Repositories
 {
     public class ActiveQuestionnaireRepoTest 
     {
         private readonly DbContextOptions<Context> _options;
         private readonly Context _context;
         private readonly ActiveQuestionnaireRepository _repo;
+        private readonly Mock<IQuestionnaireTemplateRepository> _templateRepository;
+        private readonly Mock<IUserRepository> _userRepository;
+        private readonly Mock<ITrackedRefreshTokenRepository> _tokenRepository;
+        private readonly Mock<IQuestionnaireGroupRepository> _groupRepository;
+        
         public ActiveQuestionnaireRepoTest()
         {
             _options = new DbContextOptionsBuilder<Context>()
@@ -14,6 +19,10 @@ namespace UnitTests.Repos
 
             _context = new Context(_options);
             _repo = new ActiveQuestionnaireRepository(_context, NullLoggerFactory.Instance);
+            _templateRepository = new Mock<IQuestionnaireTemplateRepository>();
+            _userRepository = new Mock<IUserRepository>();
+            _tokenRepository = new Mock<ITrackedRefreshTokenRepository>();
+            _groupRepository = new Mock<IQuestionnaireGroupRepository>();
         }
         [Fact]
         public async Task ActivateQuestionnaireAsync_ShouldCreateActiveQuestionnaire()
@@ -61,7 +70,7 @@ namespace UnitTests.Repos
                 groupId: groupId
             );
             // 
-            var unitOfWork = new UnitOfWork(_context, null, _repo, null, null, null); // inject other repos as needed
+            var unitOfWork = new UnitOfWork(_context, _templateRepository.Object, _repo, _userRepository.Object, _tokenRepository.Object, _groupRepository.Object); // inject other repos as needed
             await unitOfWork.SaveChangesAsync(); // persist the entity
 
             // Assert DTO mapping
@@ -82,6 +91,9 @@ namespace UnitTests.Repos
                 .FirstOrDefaultAsync(a => a.Id == activeQuestionnaire.Id);
 
             Assert.NotNull(dbCheck);
+            Assert.NotNull(dbCheck.Student);
+            Assert.NotNull(dbCheck.Teacher);
+            Assert.NotNull(dbCheck.QuestionnaireTemplate);
             Assert.Equal(student.Guid, dbCheck.Student.Guid);
             Assert.Equal(teacher.Guid, dbCheck.Teacher.Guid);
             Assert.Equal(template.Id, dbCheck.QuestionnaireTemplate.Id);
