@@ -203,12 +203,12 @@ public class ActiveQuestionnaireService : IActiveQuestionnaireService
                 ActivatedAt = q.ActivatedAt,
                 Student = new UserBase
                 {
-                    UserName = q.Student.UserName,
+                    UserName = q.Student is null ? throw new InvalidOperationException("Student cannot be null") : q.Student.UserName,
                     FullName = q.Student.FullName
                 },
                 Teacher = new UserBase
                 {
-                    UserName = q.Teacher.UserName,
+                    UserName = q.Teacher is null ? throw new InvalidOperationException("Teacher cannot be null") : q.Teacher.UserName,
                     FullName = q.Teacher.FullName
                 },
                 StudentCompletedAt = q.StudentCompletedAt,
@@ -260,12 +260,12 @@ public class ActiveQuestionnaireService : IActiveQuestionnaireService
             ActivatedAt = q.ActivatedAt,
             Student = new UserBase
             {
-                UserName = q.Student.UserName,
+                UserName = q.Student is null ? throw new InvalidOperationException("Student cannot be null") : q.Student.UserName,
                 FullName = q.Student.FullName
             },
             Teacher = new UserBase
             {
-                UserName = q.Teacher.UserName,
+                UserName = q.Teacher is null ? throw new InvalidOperationException("Teacher cannot be null") : q.Teacher.UserName,
                 FullName = q.Teacher.FullName
             },
             StudentCompletedAt = q.StudentCompletedAt,
@@ -310,12 +310,12 @@ public class ActiveQuestionnaireService : IActiveQuestionnaireService
                     ActivatedAt = q.ActivatedAt,
                     Student = new UserBase
                     {
-                        UserName = q.Student.UserName,
+                        UserName = q.Student is null ? throw new InvalidOperationException("Student cannot be null") : q.Student.UserName,
                         FullName = q.Student.FullName
                     },
                     Teacher = new UserBase
                     {
-                        UserName = q.Teacher.UserName,
+                        UserName = q.Teacher is null ? throw new InvalidOperationException("Teacher cannot be null") : q.Teacher.UserName,
                         FullName = q.Teacher.FullName
                     },
                     StudentCompletedAt = q.StudentCompletedAt,

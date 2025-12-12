@@ -30,8 +30,8 @@ public static class ActiveQuestionnaireMapper
             Title = activeQuestionnaire.Title,
             Description = activeQuestionnaire.Description,
             ActivatedAt = activeQuestionnaire.ActivatedAt,
-            Student = activeQuestionnaire.Student.ToBaseDto(),
-            Teacher = activeQuestionnaire.Teacher.ToBaseDto(),
+            Student = activeQuestionnaire.Student is null ? throw new InvalidOperationException("Student cannot be null") : activeQuestionnaire.Student.ToBaseDto(),
+            Teacher = activeQuestionnaire.Teacher is null ? throw new InvalidOperationException("Teacher cannot be null") : activeQuestionnaire.Teacher.ToBaseDto(),
             StudentCompletedAt = activeQuestionnaire.StudentCompletedAt,
             TeacherCompletedAt = activeQuestionnaire.TeacherCompletedAt
         };
@@ -59,11 +59,13 @@ public static class ActiveQuestionnaireMapper
             Title = activeQuestionnaire.Title,
             Description = activeQuestionnaire.Description,
             ActivatedAt = activeQuestionnaire.ActivatedAt,
-            Student = activeQuestionnaire.Student.ToBaseDto(),
-            Teacher = activeQuestionnaire.Teacher.ToBaseDto(),
+            Student = activeQuestionnaire.Student is null ? throw new InvalidOperationException("Student cannot be null") : activeQuestionnaire.Student.ToBaseDto(),
+            Teacher = activeQuestionnaire.Teacher is null ? throw new InvalidOperationException("Teacher cannot be null") : activeQuestionnaire.Teacher.ToBaseDto(),
             StudentCompletedAt = activeQuestionnaire.StudentCompletedAt,
             TeacherCompletedAt = activeQuestionnaire.TeacherCompletedAt,
-            Questions = [.. activeQuestionnaire.QuestionnaireTemplate.Questions.Select(q => q.ToDto())]
+            Questions = activeQuestionnaire.QuestionnaireTemplate is null ?
+                throw new InvalidOperationException("QuestionnaireTemplate cannot be null") :
+                [.. activeQuestionnaire.QuestionnaireTemplate.Questions.Select(q => q.ToDto())]
         };
     }
 
@@ -91,8 +93,12 @@ public static class ActiveQuestionnaireMapper
             Id = activeQuestionnaire.Id,
             Title = activeQuestionnaire.Title,
             Description = activeQuestionnaire.Description,
-            Student = new() { User = activeQuestionnaire.Student.ToDto(), CompletedAt = (DateTime)activeQuestionnaire.StudentCompletedAt!},
-            Teacher = new() { User = activeQuestionnaire.Teacher.ToDto(), CompletedAt = (DateTime)activeQuestionnaire.TeacherCompletedAt!},
+            Student = activeQuestionnaire.Student is null ?
+                throw new InvalidOperationException("Student cannot be null") :
+                new() { User = activeQuestionnaire.Student.ToDto(), CompletedAt = (DateTime)activeQuestionnaire.StudentCompletedAt!},
+            Teacher = activeQuestionnaire.Teacher is null ?
+                throw new InvalidOperationException("Teacher cannot be null") :
+                new() { User = activeQuestionnaire.Teacher.ToDto(), CompletedAt = (DateTime)activeQuestionnaire.TeacherCompletedAt!},
             Answers = [.. activeQuestionnaire.StudentAnswers.Zip(activeQuestionnaire.TeacherAnswers).Select(a => new FullAnswer {
                 Question = a.First.Question!.Prompt,
                 StudentResponse = a.First.CustomResponse ?? a.First.Option!.DisplayText,
@@ -116,7 +122,9 @@ public static class ActiveQuestionnaireMapper
             Id = activeQuestionnaire.Id,
             Title = activeQuestionnaire.Title,
             Description = activeQuestionnaire.Description,
-            Student = new() { User = activeQuestionnaire.Student.ToDto(), CompletedAt = (DateTime)activeQuestionnaire.StudentCompletedAt!},
+            Student = activeQuestionnaire.Student is null ?
+                throw new InvalidOperationException("Student cannot be null") :
+                new() { User = activeQuestionnaire.Student.ToDto(), CompletedAt = (DateTime)activeQuestionnaire.StudentCompletedAt!},
             StudentCompletedAt = activeQuestionnaire.StudentCompletedAt,
             Answers = [.. activeQuestionnaire.StudentAnswers.Select(a => new StudentAnswer {
                 Question = a.Question!.Prompt,
