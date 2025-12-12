@@ -71,7 +71,7 @@ namespace UnitTests.Controllers
             // Mock unit of work user repository
             var mockUserRepo = new Mock<IUserRepository>();
             mockUserRepo.Setup(r => r.GetUserAsync(It.IsAny<Guid>()))
-                        .ReturnsAsync((FullUser)null); // simulate user not found
+                        .ReturnsAsync((FullUser?)null); // simulate user not found
             _mockUnitOfWork.Setup(u => u.User).Returns(mockUserRepo.Object);
 
             // Inject JWTSettings via reflection
