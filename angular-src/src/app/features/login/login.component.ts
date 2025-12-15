@@ -8,6 +8,7 @@ import { finalize } from 'rxjs';
 import { LoginErrorCode } from '../home/models/login.model';
 import { LanguageSwitcherComponent } from '../../core/components/language-switcher/language-switcher.component';
 import { TrackCapsDirective } from '../../shared/directives/caps-lock';
+import { environment } from '../../../environments/environment';
 
 
 const ERROR_I18N: Record<LoginErrorCode, string> = {
@@ -50,7 +51,7 @@ export class LoginComponent {
   capsLockOn = false;
   
   // Flag to control whether to show specific AD error messages or generic ones
-  showSpecificErrors = true;
+  showSpecificErrors = environment.showSpecificErrors ?? false;
 
   login() {
     if (this.isLoading) return;
