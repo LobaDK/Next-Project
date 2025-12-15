@@ -141,6 +141,7 @@
       "ACCOUNT_EXPIRED": "Your account has expired. Please contact your administrator.",
       "PASSWORD_EXPIRED": "Your password has expired. You must change your password at next logon.",
       "ACCOUNT_LOCKED": "Your account has been locked due to multiple failed login attempts. Please contact your administrator.",
+      "ACCOUNT_LOGIN_ERROR": "A login error occurred with your account. Please contact your administrator.",
       "GENERIC_AD_ERROR": "Your account has been locked or disabled. Please contact your administrator for assistance.",
       "NETWORK": "Could not connect to the server. Check your internet connection.",
       "SERVER": "A server error occurred. Please try again later.",

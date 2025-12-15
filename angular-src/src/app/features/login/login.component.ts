@@ -16,6 +16,7 @@ const ERROR_I18N: Record<LoginErrorCode, string> = {
   [LoginErrorCode.AccountExpired]:     'LOGIN.ERRORS.ACCOUNT_EXPIRED',
   [LoginErrorCode.PasswordExpired]:    'LOGIN.ERRORS.PASSWORD_EXPIRED',
   [LoginErrorCode.AccountLocked]:      'LOGIN.ERRORS.ACCOUNT_LOCKED',
+  [LoginErrorCode.AccountLoginError]:  'LOGIN.ERRORS.ACCOUNT_LOGIN_ERROR',
   [LoginErrorCode.Network]:            'LOGIN.ERRORS.NETWORK',
   [LoginErrorCode.Server]:             'LOGIN.ERRORS.SERVER',
   [LoginErrorCode.Unknown]:            'LOGIN.ERRORS.GENERIC',
@@ -49,7 +50,7 @@ export class LoginComponent {
   capsLockOn = false;
   
   // Flag to control whether to show specific AD error messages or generic ones
-  showSpecificErrors = false;
+  showSpecificErrors = true;
 
   login() {
     if (this.isLoading) return;
@@ -96,7 +97,8 @@ export class LoginComponent {
       LoginErrorCode.AccountDisabled,
       LoginErrorCode.AccountExpired,
       LoginErrorCode.PasswordExpired,
-      LoginErrorCode.AccountLocked
+      LoginErrorCode.AccountLocked,
+      LoginErrorCode.AccountLoginError
     ].includes(errorCode);
   }
 }

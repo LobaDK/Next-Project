@@ -4,6 +4,7 @@ export enum LoginErrorCode {
   AccountExpired     = 'ACCOUNT_EXPIRED',
   PasswordExpired    = 'PASSWORD_EXPIRED',
   AccountLocked      = 'ACCOUNT_LOCKED',
+  AccountLoginError  = 'ACCOUNT_LOGIN_ERROR',
   Network            = 'NETWORK',
   Forbidden          = 'FORBIDDEN',
   RateLimited        = 'RATE_LIMITED',
@@ -15,16 +16,17 @@ export enum LoginErrorCode {
 }
 
 export enum ADErrorCode {
-  IncorrectCredentials = '52e',
-  AccountDisabled = '533', 
-  AccountExpired = '701',
-  PasswordExpired = '773',
-  AccountLocked = '775'
+  InvalidCredentials = 'InvalidCredentials',
+  AccountDisabled = 'AccountDisabled', 
+  AccountExpired = 'AccountExpired',
+  PasswordExpired = 'PasswordHasExpired',
+  AccountLocked = 'AccountIsLockedOut',
+  AccountLoginError = 'AccountLoginError'
 }
 
 export interface ADErrorResponse {
-  ErrorCode: string;
-  Message: string;
+  errorCode: string;
+  message: string;
 }
 
 export type LoginResult = { success: true } | { success: false; code: LoginErrorCode };

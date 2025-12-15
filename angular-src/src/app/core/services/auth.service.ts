@@ -78,7 +78,6 @@ export class AuthService {
         if (code !== LoginErrorCode.InvalidCredentials) {
           this.logout();
         }
-
         return of({ success: false, code });
       })
     );
@@ -279,7 +278,7 @@ private mapHttpErrorToLoginErrorCode(httpError: HttpErrorResponse): LoginErrorCo
       // Handle both JSON objects and JSON strings in the error response
       if (typeof httpError.error === 'string') {
         adError = JSON.parse(httpError.error);
-      } else if (httpError.error.ErrorCode) {
+      } else if (httpError.error.errorCode || httpError.error.ErrorCode) {
         adError = httpError.error;
       } else {
         // Fallback: check if error message itself is a JSON string
@@ -292,8 +291,10 @@ private mapHttpErrorToLoginErrorCode(httpError: HttpErrorResponse): LoginErrorCo
       }
       
       // Map AD error codes to specific LoginErrorCode values
-      switch (adError.ErrorCode) {
-        case ADErrorCode.IncorrectCredentials:
+      // Handle both new (errorCode) and legacy (ErrorCode) property names
+      const errorCode = adError.errorCode || adError.errorCode;
+      switch (errorCode) {
+        case ADErrorCode.InvalidCredentials:
           return LoginErrorCode.InvalidCredentials;
         case ADErrorCode.AccountDisabled:
           return LoginErrorCode.AccountDisabled;
