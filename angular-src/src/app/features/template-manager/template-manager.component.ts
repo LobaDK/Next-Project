@@ -12,6 +12,8 @@ import { Template, TemplateBase, TemplateStatus } from '../../shared/models/temp
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ModalComponent } from '../../shared/components/modal/modal.component';
 import { DebouncedInputDirective } from '../../shared/directives/debounced-input.directive';
+import { DeleteTemplateDialog } from './delete-template-modal/DeleteTemplateDialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 /** Modal dialog purposes supported by this page. */
 enum TemplateModalType {
@@ -55,6 +57,7 @@ enum TemplateModalType {
 export class TemplateManagerComponent {
   private templateService = inject(TemplateService);
   private translate = inject(TranslateService);
+  private dialog = inject(MatDialog);
 
   templateBases: TemplateBase[] = [];
   cachedCursors: { [pageNumber: number]: string | null } = {};
@@ -261,10 +264,6 @@ onFinalizeTemplate(tmpl: Template): void {
   isSelectedPageSize(size: number): boolean {
     return size === this.pageSize;
   }
-
-openDeleteModal(templateId: string): void {
-  this.showModal(TemplateModalType.Delete, templateId);
-}
 
 /**
  * updates the current editor state.
@@ -502,4 +501,23 @@ private deepCopyAsNewTemplate(template: Template): Template {
 
   return clone;
 }
+openDeleteDialog(templateId: string): void {
+  this.dialog
+    .open(DeleteTemplateDialog, {
+      panelClass: 'app-modal',
+      maxWidth: '28rem',   // matches max-w-md
+      width: '100%',
+      disableClose: true,
+      data: templateId,
+    })
+    .afterClosed()
+    .subscribe(deleted => {
+      if (deleted) {
+        this.resetData();
+        this.fetchTemplateBases();
+      }
+    });
+}
+
+
 }
