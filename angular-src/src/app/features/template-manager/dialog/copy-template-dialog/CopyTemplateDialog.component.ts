@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { TemplateService } from '../services/template.service';
-import { Template, TemplateStatus } from '../../../shared/models/template.model';
+import { TemplateService } from '../../services/template.service';
+import { Template, TemplateStatus } from '../../../../shared/models/template.model';
 
 @Component({
   standalone: true,
   imports: [CommonModule, MatDialogModule, MatButtonModule, TranslateModule],
-  styleUrls: ['../../../styles/dialogs.scss'],
+  styleUrls: ['../../../../styles/dialogs.scss'],
   templateUrl: './CopyTemplateDialog.component.html'
 })
 export class CopyTemplateDialog {

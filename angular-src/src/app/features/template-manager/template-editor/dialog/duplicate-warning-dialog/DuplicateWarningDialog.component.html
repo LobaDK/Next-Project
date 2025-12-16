@@ -1,0 +1,27 @@
+<div class="app-dialog-surface animate-slideIn">
+
+  <!-- Title -->
+  <h3 class="text-2xl font-bold mb-3 text-primary_dark_blue text-center">
+    {{ 'TEMPLATE.DUPLICATE_WARNING.TITLE' | translate }}
+  </h3>
+
+  <!-- Text -->
+  <p
+    class="mb-8 text-gray-700 text-center leading-relaxed"
+    [innerHTML]="'TEMPLATE.DUPLICATE_WARNING.TEXT' | translate">
+  </p>
+
+  <!-- Buttons -->
+  <div class="flex gap-3 justify-center">
+    <button
+      type="button"
+      (click)="close()"
+      class="px-6 py-3 bg-primary_orange_1 text-white rounded-lg
+             hover:bg-primary_orange_light focus:outline-none focus:ring-2 focus:ring-primary_orange_1
+             transition-all duration-200 font-medium shadow-md
+             active:scale-95">
+      {{ 'COMMON.BUTTONS.CLOSE' | translate }}
+    </button>
+  </div>
+
+</div>

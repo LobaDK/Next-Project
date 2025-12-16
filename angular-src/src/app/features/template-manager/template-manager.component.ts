@@ -12,9 +12,9 @@ import { Template, TemplateBase, TemplateStatus } from '../../shared/models/temp
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { DebouncedInputDirective } from '../../shared/directives/debounced-input.directive';
-import { DeleteTemplateDialog } from './delete-template-modal/DeleteTemplateDialog.component';
-import { CopyTemplateDialog } from './copy-template-modal/CopyTemplateDialog.component';
-import { ErrorDialog } from './error-modal/ErrorDialog.component';
+import { DeleteTemplateDialog } from './dialog/delete-template-dialog/DeleteTemplateDialog.component';
+import { CopyTemplateDialog } from './dialog/copy-template-dialog/CopyTemplateDialog.component';
+import { ErrorDialog } from './dialog/error-dialog/ErrorDialog.component';
 import { MatDialog } from '@angular/material/dialog';
 
 

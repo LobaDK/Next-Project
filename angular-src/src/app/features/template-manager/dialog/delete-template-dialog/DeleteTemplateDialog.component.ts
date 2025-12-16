@@ -2,14 +2,14 @@ import { Component, inject, Inject } from '@angular/core';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { TemplateService } from '../services/template.service';
+import { TemplateService } from '../../services/template.service';
 
 type DeleteStage = 'confirm' | 'final';
 
 @Component({
   standalone: true,
   imports: [MatDialogModule, MatButtonModule, TranslateModule],
-  styleUrls: [ '../../../styles/dialogs.scss'],
+  styleUrls: [ '../../../../styles/dialogs.scss'],
   templateUrl: './DeleteTemplateDialog.component.html'
 })
 export class DeleteTemplateDialog {

@@ -240,6 +240,10 @@
     "CONFIRM_SUBMIT_TITLE":" Bekræft Indsendelse",
     "CONFIRM_SUBMIT_TEXT":" Er du sikker på, at du vil indsende dine svar? Du kan ikke redigere dem efter indsendelse."
   },
+  "QUESTIONNAIRE": {
+    "SUBMIT_SUCCESS": "Spørgeskema indsendt med succes!",
+    "SUBMIT_ERROR": "Der opstod en fejl ved indsendelsen af dit spørgeskema. Prøv igen senere."
+  },
 
   "DATA_COMPARE" : {
     "TITLE": "Vis resultater på anonyme spørgeskemaer",

@@ -244,6 +244,10 @@
     "CONFIRM_SUBMIT_TITLE":" Confirm Submission",
     "CONFIRM_SUBMIT_TEXT":" Are you sure you want to submit your answers? You won't be able to change them later."
   },
+  "QUESTIONNAIRE": {
+    "SUBMIT_SUCCESS": "Questionnaire submitted successfully!",
+    "SUBMIT_ERROR": "There was an error submitting your questionnaire. Please try again later."
+  },
   "DATA_COMPARE" : {
     "TITLE": "Show Results for Anonymous Questionnaires",
     "VIEW_EVALUATION_RESULTS": "View Evaluation Results",

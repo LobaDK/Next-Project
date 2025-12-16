@@ -215,7 +215,7 @@
         </button>
       </div>
       <div class="flex justify-start">
-        <button [disabled]="!student.selected || !template.selected" (click)="showCreateConfirmation()"
+        <button [disabled]="!student.selected || !template.selected" (click)="openCreateConfirmDialog()"
           class="bg-primary_orange_1 hover:bg-primary_orange_light text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 w-full sm:w-auto">
           {{ 'ACTIVE_BUILDER.FINISH' | translate }}
         </button>
@@ -500,7 +500,7 @@
         </button>
       </div>
       <div class="flex justify-start">
-        <button [disabled]="!student.selected || !template.selected" (click)="showCreateConfirmation()"
+        <button [disabled]="!student.selected || !template.selected" (click)="openCreateConfirmDialog()"
           class="bg-primary_orange_1 hover:bg-primary_orange_light text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 w-full sm:w-auto">
           {{ 'ACTIVE_BUILDER.FINISH' | translate }}
         </button>
@@ -508,14 +508,5 @@
     </div>
   }
 
-  <!-- Confirmation Modal -->
-  <app-modal
-    [isOpen]="showConfirmationModal"
-    [title]="confirmationTitle | translate"
-    [text]="confirmationText | translate"
-    [confirmText]="confirmationConfirmText | translate"
-    [cancelText]="confirmationCancelText | translate"
-    (confirm)="onConfirmCreate()"
-    (cancel)="onCancelCreate()">
-  </app-modal>
+
 </div>
