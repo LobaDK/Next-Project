@@ -81,7 +81,7 @@ else
 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddScoped<IValidator<QuestionnaireTemplateAdd>, CreateQuestionnaireTemplateSubmissionValidator>();
-builder.Services.AddScoped<SystemControllerService>();
+builder.Services.AddScoped<ISystemControllerService, SystemControllerService>();
 builder.Services.AddScoped<JsonSerializerService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
