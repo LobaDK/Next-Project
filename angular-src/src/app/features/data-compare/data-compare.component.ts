@@ -1,5 +1,5 @@
 // Angular component for comparing anonymised questionnaire data
-import { CommonModule } from "@angular/common";
+
 import {
   Component,
   ElementRef,
@@ -9,6 +9,7 @@ import {
   ViewChild,
   inject,
   Output,
+  Input,
 } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { TranslateModule } from "@ngx-translate/core";
@@ -21,6 +22,8 @@ import { TemplateBase } from "../active-questionnaire-manager/models/active.mode
 import { AgCharts } from "ag-charts-angular";
 import { DataCompareService } from "./services/data-compare.service";
 import { HttpClient } from "@angular/common/http";
+import { DebouncedInputDirective } from '../../shared/directives/debounced-input.directive';
+
 
 // ---- NEW: chart strategy imports ----
 import { ChartRegistry } from "./charts/chart-registry";
@@ -30,15 +33,13 @@ import {
   AnswerCounts,
 } from "./models/data-compare.model";
 
-// User or group result type for search
-type UserOrGroup =
-  | (User & { type: "user" })
-  | { groupId: string; name: string; type: "group" };
+// Group result type for search
+type Group = { groupId: string; name: string; type: "group" };
 
-interface UserSearchEntity {
-  selected: UserOrGroup[];
+interface GroupSearchEntity {
+  selected: Group[];
   searchInput: string;
-  searchResults: UserOrGroup[];
+  searchResults: Group[];
   page: number;
   totalPages: number;
   isLoading: boolean;
@@ -51,14 +52,14 @@ interface TemplateSearchEntity extends SearchEntity<TemplateBase> {
   queryCursor?: string;
 }
 
-type SearchType = "student" | "template";
+type SearchType = "group" | "template";
 
 @Component({
-  selector: "app-data-compare",
-  standalone: true,
-  imports: [TranslateModule, CommonModule, FormsModule, AgCharts],
-  templateUrl: "./data-compare.component.html",
-  styleUrl: "./data-compare.component.css",
+    selector: "app-data-compare",
+    standalone: true,
+    imports: [TranslateModule, FormsModule, AgCharts, DebouncedInputDirective],
+    templateUrl: "./data-compare.component.html",
+    styleUrl: "./data-compare.component.css"
 })
 /**
  * DataCompareComponent
@@ -69,6 +70,8 @@ export class DataCompareComponent implements OnInit, OnDestroy {
   public currentQuestionIndex: number = 0;
   // List of all questions found in the dataset
   public questions: string[] = [];
+  // Optional stable identifiers for questions (when backend provides them)
+  private questionIds: Array<string | null> = [];
   // All datasets returned from the API (used for aggregation)
   private allAnswers: any[] = [];
   // List of all years found in the dataset
@@ -82,8 +85,8 @@ export class DataCompareComponent implements OnInit, OnDestroy {
   private registry = new ChartRegistry();
 
   // References to search input areas for click-outside logic
-  @ViewChild("studentSearchArea", { static: false })
-  studentSearchArea!: ElementRef;
+  @ViewChild("groupSearchArea", { static: false })
+  groupSearchArea!: ElementRef;
   @ViewChild("templateSearchArea", { static: false })
   templateSearchArea!: ElementRef;
 
@@ -94,8 +97,8 @@ export class DataCompareComponent implements OnInit, OnDestroy {
   ) {}
   private activeService = inject(ActiveService);
 
-  // Controls visibility of student/template search results dropdowns
-  public showStudentResults = false;
+  // Controls visibility of group/template search results dropdowns
+  public showGroupResults = false;
   public showTemplateResults = false;
 
   // Misc state (not used in chart logic)
@@ -103,9 +106,9 @@ export class DataCompareComponent implements OnInit, OnDestroy {
   public isAnonymousMode = false;
 
   /**
-   * State for student search and selection
+   * State for group search and selection
    */
-  public student: UserSearchEntity = {
+  public group: GroupSearchEntity = {
     selected: [],
     searchInput: "",
     searchResults: [],
@@ -136,6 +139,12 @@ export class DataCompareComponent implements OnInit, OnDestroy {
   // Number of results per search
   searchAmount = 10;
 
+  // Input to control whether to show the navigation button
+  @Input() showNavigationButton: boolean = false;
+
+  // Output to emit when user wants to navigate to evaluation results
+  @Output() navigateToEvaluation = new EventEmitter<void>();
+
   // Emits event to parent when returning to list view
   @Output() backToListEvent = new EventEmitter<void>();
 
@@ -143,10 +152,10 @@ export class DataCompareComponent implements OnInit, OnDestroy {
    * Handles click events outside of search areas to close dropdowns
    */
   private handleDocumentClick = (event: MouseEvent) => {
-    const studentArea = this.studentSearchArea?.nativeElement;
+    const groupArea = this.groupSearchArea?.nativeElement;
     const templateArea = this.templateSearchArea?.nativeElement;
-    if (studentArea && !studentArea.contains(event.target as Node)) {
-      this.showStudentResults = false;
+    if (groupArea && !groupArea.contains(event.target as Node)) {
+      this.showGroupResults = false;
     }
     if (templateArea && !templateArea.contains(event.target as Node)) {
       this.showTemplateResults = false;
@@ -157,11 +166,11 @@ export class DataCompareComponent implements OnInit, OnDestroy {
    * Component initialization: subscribe to search subjects and set up click-outside handler
    */
   ngOnInit(): void {
-    // Debounced search for students
-    this.student.searchSubject
+    // Debounced search for groups
+    this.group.searchSubject
       .pipe(debounceTime(300), distinctUntilChanged())
       .subscribe((term) => {
-        this.fetch("student", term);
+        this.fetch("group", term);
       });
     // Debounced search for templates
     this.template.searchSubject
@@ -184,8 +193,8 @@ export class DataCompareComponent implements OnInit, OnDestroy {
    * Returns the state object for the given entity type
    */
   private getState(entity: SearchType): SearchEntity<any> {
-    if (entity === "student") {
-      return this.student;
+    if (entity === "group") {
+      return this.group;
     } else if (entity === "template") {
       return this.template;
     }
@@ -193,7 +202,7 @@ export class DataCompareComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Fetches users/templates and merges with groups (for students)
+   * Fetches groups or templates based on search term
    */
   private fetch(entity: SearchType, term: string): void {
     const state = this.getState(entity);
@@ -205,7 +214,7 @@ export class DataCompareComponent implements OnInit, OnDestroy {
 
     // Reset cursors
     if (entity !== "template") {
-      (state as UserSearchEntity).sessionId = undefined;
+      (state as GroupSearchEntity).sessionId = undefined;
     } else {
       (state as TemplateSearchEntity).queryCursor = undefined;
     }
@@ -229,47 +238,37 @@ export class DataCompareComponent implements OnInit, OnDestroy {
           },
         });
     } else {
-      const userState = state as UserSearchEntity;
-      this.activeService
-        .searchUsers(term, entity, this.searchAmount, userState.sessionId)
+      const groupState = state as GroupSearchEntity;
+      // Get selected template ID for the API call
+      const templateId = this.template.selected[0]?.id;
+      if (!templateId) {
+        state.errorMessage = "Please select a template first.";
+        state.isLoading = false;
+        return;
+      }
+      
+      // Fetch groups for the selected template
+      this.http
+        .get<any[]>(`${this.DataCompareService.apiUrl}/templateGroupsBasic`, {
+          params: { templateId }
+        })
         .subscribe({
-          next: (response) => {
-            const userBases = response.userBases || [];
-            userState.sessionId = response.sessionId;
-
-            // Also search groups
-            this.http
-              .get<any[]>(`${this.DataCompareService.apiUrl}/groupsbasic`)
-              .subscribe({
-                next: (groups) => {
-                  const filteredGroups = groups.filter((g) =>
-                    g.name.toLowerCase().includes(term.toLowerCase())
-                  );
-                  const groupResults = filteredGroups.map((g) => ({
-                    ...g,
-                    type: "group",
-                  }));
-                  const userResults = userBases.map((u: any) => ({
-                    ...u,
-                    type: "user",
-                  }));
-                  userState.searchResults = [...userResults, ...groupResults];
-                  userState.hasMore = false;
-                  state.isLoading = false;
-                },
-                error: () => {
-                  // Fall back to users only
-                  userState.searchResults = userBases.map((u: any) => ({
-                    ...u,
-                    type: "user",
-                  }));
-                  userState.hasMore = false;
-                  state.isLoading = false;
-                },
-              });
+          next: (groups) => {
+            const filteredGroups = groups.filter((g) =>
+              g.name.toLowerCase().includes(term.toLowerCase())
+            );
+            const groupResults = filteredGroups.map((g) => ({
+              ...g,
+              type: "group",
+            }));
+            groupState.searchResults = groupResults;
+            groupState.hasMore = false;
+            state.isLoading = false;
           },
           error: () => {
             state.errorMessage = `Failed to load ${entity}s.`;
+            groupState.searchResults = [];
+            groupState.hasMore = false;
             state.isLoading = false;
           },
         });
@@ -277,7 +276,7 @@ export class DataCompareComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Selects or deselects a user or group from the search results
+   * Selects or deselects a group from the search results
    */
   select(entity: SearchType, item: any): void {
     const state = this.getState(entity);
@@ -285,9 +284,9 @@ export class DataCompareComponent implements OnInit, OnDestroy {
       state.selected = [];
     }
     // Only allow one selected item (keep last selected)
-    const idKey = item.type === "group" ? "groupId" : "id";
+    const idKey = "groupId";
     const idx = state.selected.findIndex(
-      (u: any) => u.type === item.type && u[idKey] === item[idKey]
+      (u: any) => u[idKey] === item[idKey]
     );
     if (idx === -1) {
       state.selected.push(item);
@@ -298,8 +297,8 @@ export class DataCompareComponent implements OnInit, OnDestroy {
     // Clear search input after selection
     state.searchInput = "";
 
-    if (entity === "student") {
-      this.showStudentResults = false;
+    if (entity === "group") {
+      this.showGroupResults = false;
     } else {
       this.showTemplateResults = false;
     }
@@ -316,15 +315,28 @@ export class DataCompareComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Checks if a template is selected
+   */
+  isTemplateSelected(): boolean {
+    return this.template.selected.length > 0;
+  }
+
+  /**
    * Handles input change for search fields and triggers search
    */
   onInputChange(entity: SearchType, value: string): void {
     const state = this.getState(entity);
     state.searchInput = value;
+    
+    // Prevent searching for groups if no template is selected
+    if (entity === "group" && !this.isTemplateSelected()) {
+      return;
+    }
+    
     state.searchSubject.next(value);
 
-    if (entity === "student") {
-      this.showStudentResults = true;
+    if (entity === "group") {
+      this.showGroupResults = true;
     } else {
       this.showTemplateResults = true;
     }
@@ -343,23 +355,75 @@ export class DataCompareComponent implements OnInit, OnDestroy {
    * @param userId User GUID (optional)
    * @param groupId Group GUID (optional)
    */
-  fetchChartData(templateId: string, userId?: string, groupId?: string) {
+  fetchChartData(templateId: string, groupId?: string) {
     this.DataCompareService.getAnonymisedResponses(
       templateId,
-      userId,
       groupId
     ).subscribe({
       next: (apiData) => {
+        // DEBUG: log raw API response to help debug duplicate/merged questions
+        // Remove or disable these logs after debugging
+        console.debug('DataCompare: raw apiData', apiData);
         const datasets = apiData.anonymisedResponseDataSet || [];
 
-        // Build set of all unique questions
-        const questionsSet = new Set<string>();
-        datasets.forEach((dataset: any) => {
-          dataset.anonymisedResponses.forEach((q: any) =>
-            questionsSet.add(q.question)
-          );
+        // Build ordered list of questions by position (don't dedupe by text)
+        // Some questions may have identical text (e.g. 'N/A') but represent
+        // different question positions. Using position prevents merging them.
+        const maxLen = datasets.length
+          ? Math.max(...datasets.map((d: any) => d.anonymisedResponses?.length || 0))
+          : 0;
+        const questionsByPosition: string[] = [];
+        const detectedQuestionIds: Array<string | null> = [];
+        for (let i = 0; i < maxLen; i++) {
+          // Prefer the label from the first dataset that has a value at this index
+          let label = "";
+          let idVal: string | null = null;
+          for (const d of datasets) {
+            if (
+              d.anonymisedResponses &&
+              d.anonymisedResponses[i] &&
+              d.anonymisedResponses[i].question
+            ) {
+              const q = d.anonymisedResponses[i];
+              label = q.question;
+              // detect stable id field if backend provided one
+              idVal = q.id ?? q.questionId ?? null;
+              break;
+            }
+          }
+          questionsByPosition.push(label || `Question ${i + 1}`);
+          detectedQuestionIds.push(idVal);
+        }
+
+        // remember detected question ids for matching later
+        this.questionIds = detectedQuestionIds;
+
+        // If multiple questions have the same label (e.g. 'N/A'), disambiguate
+        // them for display by appending a short position suffix so the UI
+        // treats them as distinct entries while keeping the original text.
+        const labelCounts: Record<string, number> = {};
+        const disambiguated = questionsByPosition.map((lbl, idx) => {
+          const key = lbl || `Question ${idx + 1}`;
+          labelCounts[key] = (labelCounts[key] || 0) + 1;
+          return { label: key, idx };
         });
-        this.questions = Array.from(questionsSet);
+
+        // If any label occurs more than once, append a (n) suffix to each
+        const duplicates = Object.keys(labelCounts).filter((k) => labelCounts[k] > 1);
+        if (duplicates.length > 0) {
+          const occurrence: Record<string, number> = {};
+          this.questions = disambiguated.map(({ label, idx }) => {
+            occurrence[label] = (occurrence[label] || 0) + 1;
+            if (labelCounts[label] > 1) {
+              return `${label} (${occurrence[label]})`;
+            }
+            return label;
+          });
+        } else {
+          // DEBUG: inspect computed lists
+          console.debug('DataCompare: questionsByPosition', questionsByPosition);
+          this.questions = questionsByPosition;
+        }
 
         // Build set of all unique years (extract from datasetTitle)
         const yearsSet = new Set<string>();
@@ -377,6 +441,9 @@ export class DataCompareComponent implements OnInit, OnDestroy {
         this.currentYearIndex =
           this.years.length > 0 ? this.years.length - 1 : 0;
 
+        // DEBUG: final computed questions and datasets summary
+        console.debug('DataCompare: final questions', this.questions);
+        console.debug('DataCompare: datasets count', datasets.length, 'allAnswers length', this.allAnswers.length);
         this.updateChartForCurrentQuestion();
       },
       error: (err) => {
@@ -387,23 +454,18 @@ export class DataCompareComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Handles chart update: fetches data for selected template and (optionally) user/group
+   * Handles chart update: fetches data for selected template and (optionally) group
    */
   onCompareClick() {
     const templateId = this.template.selected[0]?.id;
-    let userId: string | undefined = undefined;
     let groupId: string | undefined = undefined;
 
-    if (this.student.selected.length > 0) {
-      const selected = this.student.selected[0];
-      if (selected.type === "user") {
-        userId = (selected as User).id;
-      } else if (selected.type === "group") {
-        groupId = selected.groupId;
-      }
+    if (this.group.selected.length > 0) {
+      const selected = this.group.selected[0];
+      groupId = selected.groupId;
     }
     if (templateId) {
-      this.fetchChartData(templateId, userId, groupId);
+      this.fetchChartData(templateId, groupId);
     }
   }
 
@@ -417,7 +479,7 @@ export class DataCompareComponent implements OnInit, OnDestroy {
     )
       return null;
 
-    const question = this.questions[this.currentQuestionIndex];
+    const questionIndex = this.currentQuestionIndex;
     const year = this.years[this.currentYearIndex];
 
     // Filter datasets for the selected year (datasetTitle starts with year)
@@ -425,13 +487,23 @@ export class DataCompareComponent implements OnInit, OnDestroy {
       d.datasetTitle?.startsWith(year)
     );
 
-    // Aggregate answer counts for the selected question across all datasets in the year
+    // Aggregate answer counts for the selected question across all datasets in the year.
+    // Prefer matching by stable question id when the backend provides one; fall back to positional index.
     const answers: AnswerCounts = {};
     datasetsForYear.forEach((dataset: any) => {
-      const questionObj = dataset.anonymisedResponses.find(
-        (q: any) => q.question === question
-      );
-      if (questionObj) {
+      let questionObj: any = null;
+      const qId = this.questionIds && this.questionIds[questionIndex];
+      if (qId && Array.isArray(dataset.anonymisedResponses)) {
+        questionObj = dataset.anonymisedResponses.find(
+          (q: any) => q.id === qId || q.questionId === qId
+        );
+      }
+      // Fallback to positional lookup if no id match
+      if (!questionObj && dataset.anonymisedResponses) {
+        questionObj = dataset.anonymisedResponses[questionIndex];
+      }
+
+      if (questionObj && Array.isArray(questionObj.answers)) {
         questionObj.answers.forEach((a: any) => {
           if (!answers[a.answer]) {
             answers[a.answer] = { count: 0, dates: [] };
@@ -442,7 +514,11 @@ export class DataCompareComponent implements OnInit, OnDestroy {
       }
     });
 
-    return { question, year, answers };
+    // DEBUG: inspect aggregated answers produced by buildChartInput
+    console.debug('DataCompare: buildChartInput - questionIndex', questionIndex, 'year', year, 'answers', answers);
+
+  const question = this.questions[this.currentQuestionIndex];
+  return { question, year, answers };
   }
 
   /**
@@ -503,5 +579,12 @@ export class DataCompareComponent implements OnInit, OnDestroy {
       this.currentYearIndex--;
       this.updateChartForCurrentQuestion();
     }
+  }
+
+  /**
+   * Emits navigation event to switch to evaluation results view
+   */
+  onNavigateToEvaluation() {
+    this.navigateToEvaluation.emit();
   }
 }

@@ -1,12 +1,3 @@
-using Database.DTO.ActiveQuestionnaire;
-using Database.DTO.QuestionnaireTemplate;
-using Database.Enums;
-using Database.Extensions;
-using Database.Interfaces;
-using Database.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Database.Repository;
 
@@ -103,7 +94,6 @@ public class ActiveQuestionnaireRepository(Context context, ILoggerFactory logge
         };
 
         await _genericRepository.AddAsync(activeQuestionnaire);
-
         return activeQuestionnaire.ToDto();
     }
 
@@ -374,7 +364,13 @@ public class ActiveQuestionnaireRepository(Context context, ILoggerFactory logge
     /// </remarks>
     public async Task<List<ActiveQuestionnaireBase>> GetPendingActiveQuestionnaires(Guid userId)
     {
-        UserBaseModel user = await _context.Users.SingleOrDefaultAsync(u => u.Guid == userId) ?? throw new InvalidOperationException("User not found.");
+        UserBaseModel? user = await _context.Users.SingleOrDefaultAsync(u => u.Guid == userId);
+
+        if (user is null)
+        {
+            return [];
+        }
+
         List<ActiveQuestionnaireModel> activeQuestionnaireBases;
         if (user.GetType().Equals(typeof(StudentModel)))
         {
@@ -444,6 +440,31 @@ public class ActiveQuestionnaireRepository(Context context, ILoggerFactory logge
         return [.. activeQuestionnaires.Select(a => a.ToFullStudentRespondsDate())];
     }
 
+    public async Task<List<FullResponse>> GetResponsesFromTeacherAndStudentAndTemplateWithDateAsync(Guid studentid,Guid teacherid, Guid templateid)
+    {
+        QuestionnaireTemplateModel template = await _context.QuestionnaireTemplates.SingleAsync(t => t.Id == templateid);
+        if (template.Title.IsNullOrEmpty())
+        {
+            throw new Exception("The requested Template Questionnaire does not exsist.");
+        }
+
+        List<ActiveQuestionnaireModel> activeQuestionnaires = await _context.ActiveQuestionnaires
+            .Include(a => a.StudentAnswers)
+            .ThenInclude(a => a.Question)
+            .Include(a => a.StudentAnswers)
+            .ThenInclude(a => a.Option)
+            .Include(a => a.TeacherAnswers)
+            .ThenInclude(a => a.Question)
+            .Include(a => a.TeacherAnswers)
+            .ThenInclude(a => a.Option)
+            .Include(a => a.Student)
+            .Include(a => a.Teacher)
+            .Where(a => a.Student.Guid == studentid && a.QuestionnaireTemplate.Id == templateid && a.Teacher.Guid == teacherid && (a.StudentCompletedAt.HasValue && a.TeacherCompletedAt.HasValue))
+            .ToListAsync();
+
+        return [.. activeQuestionnaires.Select(a => a.ToFullResponseAll())];
+    }
+
     public async Task<SurveyResponseSummary> GetAnonymisedResponses(Guid templateId, List<Guid> users, List<Guid> groups)
     {
         // Get the template with its active questionnaires and all related data
@@ -466,14 +487,18 @@ public class ActiveQuestionnaireRepository(Context context, ILoggerFactory logge
                             .Where(sa => users.Count == 0 || (a.Student != null && users.Contains(a.Student.Guid)))
                             .Select(sa => new
                             {
+                                QuestionId = sa.Question!.Id,
                                 QuestionPrompt = sa.Question!.Prompt,
+                                AnswerId = sa.Option != null ? (int?)sa.Option.Id : null,
                                 Answer = sa.CustomResponse ?? sa.Option!.DisplayText
                             }).ToList(),
                         TeacherAnswers = a.TeacherAnswers
                             .Where(ta => users.Count == 0 || (a.Teacher != null && users.Contains(a.Teacher.Guid)))
                             .Select(ta => new
                             {
+                                QuestionId = ta.Question!.Id,
                                 QuestionPrompt = ta.Question!.Prompt,
+                                AnswerId = ta.Option != null ? (int?)ta.Option.Id : null,
                                 Answer = ta.CustomResponse ?? ta.Option!.DisplayText
                             }).ToList()
                     }).ToList()
@@ -492,15 +517,15 @@ public class ActiveQuestionnaireRepository(Context context, ILoggerFactory logge
                 DatasetTitle = questionnaire.ActivatedAt.ToString("yyyy-MM-dd"),
                 ParticipantCount = questionnaire.StudentAnswers.Count + questionnaire.TeacherAnswers.Count,
                 AnonymisedResponses = [.. allAnswers
-                    .GroupBy(response => response.QuestionPrompt)
+                    .GroupBy(response => new { response.QuestionId, response.QuestionPrompt })
                     .Select(questionGroup => new AnonymisedResponsesQuestion
                     {
-                        Question = questionGroup.Key,
+                        Question = questionGroup.Key.QuestionPrompt,
                         Answers = [.. questionGroup
-                            .GroupBy(response => response.Answer)
+                            .GroupBy(response => new { response.AnswerId, response.Answer })
                             .Select(answerGroup => new AnonymisedResponsesAnswer
                             {
-                                Answer = answerGroup.Key,
+                                Answer = answerGroup.Key.Answer,
                                 Count = answerGroup.Count()
                             })]
                     })]
@@ -551,7 +576,7 @@ public class ActiveQuestionnaireRepository(Context context, ILoggerFactory logge
             .Where(aq => aq.Student!.Guid == studentId && 
                          aq.Teacher!.Guid == teacherId && 
                          aq.QuestionnaireTemplateFK == templateId &&
-                         (aq.StudentCompletedAt != null || aq.TeacherCompletedAt != null)) // Only include questionnaires with at least one completion
+                         aq.StudentCompletedAt != null && aq.TeacherCompletedAt != null) // Only include questionnaires where both parties have completed
             .OrderBy(aq => aq.ActivatedAt)
             .ToListAsync();
 

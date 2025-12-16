@@ -17,12 +17,20 @@ using System.Net;
 using API.Services.Authentication;
 using System.Text.Json.Serialization;
 using Serilog;
+using FluentValidation.AspNetCore;
+using FluentValidation;
+using API.Validators;
+using Microsoft.Extensions.Logging;
 
 const string settingsFile = "config.json";
 
 var builder = WebApplication.CreateBuilder(args);
 
-SettingsHelper settingsHelper = new(settingsFile);
+// Bootstrap logger for settings helper before the main logging pipeline is configured
+using var bootstrapLoggerFactory = LoggerFactory.Create(logging => logging.AddConsole());
+ILogger<SettingsHelper> settingsLogger = bootstrapLoggerFactory.CreateLogger<SettingsHelper>();
+
+SettingsHelper settingsHelper = new(settingsFile, settingsLogger);
 
 if (!settingsHelper.SettingsExists())
 {
@@ -71,13 +79,15 @@ else
     builder.Services.AddScoped<IAuthenticationBridge, ActiveDirectoryAuthenticationBridge>();
 }
 
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddScoped<IValidator<QuestionnaireTemplateAdd>, CreateQuestionnaireTemplateSubmissionValidator>();
 builder.Services.AddScoped<SystemControllerService>();
 builder.Services.AddScoped<JsonSerializerService>();
-builder.Services.AddScoped<JwtService>();
+builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<QuestionnaireTemplateService>();
-builder.Services.AddScoped<ActiveQuestionnaireService>();
-builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<IQuestionnaireTemplateService, QuestionnaireTemplateService>();
+builder.Services.AddScoped<IActiveQuestionnaireService, ActiveQuestionnaireService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSingleton<CacheService>();
 builder.Services.AddMemoryCache();
 builder.Services.AddAuthentication(cfg => {

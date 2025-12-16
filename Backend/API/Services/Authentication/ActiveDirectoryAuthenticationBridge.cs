@@ -1,11 +1,3 @@
-using System.Net;
-using API.DTO.LDAP;
-using API.DTO.User;
-using API.Exceptions;
-using API.FieldMappers;
-using Novell.Directory.Ldap;
-using Novell.Directory.Ldap.Controls;
-using Settings.Models;
 
 namespace API.Services.Authentication;
 
@@ -229,7 +221,7 @@ public class ActiveDirectoryAuthenticationBridge(
         {
             _Logger.LogDebug("Applying role filter for: {UserRole}", userRole);
             // Converts internal role to ldap role
-            KeyValuePair<string, string>? matchedRole = _JwtSettings.Roles.FirstOrDefault(x => userRole.Contains(x.Key, StringComparison.CurrentCultureIgnoreCase));
+            KeyValuePair<string, string>? matchedRole = _LdapSettings.RoleMappingsCN.FirstOrDefault(x => userRole.Contains(x.Key, StringComparison.CurrentCultureIgnoreCase));
             if (matchedRole is null || matchedRole.Equals(default(KeyValuePair<string, string>)))
             {
                 _Logger.LogError("Role mapping not found for: {UserRole}", userRole);

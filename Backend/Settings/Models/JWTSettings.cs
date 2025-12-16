@@ -1,7 +1,3 @@
-using System.ComponentModel;
-using Settings.Interfaces;
-using System.Security.Cryptography;
-using System.Text.Json.Serialization;
 
 namespace Settings.Models;
 
@@ -21,9 +17,6 @@ public class JWTSettings : Base, IJWTSettings
 
     [Description("The time-to-live (TTL) for refresh tokens in days.")]
     public int RenewTokenTTLDays { get; set; } = 30;
-
-    [Description("A dictionary mapping the internal roles to the roles or groups used by the user storage provider.")]
-    public Dictionary<string, string> Roles { get; set; } = new Dictionary<string, string>() { { "student", "" }, {"teacher", ""}, {"admin", ""} };
 
     [Description("The issuer of the JWT tokens.")]
     public string Issuer { get; set; } = string.Empty;

@@ -10,11 +10,11 @@ using API.Utils;
 
 namespace API.Services;
 
-public class SystemControllerService(IConfiguration configuration, ILogger<SystemControllerService> logger, IHostApplicationLifetime hostApplicationLifetime)
+public class SystemControllerService(IConfiguration configuration, ILogger<SystemControllerService> logger, IHostApplicationLifetime hostApplicationLifetime) : ISystemControllerService
 {
     private readonly RootSettings _RootSettings = ConfigurationBinderService.Bind<RootSettings>(configuration);
     private readonly RootSettings _DefaultSettings = new();
-    private readonly ILogger<SystemControllerService> _Logger = logger;
+    private readonly ILogger<ISystemControllerService> _Logger = logger;
     private readonly JsonSerializerOptions _SerializerOptions = JsonSerializerUtility.ConfigureJsonSerializerSettings();
     private readonly IHostApplicationLifetime _HostApplicationLifetime = hostApplicationLifetime;
 
@@ -145,7 +145,6 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
                 RefreshTokenSecret = _RootSettings.JWT.RefreshTokenSecret,
                 TokenTTLMinutes = _RootSettings.JWT.TokenTTLMinutes,
                 RenewTokenTTLDays = _RootSettings.JWT.RenewTokenTTLDays,
-                Roles = _RootSettings.JWT.Roles,
                 Issuer = _RootSettings.JWT.Issuer,
                 Audience = _RootSettings.JWT.Audience
             },
@@ -156,7 +155,8 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
                 FQDN = _RootSettings.LDAP.FQDN,
                 BaseDN = _RootSettings.LDAP.BaseDN,
                 SA = _RootSettings.LDAP.SA,
-                SAPassword = _RootSettings.LDAP.SAPassword
+                SAPassword = _RootSettings.LDAP.SAPassword,
+                RoleMappingsCN = _RootSettings.LDAP.RoleMappingsCN
             },
             Logging = new LoggerSettingsFetchResponse()
             {
@@ -251,13 +251,7 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
                     Description = GetPropertyDescription(typeof(JWTSettings).GetProperty(nameof(_RootSettings.JWT.RenewTokenTTLDays))!),
                     DefaultValue = GetDefaultValue(typeof(JWTSettings).GetProperty(nameof(_RootSettings.JWT.RenewTokenTTLDays))!, _DefaultSettings.JWT)
                 },
-                Roles = new RolesSchema()
-                {
-                    Required = IsPropertyRequired(typeof(JWTSettings).GetProperty(nameof(_RootSettings.JWT.Roles))!),
-                    Type = GetSchemaType(_RootSettings.JWT.Roles),
-                    Description = GetPropertyDescription(typeof(JWTSettings).GetProperty(nameof(_RootSettings.JWT.Roles))!),
-                    DefaultValue = GetDefaultValue(typeof(JWTSettings).GetProperty(nameof(_RootSettings.JWT.Roles))!, _DefaultSettings.JWT)
-                },
+
                 Issuer = new IssuerSchema()
                 {
                     Required = IsPropertyRequired(typeof(JWTSettings).GetProperty(nameof(_RootSettings.JWT.Issuer))!),
@@ -309,6 +303,13 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
                     Required = IsPropertyRequired(typeof(LDAPSettings).GetProperty(nameof(_RootSettings.LDAP.SAPassword))!),
                     Type = GetSchemaType(_RootSettings.LDAP.SAPassword),
                     Description = GetPropertyDescription(typeof(LDAPSettings).GetProperty(nameof(_RootSettings.LDAP.SAPassword))!)
+                },
+                RoleMappingsCN = new RoleMappingsCNSchema()
+                {
+                    Required = IsPropertyRequired(typeof(LDAPSettings).GetProperty(nameof(_RootSettings.LDAP.RoleMappingsCN))!),
+                    Type = GetSchemaType(_RootSettings.LDAP.RoleMappingsCN),
+                    Description = GetPropertyDescription(typeof(LDAPSettings).GetProperty(nameof(_RootSettings.LDAP.RoleMappingsCN))!),
+                    DefaultValue = GetDefaultValue(typeof(LDAPSettings).GetProperty(nameof(_RootSettings.LDAP.RoleMappingsCN))!, _DefaultSettings.LDAP)
                 }
             },
             Logging = new LoggerSettingsSchema()
@@ -523,7 +524,6 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
                 RefreshTokenSecret = updates.JWT?.RefreshTokenSecret ?? current.JWT.RefreshTokenSecret,
                 TokenTTLMinutes = updates.JWT?.TokenTTLMinutes ?? current.JWT.TokenTTLMinutes,
                 RenewTokenTTLDays = updates.JWT?.RenewTokenTTLDays ?? current.JWT.RenewTokenTTLDays,
-                Roles = updates.JWT?.Roles ?? current.JWT.Roles,
                 Issuer = updates.JWT?.Issuer ?? current.JWT.Issuer,
                 Audience = updates.JWT?.Audience ?? current.JWT.Audience
             },
@@ -534,7 +534,8 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
                 FQDN = updates.LDAP?.FQDN ?? current.LDAP.FQDN,
                 BaseDN = updates.LDAP?.BaseDN ?? current.LDAP.BaseDN,
                 SA = updates.LDAP?.SA ?? current.LDAP.SA,
-                SAPassword = updates.LDAP?.SAPassword ?? current.LDAP.SAPassword
+                SAPassword = updates.LDAP?.SAPassword ?? current.LDAP.SAPassword,
+                RoleMappingsCN = updates.LDAP?.RoleMappingsCN ?? current.LDAP.RoleMappingsCN
             },
             Logging = new LoggerPatchRequest
             {
