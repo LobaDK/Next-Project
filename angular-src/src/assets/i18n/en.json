@@ -253,6 +253,7 @@
     "VIEW_EVALUATION_RESULTS": "View Evaluation Results",
     "SELECT_GROUP_LABEL": "Select Group",
     "SEARCH_GROUP_PLACEHOLDER": "Search groups...",
+    "SELECT_TEMPLATE_FIRST_DESC": "You must select at least one template before you can search for groups.",
     "LOADING_GROUPS": "Loading groups...",
     "LOAD_MORE_GROUPS": "Load More Groups",
     "SELECTED_GROUPS": "Selected Groups",
@@ -388,6 +389,8 @@
     "CONFIRM_EVALUATION_TITLE": "Confirm Evaluation Questionnaire Creation",
     "CONFIRM_EVALUATION_MESSAGE": "Are you sure you want to create this evaluation questionnaire? This action will assign the selected template to all chosen students and teachers.",
     "CONFIRM_YES": "Yes, Create Questionnaire",
-    "CONFIRM_NO": "No, Cancel"
+    "CONFIRM_NO": "No, Cancel",
+    "ANONYMOUS_SUCCESS": "Anonymous questionnaire created successfully!",
+    "EVALUATION_SUCCESS": "Evaluation questionnaire created successfully!"
   }
 }

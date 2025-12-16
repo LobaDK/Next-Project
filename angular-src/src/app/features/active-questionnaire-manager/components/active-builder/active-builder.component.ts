@@ -2,7 +2,7 @@ import { Component, ElementRef, EventEmitter, inject, OnInit, Output, ViewChild,
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ActiveService } from '../../services/active.service';
 import { User } from '../../../../shared/models/user.model';
 import { SearchEntity } from '../../models/searchEntity.model';
@@ -11,6 +11,7 @@ import { TemplateBase } from '../../../../shared/models/template.model';
 import { CommonModule } from '@angular/common';
 import { DebouncedInputDirective } from '../../../../shared/directives/debounced-input.directive';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { CreateConfirmDialog } from './create-confirm-modal/CreateConfirmDialog.component';
 
 
@@ -38,6 +39,8 @@ export class ActiveBuilderComponent implements OnInit, AfterViewChecked {
   private activeService = inject(ActiveService);
   private cdr = inject(ChangeDetectorRef);
   private dialog = inject(MatDialog);
+  private snackBar = inject(MatSnackBar);
+  private translate = inject(TranslateService);
   public groupName: string = '';
   public isAnonymousMode = false;
   public groupNameError: string = '';
@@ -325,6 +328,16 @@ select(entity: SearchType, item: any): void {
         templateId: this.template.selected[0].id
       };
       this.activeService.createAnonymousQuestionnaireGroup(payload).subscribe(() => {
+        this.snackBar.open(
+          this.translate.instant('ACTIVE_BUILDER.ANONYMOUS_SUCCESS'),
+          this.translate.instant('COMMON.BUTTONS.CLOSE'),
+          {
+            duration: 5000,
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom',
+            panelClass: ['success-snackbar']
+          }
+        );
         this.backToListEvent.emit();
       });
       return;
@@ -377,6 +390,16 @@ select(entity: SearchType, item: any): void {
       teacherIds: this.teacher.selected.map(t => t.id)
     };
     this.activeService.createActiveQuestionnaireGroup(newGroup).subscribe(() => {
+      this.snackBar.open(
+        this.translate.instant('ACTIVE_BUILDER.EVALUATION_SUCCESS'),
+        this.translate.instant('COMMON.BUTTONS.CLOSE'),
+        {
+          duration: 5000,
+          horizontalPosition: 'center',
+          verticalPosition: 'bottom',
+          panelClass: ['success-snackbar']
+        }
+      );
       this.backToListEvent.emit();
     });
   }
