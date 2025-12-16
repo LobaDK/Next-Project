@@ -10,18 +10,14 @@ import { PaginationComponent, PageChangeEvent } from '../../shared/components/pa
 import { LoadingComponent } from '../../shared/loading/loading.component';
 import { Template, TemplateBase, TemplateStatus } from '../../shared/models/template.model';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { ModalComponent } from '../../shared/components/modal/modal.component';
+
 import { DebouncedInputDirective } from '../../shared/directives/debounced-input.directive';
 import { DeleteTemplateDialog } from './delete-template-modal/DeleteTemplateDialog.component';
+import { CopyTemplateDialog } from './copy-template-modal/CopyTemplateDialog.component';
+import { ErrorDialog } from './error-modal/ErrorDialog.component';
 import { MatDialog } from '@angular/material/dialog';
 
-/** Modal dialog purposes supported by this page. */
-enum TemplateModalType {
-  None = 'none',
-  Delete = 'delete',
-  Copy = 'copy',
-  Error = 'error'
-}
+
 
 /**
  * Template manager component.
@@ -48,7 +44,6 @@ enum TemplateModalType {
         PaginationComponent,
         LoadingComponent,
         TranslateModule,
-        ModalComponent,
         DebouncedInputDirective
     ],
     templateUrl: './template-manager.component.html',
@@ -76,19 +71,12 @@ export class TemplateManagerComponent {
 
   isLoading = false;
   private searchSubject = new Subject<string>();
-  TemplateModalType = TemplateModalType;
 
   lockedTitle = 'Skabelonen er udgivet';
   lockedText =
-    'Denne skabelon er i skrivebeskyttet tilstand.<br />' +
+    'Denna skabelon er i skrivebeskyttet tilstand.<br />' +
     'Vælg <strong>Kopiér</strong> i listen, hvis du vil lave ændringer på en ' +
     'redigerbar version.';
-
-
-  activeModalType: TemplateModalType = TemplateModalType.None;
-  activeModalTemplateId: string | null = null;
-  deleteConfirmStep = 0;
-  modalErrorMessage: string = '';
 
  /**
  * Wire up debounced search and load the first page.
@@ -165,8 +153,7 @@ export class TemplateManagerComponent {
         },
         error: (err) => {
           console.error('Error fetching templates:', err);
-          this.modalErrorMessage = 'TEMPLATE.LIST.FAIL_LOAD_LIST';
-          this.showModal(TemplateModalType.Error);
+          this.openErrorDialog('TEMPLATE.LIST.FAIL_LOAD_LIST');
         },
       });
   }
@@ -202,8 +189,7 @@ selectTemplate(id: string): void {
       },
         error: err => {
         console.error('Error fetching template:', err);
-        this.modalErrorMessage = 'TEMPLATE.LIST.FAIL_LOAD_DETAIL';
-        this.showModal(TemplateModalType.Error);
+        this.openErrorDialog('TEMPLATE.LIST.FAIL_LOAD_DETAIL');
       }
     });
 }
@@ -314,193 +300,33 @@ onFinalizeTemplate(tmpl: Template): void {
       errorKey = 'TEMPLATE.MISC.ERROR_SAVE';
     }
     
-    this.modalErrorMessage = errorKey;
-    this.showModal(TemplateModalType.Error);
+    this.openErrorDialog(errorKey);
   }
 
   onCancelEdit(): void {
     this.selectedTemplate = null;
   }
 
-/** Open a modal of a given type; seed it with a specific id or selected template id. */
-showModal(type: TemplateModalType, id?: string | null) {
-  this.activeModalType = type;
-  this.activeModalTemplateId = id ?? this.selectedTemplate?.id ?? null;
-  if (type === TemplateModalType.Delete) this.deleteConfirmStep = 0;
-}
 
-/** Close and reset modal state. */
-hideModal() {
-  this.activeModalType = TemplateModalType.None;
-  this.activeModalTemplateId = null;
-  this.deleteConfirmStep = 0;
-  this.modalErrorMessage = '';
-}
 
-/** True when any modal is visible (used by <app-modal>). */
-get isModalOpen(): boolean { 
-  return this.activeModalType !== TemplateModalType.None; 
-}
 
-/** Whether to show cancel button based on modal type. */
-get showCancelButton(): boolean {
-  switch (this.activeModalType) {
-    case TemplateModalType.Error:
-      return false;
-    case TemplateModalType.Delete:
-    case TemplateModalType.Copy:
-    default:
-      return true;
-  }
-}
 
-/** Title text resolved from i18n depending on modal type/step. */
-get modalTitle(): string {
-  switch (this.activeModalType) {
-    case TemplateModalType.Delete:
-      return this.deleteConfirmStep === 0
-        ? this.translate.instant('TEMPLATE.DELETE.CONFIRM_TITLE')
-        : this.translate.instant('TEMPLATE.DELETE.CONFIRM_WARN');
-    case TemplateModalType.Copy:
-      return this.translate.instant('TEMPLATE.MISC.COPY_TITLE');
-    case TemplateModalType.Error:
-      return this.translate.instant('TEMPLATE.MISC.ERROR_TITLE');
-    default:
-      return '';
-  }
-}
-/** Body text resolved from i18n depending on modal type/step. */
-get modalText(): string {
-  switch (this.activeModalType) {
-    case TemplateModalType.Delete:
-      return this.deleteConfirmStep === 0
-        ? this.translate.instant('TEMPLATE.DELETE.MSG')
-        : this.translate.instant('TEMPLATE.DELETE.FINAL_WARN_MSG');
-    case TemplateModalType.Copy:
-      return this.translate.instant('TEMPLATE.MISC.COPY_MSG');
-    case TemplateModalType.Error:
-      return this.translate.instant(this.modalErrorMessage);
-    default:
-      return '';
-  }
-}
 
-/** Confirm button label, varies per type/step. */
-get confirmText(): string {
-  switch (this.activeModalType) {
-    case TemplateModalType.Delete:
-      return this.deleteConfirmStep === 0
-        ? this.translate.instant('COMMON.BUTTONS.DELETE')
-        : this.translate.instant('COMMON.BUTTONS.DELETE');
-    case TemplateModalType.Copy:
-      return this.translate.instant('COMMON.BUTTONS.COPY');
-    case TemplateModalType.Error:
-      return this.translate.instant('COMMON.BUTTONS.CLOSE');
-    default:
-      return this.translate.instant('COMMON.BUTTONS.CLOSE');
-  }
-}
 
-/** Cancel/Close button label, varies per type/step. */
-get cancelText(): string {
-  switch (this.activeModalType) {
-    case TemplateModalType.Delete:
-    case TemplateModalType.Copy:
-      return this.translate.instant('COMMON.BUTTONS.CANCEL');
-    default:
-      return this.translate.instant('COMMON.BUTTONS.CLOSE');
-  }
-}
 
-/**
- * confirm handler:
- * - Delete: two-step confirm; on final confirm calls delete API.
- * - Copy: loads source template, deep-copies it into a new local draft and opens editor.
- * - Error: simply closes the modal.
- */
-onModalConfirm(): void {
-  if (this.activeModalType === TemplateModalType.Error) {
-    this.hideModal();
-    return;
-  }
 
-  const id = this.activeModalTemplateId ?? undefined;
-  if (!id) return;
 
-  if (this.activeModalType === TemplateModalType.Delete) {
-    if (this.deleteConfirmStep === 0) {
-      this.deleteConfirmStep = 1;
-      return;
-    }
-    this.templateService.deleteTemplate(id).subscribe({
-      complete: () => { this.hideModal(); this.resetData(); this.fetchTemplateBases(); },
-      error: () => console.error('Error deleting template')
-    });
-    return;
-  }
 
-  if (this.activeModalType === TemplateModalType.Copy) {
-    // fetch the source template, then deep-copy it into a brand new local draft
-    this.templateService.getTemplateDetails(id).subscribe({
-      next: tmplSrc => {
-        const draftCopy = this.deepCopyAsNewTemplate(tmplSrc);
-        this.selectedTemplate = draftCopy;   // open the new local draft immediately
-        // no server refresh needed yet; user will Save to persist
-        this.hideModal();
-      },
-      error: err => console.error('Error loading template to copy', err)
-    });
-  }
-}
 
-/**
- * cancel handler:
- * - For delete step 1, step back to initial confirm.
- * - Otherwise close modal.
- */
-onModalCancel(): void {
-  if (this.activeModalType === TemplateModalType.Delete && this.deleteConfirmStep === 1) {
-    this.deleteConfirmStep = 0;
-    return; // keep the modal open, just step back
-  }
-  this.hideModal();
-}
 
-/**
- * Create a deep-cloned editable draft from an existing template:
- * - Clears server metadata, sets Draft status, unlocks.
- * - Assigns temporary ids to template/questions/options.
- */
-private deepCopyAsNewTemplate(template: Template): Template {
-  // Deep clone to avoid mutating the original
-  const clone: Template = JSON.parse(JSON.stringify(template));
 
-  // If it has an ID, replace with a unique negative ID
-  // If it has no ID, leave it undefined
-  clone.id = clone.id ? `temp-${Date.now()}` : undefined;
 
-  // Reset meta fields
-  clone.createdAt = undefined;
-  clone.lastUpdated = undefined;
-  clone.templateStatus = TemplateStatus.Draft;
-  clone.isLocked = false;
-  clone.title = `${clone.title} (kopi)`
-  clone.id = "";
 
-  // Assign fresh negative IDs to questions & options
-  clone.questions = clone.questions.map((q, qIndex) => ({
-    ...q,
-    id: -1 * (qIndex + 1), // new negative ID
-    sortOrder: qIndex,
-    options: q.options.map((o, oIndex) => ({
-      ...o,
-      id: -1 * (oIndex + 1),// new negative ID
-      sortOrder: oIndex
-    }))
-  }));
 
-  return clone;
-}
+
+
+
+
 openDeleteDialog(templateId: string): void {
   this.dialog
     .open(DeleteTemplateDialog, {
@@ -517,6 +343,33 @@ openDeleteDialog(templateId: string): void {
         this.fetchTemplateBases();
       }
     });
+}
+
+openCopyDialog(templateId: string): void {
+  this.dialog
+    .open(CopyTemplateDialog, {
+      panelClass: 'app-modal',
+      maxWidth: '28rem',   // matches max-w-md
+      width: '100%',
+      disableClose: true,
+      data: templateId,
+    })
+    .afterClosed()
+    .subscribe(copiedTemplate => {
+      if (copiedTemplate) {
+        this.selectedTemplate = copiedTemplate;   // open the new local draft immediately
+      }
+    });
+}
+
+openErrorDialog(errorMessageKey: string): void {
+  this.dialog.open(ErrorDialog, {
+    panelClass: 'app-modal',
+    maxWidth: '28rem',   // matches max-w-md
+    width: '100%',
+    disableClose: false,
+    data: errorMessageKey,
+  });
 }
 
 

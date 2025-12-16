@@ -92,7 +92,7 @@
             </button>
 
             <button
-              (click)="showModal(TemplateModalType.Copy, template.id)"
+              (click)="openCopyDialog(template.id)"
               class="w-full sm:w-auto px-3 py-1 text-sm bg-indigo-500 text-white rounded-md hover:bg-indigo-600">
               {{ 'COMMON.BUTTONS.COPY' | translate }}
             </button>
@@ -120,18 +120,6 @@
         (cancelEdit)="onCancelEdit()">
       </app-template-editor>
     }
-
-    <!-- Modal -->
-    <app-modal
-      [isOpen]="isModalOpen"
-      [title]="modalTitle"
-      [text]="modalText"
-      [confirmText]="confirmText"
-      [cancelText]="cancelText"
-      [showCancelButton]="showCancelButton"
-      (confirm)="onModalConfirm()"
-      (cancel)="onModalCancel()">
-    </app-modal>
 
   </div>
 </div>
