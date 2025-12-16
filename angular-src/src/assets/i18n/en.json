@@ -244,11 +244,16 @@
     "CONFIRM_SUBMIT_TITLE":" Confirm Submission",
     "CONFIRM_SUBMIT_TEXT":" Are you sure you want to submit your answers? You won't be able to change them later."
   },
+  "QUESTIONNAIRE": {
+    "SUBMIT_SUCCESS": "Questionnaire submitted successfully!",
+    "SUBMIT_ERROR": "There was an error submitting your questionnaire. Please try again later."
+  },
   "DATA_COMPARE" : {
     "TITLE": "Show Results for Anonymous Questionnaires",
     "VIEW_EVALUATION_RESULTS": "View Evaluation Results",
     "SELECT_GROUP_LABEL": "Select Group",
     "SEARCH_GROUP_PLACEHOLDER": "Search groups...",
+    "SELECT_TEMPLATE_FIRST_DESC": "You must select at least one template before you can search for groups.",
     "LOADING_GROUPS": "Loading groups...",
     "LOAD_MORE_GROUPS": "Load More Groups",
     "SELECTED_GROUPS": "Selected Groups",
@@ -384,6 +389,8 @@
     "CONFIRM_EVALUATION_TITLE": "Confirm Evaluation Questionnaire Creation",
     "CONFIRM_EVALUATION_MESSAGE": "Are you sure you want to create this evaluation questionnaire? This action will assign the selected template to all chosen students and teachers.",
     "CONFIRM_YES": "Yes, Create Questionnaire",
-    "CONFIRM_NO": "No, Cancel"
+    "CONFIRM_NO": "No, Cancel",
+    "ANONYMOUS_SUCCESS": "Anonymous questionnaire created successfully!",
+    "EVALUATION_SUCCESS": "Evaluation questionnaire created successfully!"
   }
 }

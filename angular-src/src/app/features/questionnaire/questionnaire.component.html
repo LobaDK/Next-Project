@@ -83,14 +83,5 @@
         </div>
       </div>
     }
-    <app-modal
-      [isOpen]="showSubmitConfirmModal"
-      [title]="'CONFIRM_SUBMIT_TITLE' | translate"
-      [text]="'CONFIRM_SUBMIT_TEXT' | translate"
-      [confirmText]="'COMMON.BUTTONS.SUBMIT' | translate"
-      [cancelText]="'COMMON.BUTTONS.CANCEL' | translate"
-      (confirm)="onConfirmSubmit()"
-      (cancel)="onCancelSubmit()">
-    </app-modal>
   </div>
 }

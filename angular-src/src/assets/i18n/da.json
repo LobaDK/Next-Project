@@ -128,6 +128,10 @@
       "LOCKED_MSG": "Denne skabelon kan ikke redigeres, da den har været brugt."
     },
 
+    "ERROR": {
+      "TITLE": "Fejl"
+    },
+
     "MISC": {
       "COPY_TITLE": "Kopiér Skabelon",
       "COPY_MSG": "Opret en redigerbar kopi af denne skabelon. Kopien vil blive gemt som en ny udkast skabelon.",
@@ -240,6 +244,10 @@
     "CONFIRM_SUBMIT_TITLE":" Bekræft Indsendelse",
     "CONFIRM_SUBMIT_TEXT":" Er du sikker på, at du vil indsende dine svar? Du kan ikke redigere dem efter indsendelse."
   },
+  "QUESTIONNAIRE": {
+    "SUBMIT_SUCCESS": "Spørgeskema indsendt med succes!",
+    "SUBMIT_ERROR": "Der opstod en fejl ved indsendelsen af dit spørgeskema. Prøv igen senere."
+  },
 
   "DATA_COMPARE" : {
     "TITLE": "Vis resultater på anonyme spørgeskemaer",
@@ -253,6 +261,7 @@
     "REMOVE": "Fjern",
     "CLEAR_ALL": "Ryd Alle",
     "SELECT_TEMPLATE_LABEL": "Vælg Skabelon",
+    "SEARCH_TEMPLATE_LABEL": "Søg efter Skabelon:",
     "SEARCH_TEMPLATE_PLACEHOLDER": "Søg skabeloner...",
     "LOADING_TEMPLATES": "Indlæser skabeloner...",
     "LOAD_MORE_TEMPLATES": "Indlæs Flere Skabeloner",
@@ -382,6 +391,8 @@
     "CONFIRM_EVALUATION_TITLE": "Bekræft Oprettelse af Evalueringsspørgeskema",
     "CONFIRM_EVALUATION_MESSAGE": "Er du sikker på, at du vil oprette dette evalueringsspørgeskema? Denne handling vil tildele den valgte skabelon til alle udvalgte elever og lærere.",
     "CONFIRM_YES": "Ja, Opret Spørgeskema",
-    "CONFIRM_NO": "Nej, Annuller"
+    "CONFIRM_NO": "Nej, Annuller",
+    "ANONYMOUS_SUCCESS": "Anonymt spørgeskema oprettet med succes!",
+    "EVALUATION_SUCCESS": "Evalueringsspørgeskema oprettet med succes!"
   }
 }

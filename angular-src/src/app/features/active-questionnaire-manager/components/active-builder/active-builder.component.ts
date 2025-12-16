@@ -2,14 +2,17 @@ import { Component, ElementRef, EventEmitter, inject, OnInit, Output, ViewChild,
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ActiveService } from '../../services/active.service';
 import { User } from '../../../../shared/models/user.model';
 import { SearchEntity } from '../../models/searchEntity.model';
 import { TemplateBase } from '../../../../shared/models/template.model';
-import { ModalComponent } from '../../../../shared/components/modal/modal.component';
+
 import { CommonModule } from '@angular/common';
 import { DebouncedInputDirective } from '../../../../shared/directives/debounced-input.directive';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { CreateConfirmDialog } from './create-confirm-modal/CreateConfirmDialog.component';
 
 
 // Extend the SearchEntity type for users to include sessionId and hasMore
@@ -28,13 +31,16 @@ type SearchType = 'student' | 'teacher' | 'template';
 @Component({
   selector: 'app-active-questionnaire-builder',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, ModalComponent, DebouncedInputDirective],
+  imports: [CommonModule, FormsModule, TranslateModule, DebouncedInputDirective],
   templateUrl: './active-builder.component.html',
   styleUrls: ['./active-builder.component.css']
 })
 export class ActiveBuilderComponent implements OnInit, AfterViewChecked {
   private activeService = inject(ActiveService);
   private cdr = inject(ChangeDetectorRef);
+  private dialog = inject(MatDialog);
+  private snackBar = inject(MatSnackBar);
+  private translate = inject(TranslateService);
   public groupName: string = '';
   public isAnonymousMode = false;
   public groupNameError: string = '';
@@ -103,12 +109,7 @@ export class ActiveBuilderComponent implements OnInit, AfterViewChecked {
   // Set the page size (10 results per search)
   searchAmount = 10;
 
-   // Confirmation modal state
-  public showConfirmationModal = false;
-  public confirmationTitle = '';
-  public confirmationText = '';
-  public confirmationConfirmText = '';
-  public confirmationCancelText = '';
+
 
   @Output() backToListEvent = new EventEmitter<void>();
 
@@ -284,30 +285,32 @@ select(entity: SearchType, item: any): void {
       state.selected = [];
     }
 
-     /** Show confirmation modal before creating questionnaire */
-  showCreateConfirmation(): void {
-    if (this.isAnonymousMode) {
-      this.confirmationTitle = 'ACTIVE_BUILDER.CONFIRM_ANONYMOUS_TITLE';
-      this.confirmationText = 'ACTIVE_BUILDER.CONFIRM_ANONYMOUS_MESSAGE';
-    } else {
-      this.confirmationTitle = 'ACTIVE_BUILDER.CONFIRM_EVALUATION_TITLE';
-      this.confirmationText = 'ACTIVE_BUILDER.CONFIRM_EVALUATION_MESSAGE';
-    }
-    this.confirmationConfirmText = 'ACTIVE_BUILDER.CONFIRM_YES';
-    this.confirmationCancelText = 'ACTIVE_BUILDER.CONFIRM_NO';
-    this.showConfirmationModal = true;
+     /** Show confirmation dialog before creating questionnaire */
+  openCreateConfirmDialog(): void {
+    const dialogData = {
+      title: this.isAnonymousMode ? 'ACTIVE_BUILDER.CONFIRM_ANONYMOUS_TITLE' : 'ACTIVE_BUILDER.CONFIRM_EVALUATION_TITLE',
+      text: this.isAnonymousMode ? 'ACTIVE_BUILDER.CONFIRM_ANONYMOUS_MESSAGE' : 'ACTIVE_BUILDER.CONFIRM_EVALUATION_MESSAGE',
+      confirmText: 'ACTIVE_BUILDER.CONFIRM_YES',
+      cancelText: 'ACTIVE_BUILDER.CONFIRM_NO'
+    };
+
+    this.dialog
+      .open(CreateConfirmDialog, {
+        panelClass: 'app-modal',
+        maxWidth: '28rem',
+        width: '100%',
+        disableClose: true,
+        data: dialogData,
+      })
+      .afterClosed()
+      .subscribe(confirmed => {
+        if (confirmed) {
+          this.createActiveQuestionnaire();
+        }
+      });
   }
 
-  /** Handle confirmation modal confirm action */
-  onConfirmCreate(): void {
-    this.showConfirmationModal = false;
-    this.createActiveQuestionnaire();
-  }
 
-  /** Handle confirmation modal cancel action */
-  onCancelCreate(): void {
-    this.showConfirmationModal = false;
-  }
   
     createActiveQuestionnaire(): void {
     if (this.isAnonymousMode) {
@@ -325,7 +328,16 @@ select(entity: SearchType, item: any): void {
         templateId: this.template.selected[0].id
       };
       this.activeService.createAnonymousQuestionnaireGroup(payload).subscribe(() => {
-        alert('Anonymt spørgeskema oprettet!');
+        this.snackBar.open(
+          this.translate.instant('ACTIVE_BUILDER.ANONYMOUS_SUCCESS'),
+          this.translate.instant('COMMON.BUTTONS.CLOSE'),
+          {
+            duration: 5000,
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom',
+            panelClass: ['success-snackbar']
+          }
+        );
         this.backToListEvent.emit();
       });
       return;
@@ -378,7 +390,16 @@ select(entity: SearchType, item: any): void {
       teacherIds: this.teacher.selected.map(t => t.id)
     };
     this.activeService.createActiveQuestionnaireGroup(newGroup).subscribe(() => {
-      alert('Spørgeskema-gruppe oprettet!');
+      this.snackBar.open(
+        this.translate.instant('ACTIVE_BUILDER.EVALUATION_SUCCESS'),
+        this.translate.instant('COMMON.BUTTONS.CLOSE'),
+        {
+          duration: 5000,
+          horizontalPosition: 'center',
+          verticalPosition: 'bottom',
+          panelClass: ['success-snackbar']
+        }
+      );
       this.backToListEvent.emit();
     });
   }

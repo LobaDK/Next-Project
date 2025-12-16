@@ -86,13 +86,13 @@
             </button>
 
             <button
-              (click)="showModal(TemplateModalType.Delete, template.id)"
+              (click)="openDeleteDialog(template.id)"
               class="w-full sm:w-auto px-4 py-1 text-sm bg-red-500 text-white rounded-xl hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors">
               {{ 'COMMON.BUTTONS.DELETE' | translate }}
             </button>
 
             <button
-              (click)="showModal(TemplateModalType.Copy, template.id)"
+              (click)="openCopyDialog(template.id)"
               class="w-full sm:w-auto px-3 py-1 text-sm bg-indigo-500 text-white rounded-md hover:bg-indigo-600">
               {{ 'COMMON.BUTTONS.COPY' | translate }}
             </button>
@@ -120,18 +120,6 @@
         (cancelEdit)="onCancelEdit()">
       </app-template-editor>
     }
-
-    <!-- Modal -->
-    <app-modal
-      [isOpen]="isModalOpen"
-      [title]="modalTitle"
-      [text]="modalText"
-      [confirmText]="confirmText"
-      [cancelText]="cancelText"
-      [showCancelButton]="showCancelButton"
-      (confirm)="onModalConfirm()"
-      (cancel)="onModalCancel()">
-    </app-modal>
 
   </div>
 </div>
