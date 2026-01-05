@@ -48,8 +48,6 @@ builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
 builder.Logging.AddConsole();
 builder.Logging.AddDBLogger(configure => builder.Configuration.GetSection("Logging:DBLogger"));
 
-// TODO: Check if config version is lower than default, and if it is, "upgrade" the config with any new settings
-
 DatabaseSettings databaseSettings = ConfigurationBinderService.Bind<DatabaseSettings>(builder.Configuration);
 JWTSettings jWTSettings = ConfigurationBinderService.Bind<JWTSettings>(builder.Configuration);
 SystemSettings systemSettings = ConfigurationBinderService.Bind<SystemSettings>(builder.Configuration);
