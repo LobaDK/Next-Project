@@ -60,9 +60,10 @@ builder.Logging.AddSerilog(seriLogger);
 
 // Add services to the container.
 
-if (builder.Configuration.GetSection("Mock")["UseMockedAuthentication"] == "True")
+if (File.Exists("USEMOCKAUTH") || File.Exists("USEMOCKAUTH.txt"))
 {   
     builder.Services.AddScoped<IAuthenticationBridge, MockedAuthenticationBridge>();
+    seriLogger.Warning("Using MOCK authentication bridge, this should NOT be used in production!");
 }
 else
 {
