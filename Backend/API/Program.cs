@@ -53,7 +53,7 @@ JWTSettings jWTSettings = ConfigurationBinderService.Bind<JWTSettings>(builder.C
 SystemSettings systemSettings = ConfigurationBinderService.Bind<SystemSettings>(builder.Configuration);
 LoggerSettings loggerSettings = ConfigurationBinderService.Bind<LoggerSettings>(builder.Configuration);
 
-Serilog.ILogger seriLogger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration)
+Serilog.Core.Logger seriLogger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration)
         .CreateLogger();
 
 builder.Logging.AddSerilog(seriLogger);
