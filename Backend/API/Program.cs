@@ -56,15 +56,7 @@ SystemSettings systemSettings = ConfigurationBinderService.Bind<SystemSettings>(
 LoggerSettings loggerSettings = ConfigurationBinderService.Bind<LoggerSettings>(builder.Configuration);
 
 Serilog.ILogger seriLogger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration)
-        .WriteTo.File(
-            path: loggerSettings.FileLogger.Path,
-            rollingInterval: loggerSettings.FileLogger.RollingInterval,
-            rollOnFileSizeLimit: loggerSettings.FileLogger.RollOnFileSizeLimit,
-            fileSizeLimitBytes: loggerSettings.FileLogger.FileSizeLimitBytes,
-            retainedFileCountLimit: loggerSettings.FileLogger.RetainedFileCountLimit,
-            shared: loggerSettings.FileLogger.Shared,
-            outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}"
-        ).CreateLogger();
+        .CreateLogger();
 
 builder.Logging.AddSerilog(seriLogger);
 
