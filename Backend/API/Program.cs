@@ -45,7 +45,6 @@ builder.Configuration.AddJsonFile(settingsFile, optional: false, reloadOnChange:
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
-builder.Logging.AddConsole();
 builder.Logging.AddDBLogger(configure => builder.Configuration.GetSection("Logging:DBLogger"));
 
 DatabaseSettings databaseSettings = ConfigurationBinderService.Bind<DatabaseSettings>(builder.Configuration);
