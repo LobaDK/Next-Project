@@ -183,6 +183,12 @@
     "CAPS_LOCK_WARNING": "Caps Lock er aktiveret",
     "ERRORS": {
       "INVALID": "Ugyldigt brugernavn eller adgangskode.",
+      "ACCOUNT_DISABLED": "Din konto er blevet deaktiveret. Kontakt venligst din administrator.",
+      "ACCOUNT_EXPIRED": "Din konto er udløbet. Kontakt venligst din administrator.",
+      "PASSWORD_EXPIRED": "Din adgangskode er udløbet. Du skal ændre din adgangskode ved næste login.",
+      "ACCOUNT_LOGIN_ERROR": "Der opstod en loginfejl med din konto. Kontakt venligst din administrator.",
+      "ACCOUNT_LOCKED": "Din konto er blevet låst på grund af flere mislykkede loginforsøg. Kontakt venligst din administrator.",
+      "GENERIC_AD_ERROR": "Din konto er blevet låst eller deaktiveret. Kontakt venligst din administrator for hjælp.",
       "NETWORK": "Kunne ikke oprette forbindelse til serveren. Tjek din internetforbindelse.",
       "SERVER": "Der opstod en serverfejl. Prøv igen senere.",
       "GENERIC": "Der opstod en uventet fejl. Prøv igen.",
