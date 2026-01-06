@@ -1,14 +1,3 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.OpenApi.Models;
-using Logging.Extensions;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using API.Services.Authentication;
-using Serilog;
-using FluentValidation.AspNetCore;
-using FluentValidation;
-using API.Validators;
-
 const string settingsFile = "config.json";
 
 var builder = WebApplication.CreateBuilder(args);

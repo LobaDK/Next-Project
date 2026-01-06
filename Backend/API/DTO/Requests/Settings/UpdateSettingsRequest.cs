@@ -1,5 +1,3 @@
-using Settings.Interfaces;
-
 namespace API.DTO.Requests.Settings;
 
 public class UpdateSettingsRequest

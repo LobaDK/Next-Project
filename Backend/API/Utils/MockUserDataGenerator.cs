@@ -1,5 +1,3 @@
-using API.Mock;
-
 namespace API.Utils;
 
 public class MockUserDataGenerator

@@ -1,6 +1,4 @@
-﻿﻿using API.DTO.User;
-
-namespace UnitTests.Services
+﻿﻿namespace UnitTests.Services
 {
 
     public class UserServiceTests

@@ -1,5 +1,4 @@
-﻿﻿using API.DTO.User;
-
+﻿﻿
 namespace UnitTests.Controllers
 {
     public class AuthControllerTests

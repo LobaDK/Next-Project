@@ -1,5 +1,3 @@
-using FluentValidation;
-
 namespace API.Validators;
 
 public class CreateQuestionnaireTemplateSubmissionValidator : AbstractValidator<QuestionnaireTemplateAdd>

@@ -1,4 +1,3 @@
-using System.Collections;
 
 namespace API.Extensions;
 

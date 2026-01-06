@@ -1,4 +1,3 @@
-using API.Mock;
 
 namespace API.Services.Authentication;
 
