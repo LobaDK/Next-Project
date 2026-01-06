@@ -11,5 +11,3 @@ global using Microsoft.Extensions.Options;
 global using Logging.DBLogger;
 global using Microsoft.Extensions.DependencyInjection.Extensions;
 global using Microsoft.Extensions.Logging.Configuration;
-
-global using Logging.FileLogger;
