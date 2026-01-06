@@ -13,6 +13,7 @@ namespace API.Services;
 public class SystemControllerService(IConfiguration configuration, ILogger<SystemControllerService> logger, IHostApplicationLifetime hostApplicationLifetime) : ISystemControllerService
 {
     private readonly RootSettings _RootSettings = ConfigurationBinderService.Bind<RootSettings>(configuration);
+    private readonly IConfiguration _Configuration = configuration;
     private readonly RootSettings _DefaultSettings = new();
     private readonly ILogger<ISystemControllerService> _Logger = logger;
     private readonly JsonSerializerOptions _SerializerOptions = JsonSerializerUtility.ConfigureJsonSerializerSettings();
@@ -87,7 +88,8 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
     /// </remarks>
     public async Task<FileResult> GetLogFile(string filename)
     {
-        var logFilePath = Path.Combine(Path.GetDirectoryName(_RootSettings.Logging.FileLogger.Path)!, filename);
+        IConfigurationSection section = GetSerilogWriteToArgs();
+        var logFilePath = Path.Combine(Path.GetDirectoryName(section["path"])!, filename);
 
         if (!File.Exists(logFilePath))
         {
@@ -114,7 +116,8 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
     /// </exception>
     public List<string> GetLogFileNames()
     {
-        var logDirectory = Path.GetDirectoryName(_RootSettings.Logging.FileLogger.Path);
+        IConfigurationSection section = GetSerilogWriteToArgs();
+        string? logDirectory = Path.GetDirectoryName(section["path"]);
 
         if (logDirectory == null || !Directory.Exists(logDirectory))
         {
@@ -122,7 +125,15 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
         }
 
         var logFiles = Directory.GetFiles(logDirectory);
-        return logFiles.Select(Path.GetFileName).Where(name => !string.IsNullOrEmpty(name)).ToList()!;
+        return logFiles.Select(Path.GetFileName).Where(name => !string.IsNullOrEmpty(name)).Order().ToList()!;
+    }
+
+    private IConfigurationSection GetSerilogWriteToArgs()
+    {
+        return _Configuration.GetSection("serilog")
+                    .GetSection("WriteTo")
+                    .GetSection("1")
+                    .GetSection("Args");
     }
 
     /// <summary>
