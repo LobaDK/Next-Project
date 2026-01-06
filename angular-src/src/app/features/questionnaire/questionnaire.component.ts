@@ -7,8 +7,11 @@ import { Answer, AnswerSubmission, QuestionnaireState } from './models/answer.mo
 import { LoadingComponent } from '../../shared/loading/loading.component';
 import { Role, User } from '../../shared/models/user.model';
 import { AuthService } from '../../core/services/auth.service';
-import { TranslateModule } from '@ngx-translate/core';
-import { ModalComponent } from '../../shared/components/modal/modal.component';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SubmitConfirmDialog } from './submit-confirm-modal/SubmitConfirmDialog.component';
 import { map } from 'rxjs';
 
 
@@ -23,7 +26,7 @@ import { map } from 'rxjs';
  */
 @Component({
     selector: 'app-answer-questionnaire',
-    imports: [CommonModule, QuestionComponent, TranslateModule, ModalComponent],
+    imports: [CommonModule, QuestionComponent, TranslateModule],
     templateUrl: './questionnaire.component.html',
     styleUrls: ['./questionnaire.component.css']
 })
@@ -33,6 +36,9 @@ export class QuestionnaireComponent {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
+  private dialog = inject(MatDialog);
+  private snackBar = inject(MatSnackBar);
+  private translate = inject(TranslateService);
 
   readonly user = this.authService.user;
 
@@ -53,14 +59,11 @@ export class QuestionnaireComponent {
   isLoading = true;
   errorMessage: string | null = null;
 
-  // Confirmation modal state
-  showSubmitConfirmModal = false;
-
  @HostListener('window:keydown', ['$event'])
 handleKeyboardEvent(event: KeyboardEvent): void {
   // Don't handle keyboard events if user is typing in a textarea
   const target = event.target as HTMLElement;
-  if (target.tagName === 'TEXTAREA' || this.showSubmitConfirmModal === true) {
+  if (target.tagName === 'TEXTAREA') {
     return;
   }
 
@@ -235,30 +238,56 @@ handleKeyboardEvent(event: KeyboardEvent): void {
       alert('Please answer all questions before submitting.');
       return;
     }
-    this.showSubmitConfirmModal = true;
+    this.openSubmitConfirmDialog();
   }
 
-  // ✅ Simple confirm handler
-  onConfirmSubmit(): void {
-    this.showSubmitConfirmModal = false;
-    
+  openSubmitConfirmDialog(): void {
+    this.dialog
+      .open(SubmitConfirmDialog, {
+        panelClass: 'app-modal',
+        maxWidth: '28rem',
+        width: '100%',
+        disableClose: true,
+      })
+      .afterClosed()
+      .subscribe(confirmed => {
+        if (confirmed) {
+          this.performSubmit();
+        }
+      });
+  }
+
+  private performSubmit(): void {
     const submission: AnswerSubmission = { answers: this.state.answers };
     this.answerService.submitAnswers(this.state.template.id, submission).subscribe({
       next: () => {
         this.state.isCompleted = true;
-        alert('Questionnaire submitted successfully!');
+        this.snackBar.open(
+          this.translate.instant('QUESTIONNAIRE.SUBMIT_SUCCESS'),
+          this.translate.instant('COMMON.BUTTONS.CLOSE'),
+          {
+            duration: 5000,
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom',
+            panelClass: ['success-snackbar']
+          }
+        );
         this.router.navigate(['/']);
       },
       error: (error) => {
         console.error('Error submitting questionnaire:', error);
-        alert('There was an error submitting your questionnaire. Please try again later.');
+        this.snackBar.open(
+          this.translate.instant('QUESTIONNAIRE.SUBMIT_ERROR'),
+          this.translate.instant('COMMON.BUTTONS.CLOSE'),
+          {
+            duration: 8000,
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom',
+            panelClass: ['error-snackbar']
+          }
+        );
       }
     });
-  }
-
-  // ✅ Simple cancel handler
-  onCancelSubmit(): void {
-    this.showSubmitConfirmModal = false;
   }
 
 

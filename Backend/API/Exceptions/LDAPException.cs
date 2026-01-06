@@ -82,4 +82,12 @@ public class LDAPException
         public NotBound(string message, Exception inner)
             : base(message, inner) { }
     }
+
+    /// <summary>
+    /// Exception thrown for general LDAP authentication errors.
+    /// </summary>
+    public class LdapAuthenticationErrorException(LdapAuthenticationErrorReasons errorCode, string message, Exception? innerException = null) : Exception(message, innerException)
+    {
+        public LdapAuthenticationErrorReasons ErrorCode { get; } = errorCode;
+    }
 }

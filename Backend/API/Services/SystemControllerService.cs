@@ -4,6 +4,7 @@ namespace API.Services;
 public class SystemControllerService(IConfiguration configuration, ILogger<SystemControllerService> logger, IHostApplicationLifetime hostApplicationLifetime) : ISystemControllerService
 {
     private readonly RootSettings _RootSettings = ConfigurationBinderService.Bind<RootSettings>(configuration);
+    private readonly IConfiguration _Configuration = configuration;
     private readonly RootSettings _DefaultSettings = new();
     private readonly ILogger<ISystemControllerService> _Logger = logger;
     private readonly JsonSerializerOptions _SerializerOptions = JsonSerializerUtility.ConfigureJsonSerializerSettings();
@@ -78,7 +79,8 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
     /// </remarks>
     public async Task<FileResult> GetLogFile(string filename)
     {
-        var logFilePath = Path.Combine(Path.GetDirectoryName(_RootSettings.Logging.FileLogger.Path)!, filename);
+        IConfigurationSection section = GetSerilogWriteToArgs();
+        var logFilePath = Path.Combine(Path.GetDirectoryName(section["path"])!, filename);
 
         if (!File.Exists(logFilePath))
         {
@@ -105,7 +107,8 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
     /// </exception>
     public List<string> GetLogFileNames()
     {
-        var logDirectory = Path.GetDirectoryName(_RootSettings.Logging.FileLogger.Path);
+        IConfigurationSection section = GetSerilogWriteToArgs();
+        string? logDirectory = Path.GetDirectoryName(section["path"]);
 
         if (logDirectory == null || !Directory.Exists(logDirectory))
         {
@@ -113,7 +116,15 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
         }
 
         var logFiles = Directory.GetFiles(logDirectory);
-        return logFiles.Select(Path.GetFileName).Where(name => !string.IsNullOrEmpty(name)).ToList()!;
+        return logFiles.Select(Path.GetFileName).Where(name => !string.IsNullOrEmpty(name)).Order().ToList()!;
+    }
+
+    private IConfigurationSection GetSerilogWriteToArgs()
+    {
+        return _Configuration.GetSection("serilog")
+                    .GetSection("WriteTo")
+                    .GetSection("1")
+                    .GetSection("Args");
     }
 
     /// <summary>
@@ -148,31 +159,6 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
                 SA = _RootSettings.LDAP.SA,
                 SAPassword = _RootSettings.LDAP.SAPassword,
                 RoleMappingsCN = _RootSettings.LDAP.RoleMappingsCN
-            },
-            Logging = new LoggerSettingsFetchResponse()
-            {
-                LogLevel = _RootSettings.Logging.LogLevel,
-                Console = new ConsoleLoggerSettingsFetchResponse()
-                {
-                    IsEnabled = _RootSettings.Logging.Console.IsEnabled,
-                    LogLevel = _RootSettings.Logging.Console.LogLevel
-                },
-                FileLogger = new FileLoggerSettingsFetchResponse()
-                {
-                    IsEnabled = _RootSettings.Logging.FileLogger.IsEnabled,
-                    LogLevel = _RootSettings.Logging.FileLogger.LogLevel,
-                    Path = _RootSettings.Logging.FileLogger.Path,
-                    RollingInterval = _RootSettings.Logging.FileLogger.RollingInterval,
-                    RollOnFileSizeLimit = _RootSettings.Logging.FileLogger.RollOnFileSizeLimit,
-                    FileSizeLimitBytes = _RootSettings.Logging.FileLogger.FileSizeLimitBytes,
-                    RetainedFileCountLimit = _RootSettings.Logging.FileLogger.RetainedFileCountLimit,
-                    Shared = _RootSettings.Logging.FileLogger.Shared
-                },
-                DBLogger = new DBLoggerSettingsFetchResponse()
-                {
-                    IsEnabled = _RootSettings.Logging.DBLogger.IsEnabled,
-                    LogLevel = _RootSettings.Logging.DBLogger.LogLevel
-                }
             },
             System = new SystemSettingsFetchResponse()
             {
@@ -303,101 +289,6 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
                     DefaultValue = GetDefaultValue(typeof(LDAPSettings).GetProperty(nameof(_RootSettings.LDAP.RoleMappingsCN))!, _DefaultSettings.LDAP)
                 }
             },
-            Logging = new LoggerSettingsSchema()
-            {
-                LogLevel = new SettingsLogLevelSchema()
-                {
-                    Required = IsPropertyRequired(typeof(LoggerSettings).GetProperty(nameof(_RootSettings.Logging.LogLevel))!),
-                    Type = GetSchemaType(_RootSettings.Logging.LogLevel),
-                    Description = GetPropertyDescription(typeof(LoggerSettings).GetProperty(nameof(_RootSettings.Logging.LogLevel))!)
-                },
-                ConsoleLogger = new ConsoleLoggerSettingsSchema()
-                {
-                    IsEnabled = new SettingsIsEnabledSchema()
-                    {
-                        Required = IsPropertyRequired(typeof(ConsoleLoggerSettings).GetProperty(nameof(_RootSettings.Logging.Console.IsEnabled))!),
-                        Type = GetSchemaType(_RootSettings.Logging.Console.IsEnabled),
-                        Description = GetPropertyDescription(typeof(ConsoleLoggerSettings).GetProperty(nameof(_RootSettings.Logging.Console.IsEnabled))!)
-                    },
-                    LogLevel = new SettingsLogLevelSchema()
-                    {
-                        Required = IsPropertyRequired(typeof(ConsoleLoggerSettings).GetProperty(nameof(_RootSettings.Logging.Console.LogLevel))!),
-                        Type = GetSchemaType(_RootSettings.Logging.Console.LogLevel),
-                        Description = GetPropertyDescription(typeof(ConsoleLoggerSettings).GetProperty(nameof(_RootSettings.Logging.Console.LogLevel))!)
-                    }
-                },
-                FileLogger = new FileLoggerSettingsSchema()
-                {
-                    IsEnabled = new SettingsIsEnabledSchema()
-                    {
-                        Required = IsPropertyRequired(typeof(FileLoggerSettings).GetProperty(nameof(_RootSettings.Logging.FileLogger.IsEnabled))!),
-                        Type = GetSchemaType(_RootSettings.Logging.FileLogger.IsEnabled),
-                        Description = GetPropertyDescription(typeof(FileLoggerSettings).GetProperty(nameof(_RootSettings.Logging.FileLogger.IsEnabled))!)
-                    },
-                    LogLevel = new SettingsLogLevelSchema()
-                    {
-                        Required = IsPropertyRequired(typeof(FileLoggerSettings).GetProperty(nameof(_RootSettings.Logging.FileLogger.LogLevel))!),
-                        Type = GetSchemaType(_RootSettings.Logging.FileLogger.LogLevel),
-                        Description = GetPropertyDescription(typeof(FileLoggerSettings).GetProperty(nameof(_RootSettings.Logging.FileLogger.LogLevel))!)
-                    },
-                    Path = new PathSchema()
-                    {
-                        Required = IsPropertyRequired(typeof(FileLoggerSettings).GetProperty(nameof(_RootSettings.Logging.FileLogger.Path))!),
-                        Type = GetSchemaType(_RootSettings.Logging.FileLogger.Path),
-                        Description = GetPropertyDescription(typeof(FileLoggerSettings).GetProperty(nameof(_RootSettings.Logging.FileLogger.Path))!)
-                    },
-                    RollingInterval = new RollingIntervalSchema()
-                    {
-                        Required = IsPropertyRequired(typeof(FileLoggerSettings).GetProperty(nameof(_RootSettings.Logging.FileLogger.RollingInterval))!),
-                        Type = GetSchemaType(_RootSettings.Logging.FileLogger.RollingInterval),
-                        Description = GetPropertyDescription(typeof(FileLoggerSettings).GetProperty(nameof(_RootSettings.Logging.FileLogger.RollingInterval))!),
-                        DefaultValue = GetDefaultValue(typeof(FileLoggerSettings).GetProperty(nameof(_RootSettings.Logging.FileLogger.RollingInterval))!, _DefaultSettings.Logging.FileLogger)
-                    },
-                    RollOnFileSizeLimit = new RollOnFileSizeLimitSchema()
-                    {
-                        Required = IsPropertyRequired(typeof(FileLoggerSettings).GetProperty(nameof(_RootSettings.Logging.FileLogger.RollOnFileSizeLimit))!),
-                        Type = GetSchemaType(_RootSettings.Logging.FileLogger.RollOnFileSizeLimit),
-                        Description = GetPropertyDescription(typeof(FileLoggerSettings).GetProperty(nameof(_RootSettings.Logging.FileLogger.RollOnFileSizeLimit))!),
-                        DefaultValue = GetDefaultValue(typeof(FileLoggerSettings).GetProperty(nameof(_RootSettings.Logging.FileLogger.RollOnFileSizeLimit))!, _DefaultSettings.Logging.FileLogger)
-                    },
-                    FileSizeLimitBytes = new FileSizeLimitBytesSchema()
-                    {
-                        Required = IsPropertyRequired(typeof(FileLoggerSettings).GetProperty(nameof(_RootSettings.Logging.FileLogger.FileSizeLimitBytes))!),
-                        Type = GetSchemaType(_RootSettings.Logging.FileLogger.FileSizeLimitBytes),
-                        Description = GetPropertyDescription(typeof(FileLoggerSettings).GetProperty(nameof(_RootSettings.Logging.FileLogger.FileSizeLimitBytes))!),
-                        DefaultValue = GetDefaultValue(typeof(FileLoggerSettings).GetProperty(nameof(_RootSettings.Logging.FileLogger.FileSizeLimitBytes))!, _DefaultSettings.Logging.FileLogger)
-                    },
-                    RetainedFileCountLimit = new RetainedFileCountLimitSchema()
-                    {
-                        Required = IsPropertyRequired(typeof(FileLoggerSettings).GetProperty(nameof(_RootSettings.Logging.FileLogger.RetainedFileCountLimit))!),
-                        Type = GetSchemaType(_RootSettings.Logging.FileLogger.RetainedFileCountLimit),
-                        Description = GetPropertyDescription(typeof(FileLoggerSettings).GetProperty(nameof(_RootSettings.Logging.FileLogger.RetainedFileCountLimit))!),
-                        DefaultValue = GetDefaultValue(typeof(FileLoggerSettings).GetProperty(nameof(_RootSettings.Logging.FileLogger.RetainedFileCountLimit))!, _DefaultSettings.Logging.FileLogger)
-                    },
-                    Shared = new SharedSchema()
-                    {
-                        Required = IsPropertyRequired(typeof(FileLoggerSettings).GetProperty(nameof(_RootSettings.Logging.FileLogger.Shared))!),
-                        Type = GetSchemaType(_RootSettings.Logging.FileLogger.Shared),
-                        Description = GetPropertyDescription(typeof(FileLoggerSettings).GetProperty(nameof(_RootSettings.Logging.FileLogger.Shared))!),
-                        DefaultValue = GetDefaultValue(typeof(FileLoggerSettings).GetProperty(nameof(_RootSettings.Logging.FileLogger.Shared))!, _DefaultSettings.Logging.FileLogger)
-                    }
-                },
-                DBLogger = new DBLoggerSettingsSchema()
-                {
-                    IsEnabled = new SettingsIsEnabledSchema()
-                    {
-                        Required = IsPropertyRequired(typeof(DBLoggerSettings).GetProperty(nameof(_RootSettings.Logging.DBLogger.IsEnabled))!),
-                        Type = GetSchemaType(_RootSettings.Logging.DBLogger.IsEnabled),
-                        Description = GetPropertyDescription(typeof(DBLoggerSettings).GetProperty(nameof(_RootSettings.Logging.DBLogger.IsEnabled))!)
-                    },
-                    LogLevel = new SettingsLogLevelSchema()
-                    {
-                        Required = IsPropertyRequired(typeof(DBLoggerSettings).GetProperty(nameof(_RootSettings.Logging.DBLogger.LogLevel))!),
-                        Type = GetSchemaType(_RootSettings.Logging.DBLogger.LogLevel),
-                        Description = GetPropertyDescription(typeof(DBLoggerSettings).GetProperty(nameof(_RootSettings.Logging.DBLogger.LogLevel))!)
-                    },
-                },
-            },
             System = new SystemSettingsSchema()
             {
                 ListenIP = new ListenIPSchema()
@@ -527,26 +418,6 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
                 SA = updates.LDAP?.SA ?? current.LDAP.SA,
                 SAPassword = updates.LDAP?.SAPassword ?? current.LDAP.SAPassword,
                 RoleMappingsCN = updates.LDAP?.RoleMappingsCN ?? current.LDAP.RoleMappingsCN
-            },
-            Logging = new LoggerPatchRequest
-            {
-                LogLevel = updates.Logging?.LogLevel ?? current.Logging.LogLevel,
-                Console = new ConsoleLoggerPatchRequest
-                {
-                    IsEnabled = updates.Logging?.Console?.IsEnabled ?? current.Logging.Console.IsEnabled,
-                    LogLevel = updates.Logging?.Console?.LogLevel ?? current.Logging.Console.LogLevel
-                },
-                FileLogger = new FileLoggerPatchRequest
-                {
-                    IsEnabled = updates.Logging?.FileLogger?.IsEnabled ?? current.Logging.FileLogger.IsEnabled,
-                    LogLevel = updates.Logging?.FileLogger?.LogLevel ?? current.Logging.FileLogger.LogLevel,
-                    Path = updates.Logging?.FileLogger?.Path ?? current.Logging.FileLogger.Path
-                },
-                DBLogger = new DBLoggerPatchRequest
-                {
-                    IsEnabled = updates.Logging?.DBLogger?.IsEnabled ?? current.Logging.DBLogger.IsEnabled,
-                    LogLevel = updates.Logging?.DBLogger?.LogLevel ?? current.Logging.DBLogger.LogLevel
-                }
             },
             System = new SystemPatchRequest
             {

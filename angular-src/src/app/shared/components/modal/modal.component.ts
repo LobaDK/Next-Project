@@ -4,6 +4,9 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 /**
  * ModalComponent
  *
+ * @deprecated This component is deprecated. Use specific dialog components with Angular Material Dialog instead.
+ * Create dedicated dialog components for better maintainability and consistency.
+ *
  * A reusable confirmation modal with a title, text, and configurable confirm/cancel buttons.
  *
  * Features:

@@ -4,10 +4,27 @@
     <h2 class="text-xl sm:text-3xl font-bold text-primary_dark_blue text-center sm:text-left m-0">
       {{ isAnonymousMode ? ('ACTIVE_BUILDER.ANONYMOUS_QUESTIONNAIRE' | translate) : ('ACTIVE_BUILDER.EVALUATION_QUESTIONNAIRE' | translate) }}
     </h2>
-    <button (click)="isAnonymousMode = !isAnonymousMode"
+    <!-- Switch to anonymous mode button -->
+    <!-- <button (click)="isAnonymousMode = !isAnonymousMode"
       class="bg-yellow-300  hover:bg-yellow-400 text-primary_dark_blue font-semibold py-2.5 px-6 rounded-xl transition-colors shadow-md w-full sm:w-auto">
       {{ isAnonymousMode ? ('ACTIVE_BUILDER.SWITCH_TO_EVALUATION' | translate) : ('ACTIVE_BUILDER.SWITCH_TO_ANONYMOUS' | translate) }}
-    </button>
+    </button> -->
+
+     <!-- Under construction button with Tooltip -->
+    <div class="relative group w-full sm:w-auto">
+      <button
+        disabled
+        class="bg-yellow-300  text-primary_dark_blue hover:bg-gray-300 hover:text-gray-500 font-semibold py-2.5 px-6 rounded-xl shadow-md cursor-not-allowed w-full sm:w-auto">
+        {{ isAnonymousMode ? ('ACTIVE_BUILDER.SWITCH_TO_EVALUATION' | translate) : ('ACTIVE_BUILDER.SWITCH_TO_ANONYMOUS' | translate) }}
+      </button>
+      <!-- Tooltip on hover -->
+      <div class="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 w-64 bg-gray-800 text-white text-sm rounded-lg px-4 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none">
+        <div class="font-semibold mb-1">{{ 'ACTIVE_BUILDER.UNDER_CONSTRUCTION' | translate }}</div>
+        <div class="text-xs">{{ 'ACTIVE_BUILDER.UNDER_CONSTRUCTION_DESC' | translate }}</div>
+        <!-- Arrow pointing down -->
+        <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-800 rotate-45"></div>
+      </div>
+    </div>
   </div>
 
   <!-- Anonymous Mode -->
@@ -42,7 +59,7 @@
           }
 
           @if (student.searchResults.length > 0 && showStudentResults) {
-            <div class="absolute z-30 left-0 right-0 top-[6rem] bg-white shadow-lg rounded-xl p-2 w-full max-h-60 overflow-auto border-2 border-primary_orange_1">
+            <div class="absolute z-30 left-0 right-0 top-[6rem] bg-white shadow-lg rounded-xl p-2 w-full max-h-100 overflow-auto border-2 border-primary_orange_1">
               <ul class="space-y-1">
                 @for (stud of student.searchResults; track stud.id || $index) {
                   <li (click)="select('student', stud)"
@@ -198,7 +215,7 @@
         </button>
       </div>
       <div class="flex justify-start">
-        <button [disabled]="!student.selected || !template.selected" (click)="showCreateConfirmation()"
+        <button [disabled]="!student.selected || !template.selected" (click)="openCreateConfirmDialog()"
           class="bg-primary_orange_1 hover:bg-primary_orange_light text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 w-full sm:w-auto">
           {{ 'ACTIVE_BUILDER.FINISH' | translate }}
         </button>
@@ -241,7 +258,7 @@
           }
 
           @if (student.searchResults.length > 0 && showStudentResults) {
-            <div class="absolute z-30 left-0 right-0 top-[6rem] bg-white shadow-lg rounded-xl p-2 w-full max-h-60 overflow-auto border-2 border-primary_orange_1">
+            <div class="absolute z-30 left-0 right-0 top-[6rem] bg-white shadow-lg rounded-xl p-2 w-full max-h-96 overflow-auto border-2 border-primary_orange_1">
               <ul class="space-y-1">
                 @for (stud of student.searchResults; track stud.id || $index) {
                   <li (click)="select('student', stud)"
@@ -483,7 +500,7 @@
         </button>
       </div>
       <div class="flex justify-start">
-        <button [disabled]="!student.selected || !template.selected" (click)="showCreateConfirmation()"
+        <button [disabled]="!student.selected || !template.selected" (click)="openCreateConfirmDialog()"
           class="bg-primary_orange_1 hover:bg-primary_orange_light text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 w-full sm:w-auto">
           {{ 'ACTIVE_BUILDER.FINISH' | translate }}
         </button>
@@ -491,14 +508,5 @@
     </div>
   }
 
-  <!-- Confirmation Modal -->
-  <app-modal
-    [isOpen]="showConfirmationModal"
-    [title]="confirmationTitle | translate"
-    [text]="confirmationText | translate"
-    [confirmText]="confirmationConfirmText | translate"
-    [cancelText]="confirmationCancelText | translate"
-    (confirm)="onConfirmCreate()"
-    (cancel)="onCancelCreate()">
-  </app-modal>
+
 </div>
