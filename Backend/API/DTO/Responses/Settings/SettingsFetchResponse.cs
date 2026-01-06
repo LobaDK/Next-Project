@@ -1,4 +1,3 @@
-using Serilog;
 using Settings.Interfaces;
 
 namespace API.DTO.Responses.Settings;
@@ -8,14 +7,7 @@ public record class SettingsFetchResponse
     public required DatabaseSettingsFetchResponse Database { get; set; }
     public required JWTSettingsFetchResponse JWT { get; set; }
     public required LDAPSettingsFetchResponse LDAP { get; set; }
-    public required LoggerSettingsFetchResponse Logging { get; set; }
     public required SystemSettingsFetchResponse System { get; set; }
-}
-
-public record class ConsoleLoggerSettingsFetchResponse : IConsoleLoggerSettings
-{
-    public required bool IsEnabled { get; set; }
-    public required Dictionary<string, LogLevel> LogLevel { get; set; }
 }
 
 public record class DatabaseSettingsFetchResponse : IDatabaseSettings
@@ -27,18 +19,6 @@ public record class DBLoggerSettingsFetchResponse : IDBLoggerSettings
 {
     public required bool IsEnabled { get; set; }
     public required Dictionary<string, LogLevel> LogLevel { get; set; }
-}
-
-public record class FileLoggerSettingsFetchResponse : IFileLoggerSettings
-{
-    public required bool IsEnabled { get; set; }
-    public required Dictionary<string, LogLevel> LogLevel { get; set; }
-    public required string Path { get; set; }
-    public required RollingInterval RollingInterval { get; set; }
-    public required bool RollOnFileSizeLimit { get; set; }
-    public required int FileSizeLimitBytes { get; set; }
-    public required int RetainedFileCountLimit { get; set; }
-    public required bool Shared { get; set; }
 }
 
 public record class JWTSettingsFetchResponse : IJWTSettings
@@ -62,14 +42,6 @@ public record class LDAPSettingsFetchResponse : ILDAPSettings
     public required string SA { get; set; }
     public required string SAPassword { get; set; }
     public required Dictionary<string, string> RoleMappingsCN { get; set; }
-}
-
-public record class LoggerSettingsFetchResponse : ILoggerSettings<ConsoleLoggerSettingsFetchResponse, FileLoggerSettingsFetchResponse, DBLoggerSettingsFetchResponse>
-{
-    public required Dictionary<string, LogLevel> LogLevel { get; set; }
-    public required ConsoleLoggerSettingsFetchResponse Console { get; set; }
-    public required FileLoggerSettingsFetchResponse FileLogger { get; set; }
-    public required DBLoggerSettingsFetchResponse DBLogger { get; set; }
 }
 
 public record class SystemSettingsFetchResponse : ISystemSettings

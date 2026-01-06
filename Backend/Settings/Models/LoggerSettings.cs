@@ -1,7 +1,7 @@
 
 namespace Settings.Models;
 
-public class LoggerSettings : Base, ILoggerSettings<ConsoleLoggerSettings, FileLoggerSettings, DBLoggerSettings>
+public class LoggerSettings : Base, ILoggerSettings<DBLoggerSettings>
 {
     [JsonIgnore]
     public override string Key { get; } = "Logging";
@@ -12,7 +12,5 @@ public class LoggerSettings : Base, ILoggerSettings<ConsoleLoggerSettings, FileL
         { "Default", Microsoft.Extensions.Logging.LogLevel.Error },
         { "Microsoft", Microsoft.Extensions.Logging.LogLevel.Warning }
     };
-    public ConsoleLoggerSettings Console { get; set; } = new ConsoleLoggerSettings();
-    public FileLoggerSettings FileLogger { get; set; } = new FileLoggerSettings();
     public DBLoggerSettings DBLogger { get; set; } = new DBLoggerSettings();
 }
