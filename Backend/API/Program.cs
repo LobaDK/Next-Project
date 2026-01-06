@@ -77,6 +77,7 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IQuestionnaireTemplateService, QuestionnaireTemplateService>();
 builder.Services.AddScoped<IActiveQuestionnaireService, ActiveQuestionnaireService>();
+builder.Services.AddScoped<ISystemControllerService, SystemControllerService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSingleton<CacheService>();
 builder.Services.AddMemoryCache();
