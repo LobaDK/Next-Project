@@ -3,25 +3,19 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace API.Middleware.RateLimiter;
 
-public class GlobalRateLimiterPolicy : IRateLimiterPolicy<string>
+public class GlobalRateLimiterPolicy() : IRateLimiterPolicy<string>
 {
     public RateLimitPartition<string> GetPartition(HttpContext httpContext)
     {
-        string key;
-        if (httpContext.User.Identity?.IsAuthenticated == true)
-        {
-            key = httpContext.User.Claims.Select(claim => claim).Single(claim => claim.Type == "unique_name").Value;
-        }
-        else
-        {
-            key = httpContext.Request.Headers.Host.ToString();
-        }
+        ILogger<GlobalRateLimiterPolicy> logger = httpContext.RequestServices.GetRequiredService<ILogger<GlobalRateLimiterPolicy>>();
+        
+        string key = GetPartitionKey(httpContext);
         
         return RateLimitPartition.GetFixedWindowLimiter(key,
         partition => new FixedWindowRateLimiterOptions
         {
             AutoReplenishment = true,
-            PermitLimit = 50,
+            PermitLimit = 100,
             QueueLimit = 10,
             QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
             Window = TimeSpan.FromMinutes(1)
@@ -31,6 +25,8 @@ public class GlobalRateLimiterPolicy : IRateLimiterPolicy<string>
     public Func<OnRejectedContext, CancellationToken, ValueTask>? OnRejected { get; } =
         (context, token) =>
         {
+            ILogger<GlobalRateLimiterPolicy> logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<GlobalRateLimiterPolicy>>();
+            
             context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
             
             string msg;
@@ -43,7 +39,37 @@ public class GlobalRateLimiterPolicy : IRateLimiterPolicy<string>
                 msg = "Rate limit exceeded. Please try again later.";
             }
 
+            string partition = GetPartitionKey(context.HttpContext);
+
+            logger.LogWarning("Rate limit exceeded for partition '{Partition}'.", partition);
+
             context.HttpContext.Response.WriteAsync(msg, token);
             return new ValueTask();
         };
+    
+    private static string GetPartitionKey(HttpContext httpContext)
+    {
+        ILogger<GlobalRateLimiterPolicy> logger = httpContext.RequestServices.GetRequiredService<ILogger<GlobalRateLimiterPolicy>>();
+
+        string key;
+        if (httpContext.User.Identity?.IsAuthenticated == true)
+        {
+            try
+            {
+                key = httpContext.User.Claims.Select(claim => claim).Single(claim => claim.Type == "unique_name").Value;
+            }
+            catch (Exception ex)
+            {
+                List<string> claimTypes = [.. httpContext.User.Claims.Select(claim => claim.Type)];
+                logger.LogError(ex, "Error extracting unique_name claim for rate limiting. Falling back to Host header. Available claims: {Claims}", string.Join(", ", claimTypes));
+                key = httpContext.Request.Headers.Host.ToString();
+            }
+        }
+        else
+        {
+            key = httpContext.Request.Headers.Host.ToString();
+        }
+
+        return key;
+    }
 }
