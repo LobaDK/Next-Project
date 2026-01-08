@@ -1,3 +1,5 @@
+using API.Middleware.RateLimiter;
+
 const string settingsFile = "config.json";
 
 var builder = WebApplication.CreateBuilder(args);
@@ -196,6 +198,10 @@ builder.Services.AddAuthorizationBuilder()
                       .AddPolicy("AdminAndTeacherOnly", policy => policy.RequireRole("admin", "teacher"))
                       .AddPolicy("StudentAndTeacherOnly", policy => policy.RequireRole("student", "teacher"));
 
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddPolicy<string>("global", new GlobalRateLimiterPolicy());
+});
 
 var app = builder.Build();
 
@@ -259,6 +265,10 @@ app.UseAuthorization();
 
 app.UseWebSockets();
 
-app.MapControllers();
+app.UseRateLimiter();
+
+app.MapControllers().RequireRateLimiting("global");
+
+app.UseRateLimiter();
 
 app.Run();
