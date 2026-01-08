@@ -12,6 +12,7 @@ interface CreateConfirmDialogData {
 
 @Component({
   standalone: true,
+  selector: 'app-create-confirm-dialog',
   imports: [MatDialogModule, MatButtonModule, TranslateModule],
   styleUrls: ['../../../../../styles/dialogs.scss'],
   templateUrl: './CreateConfirmDialog.component.html'

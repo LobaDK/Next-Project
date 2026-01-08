@@ -11,7 +11,8 @@
     "VIEW_RESULTS": "Se resultater",
     "TITLE_TEMPLATE_LIST": "Skabelonliste",
     "FILTER_STUDENT_PENDING": "Elev mangler",
-    "FILTER_TEACHER_PENDING": "Lærer mangler"
+    "FILTER_TEACHER_PENDING": "Lærer mangler",
+    "SEARCH_GROUP_PLACEHOLDER": "Søg spørgeskemagrupper..."
   },
 
   "NAV" : {
