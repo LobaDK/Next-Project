@@ -6,11 +6,12 @@ import { PaginationResponse } from '../../../shared/models/Pagination.model';
 import { Observable } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 import { User } from '../../../shared/models/user.model';
+import { IActiveService } from '../../../core/interfaces/service.interfaces';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ActiveService {
+export class ActiveService implements IActiveService {
   private apiUrl = `${environment.apiUrl}/active-questionnaire`;
   private apiService = inject(ApiService);
 

@@ -63,7 +63,8 @@
           <ul class="space-y-4 mt-4">
             @for (template of templateBases; track template) {
               <li
-                class="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-4 bg-gray-50 rounded-xl border border-primary_orange_1 shadow-sm hover:bg-secondary_background_hover transition-colors">
+                (click)="selectTemplate(template.id)"
+                class="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-4 bg-gray-50 rounded-xl border border-primary_orange_1 shadow-sm hover:bg-secondary_background_hover transition-colors cursor-pointer">
                 <!-- Title + Status -->
                 <span class="w-full sm:w-auto flex items-center gap-2 text-gray-800 font-medium break-words">
                   {{ template.title }}
@@ -78,7 +79,7 @@
           </span>
 
           <!-- Actions -->
-          <div class="w-full sm:w-auto flex flex-wrap gap-2 sm:gap-2 mt-1 sm:mt-0 justify-end sm:justify-start">
+          <div class="w-full sm:w-auto flex flex-wrap gap-2 sm:gap-2 mt-1 sm:mt-0 justify-end sm:justify-start" (click)="$event.stopPropagation()">
             <button
               (click)="selectTemplate(template.id)"
               class="w-full sm:w-auto px-4 py-1 text-sm bg-yellow-500 text-white rounded-xl hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-colors">

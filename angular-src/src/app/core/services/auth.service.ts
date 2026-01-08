@@ -1,11 +1,12 @@
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { catchError, interval, map, of, switchMap, tap, firstValueFrom, throwError, Subscription, Observable } from 'rxjs';
+import { catchError, interval, map, of, switchMap, tap, firstValueFrom, throwError, Subscription, Observable, filter } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { TokenService } from './token.service';
 import { ApiService } from './api.service';
 import { Role, User } from '../../shared/models/user.model';
 import { LoginErrorCode, LoginResult, ADErrorCode, ADErrorResponse } from '../../features/home/models/login.model';
+import { IAuthService } from '../interfaces/service.interfaces';
 
 interface AuthTokens {
   authToken: string;
@@ -25,7 +26,28 @@ interface AuthTokens {
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService {
+export class AuthService implements IAuthService {
+
+  // Configuration - adjust these values as needed
+  /**
+   * How often (in ms) to retry checking server connectivity if offline.
+   * Default: 5000ms = 5 seconds
+   */
+  private retryInterval = 5000;
+  
+  /**
+   * How often (in ms) to check if token needs proactive refresh.
+   * Default: 60000ms = 1 minute
+   * Recommended: 1-2 minutes for good responsiveness
+   */
+  private autoRefreshCheckInterval = 60000;
+  
+  /**
+   * How long before token expiry (in ms) to trigger proactive refresh.
+   * Default: 120000ms = 2 minutes
+   * Recommended: 2-5 minutes depending on token lifetime
+   */
+  private readonly refreshBufferMs = 2 * 60 * 1000;
 
   private baseUrl = environment.apiUrl;
 
@@ -36,17 +58,13 @@ export class AuthService {
   private _user = signal<User | null>(null);
   private _isOnline = signal<boolean>(true);
 
+  private retrySubscription: Subscription | null = null;
+  private autoRefreshSubscription: Subscription | null = null;
+
   // Public readonly signals
   public readonly isAuthenticated = computed(() => this._user() !== null);
   public readonly user = this._user.asReadonly();
   public readonly isOnline = this._isOnline.asReadonly();
-
-  /**
-   * How often (in ms) to retry checking server connectivity if offline.
-   * For example, 5000 = 5 seconds
-   */
-  private retryInterval = 5000;
-  private retrySubscription: Subscription | null = null;
 
 
   /**
@@ -70,6 +88,8 @@ export class AuthService {
         this.tokenService.setRefreshToken(refreshToken);
         this._user.set(this.buildUserFromToken());
         this._isOnline.set(true);
+        // Start automatic token refresh
+        this.startAutoRefresh();
       }),
       map(() => ({ success: true } as const)),
       catchError(err => {
@@ -94,9 +114,16 @@ export class AuthService {
 public refreshToken() {
   const refreshToken = this.tokenService.getRefreshToken();
   const expiredToken = this.tokenService.getToken();
+  
   if (!refreshToken || !expiredToken) {
     this.logout();
     return throwError(() => new Error('No tokens to refresh'));
+  }
+
+  // Check if refresh token is expired
+  if (this.tokenService.isRefreshTokenExpired()) {
+    this.logout();
+    return throwError(() => new Error('Refresh token expired'));
   }
 
   const url = `${this.baseUrl}/auth/refresh`;
@@ -123,6 +150,7 @@ public refreshToken() {
    * Logs the user out: clears tokens/state and stops offline retry loop.
    */
   public logout(): void {
+    this.stopAutoRefresh();
     this.tokenService.clearToken();
     this.tokenService.clearRefreshToken();
     this.clearAuthState();
@@ -138,10 +166,7 @@ public refreshToken() {
    * @returns Promise resolving to `true` if authenticated, else `false`.
    */
   public initializeAuthState(): Promise<boolean> {
-    const tokenExists = this.tokenService.tokenExists();
-    const tokenValid = !this.tokenService.isTokenExpired();
-
-    if (!tokenExists || !tokenValid) {
+    if (!this.hasValidTokens()) {
       this.logout();
       return Promise.resolve(false);
     }
@@ -152,6 +177,7 @@ public refreshToken() {
           if (serverIsOnline) {
             this._isOnline.set(true);
             this._user.set(this.buildUserFromToken());
+            this.startAutoRefresh();
           } else {
             this._isOnline.set(false);
             this.startRetryingConnection();
@@ -175,13 +201,12 @@ public refreshToken() {
    * - Restores authenticated state once server is reachable and token is valid.
    */
   private startRetryingConnection() {
-    // Avoid multiple subscriptions
     this.stopRetrying();
 
     this.retrySubscription = interval(this.retryInterval)
       .pipe(
         tap(() => {
-          if (!this.tokenService.tokenExists() || this.tokenService.isTokenExpired()) {
+          if (!this.hasValidTokens()) {
             this.logout();
           }
         }),
@@ -190,8 +215,7 @@ public refreshToken() {
       .subscribe((serverIsOnline) => {
         if (serverIsOnline) {
           this._isOnline.set(true);
-          // If the token is still valid, set user as authenticated
-          if (this.tokenService.tokenExists() && !this.tokenService.isTokenExpired()) {
+          if (this.hasValidTokens()) {
             this._user.set(this.buildUserFromToken());
           }
           this.stopRetrying();
@@ -210,8 +234,55 @@ public refreshToken() {
   }
 
   /**
+   * Starts automatic token refresh before expiration.
+   */
+  private startAutoRefresh(): void {
+    this.stopAutoRefresh();
+    
+    this.autoRefreshSubscription = interval(this.autoRefreshCheckInterval)
+      .pipe(
+        filter(() => this.hasValidTokens() && this.shouldRefreshToken())
+      )
+      .subscribe(() => {
+        this.refreshToken().subscribe({
+          error: () => this.stopAutoRefresh()
+        });
+      });
+  }
+
+  /**
+   * Stops automatic token refresh.
+   */
+  private stopAutoRefresh(): void {
+    if (this.autoRefreshSubscription) {
+      this.autoRefreshSubscription.unsubscribe();
+      this.autoRefreshSubscription = null;
+    }
+  }
+
+  /**
+   * Checks if token should be refreshed based on expiration time.
+   */
+  private shouldRefreshToken(): boolean {
+    const decoded = this.tokenService.getDecodedToken();
+    if (!decoded?.['exp']) return false;
+    
+    const expiryTime = decoded['exp'] * 1000;
+    const timeUntilExpiry = expiryTime - Date.now();
+    
+    return timeUntilExpiry <= this.refreshBufferMs;
+  }
+
+  // Helper methods
+  /**
+   * Checks if we have valid, non-expired tokens.
+   */
+  private hasValidTokens(): boolean {
+    return this.tokenService.tokenExists() && !this.tokenService.isTokenExpired();
+  }
+
+  /**
    * Reads a specific claim from the decoded token.
-   * @param key - Claim key to read.
    */
   private getTokenInfo<T>(key: string): T | null {
     const decodedToken = this.tokenService.getDecodedToken();
@@ -266,73 +337,67 @@ private mapToRoleEnum(value: string | null): Role | null {
 
 /**
  * Maps HTTP error response to login error code.
- * Extracts Active Directory error codes from the response body when available,
- * otherwise falls back to HTTP status code mapping.
  */
 private mapHttpErrorToLoginErrorCode(httpError: HttpErrorResponse): LoginErrorCode {
-  // For 401 errors, check if we have AD-specific error information in the response body
+  // Handle 401 errors with potential AD error codes
   if (httpError.status === 401 && httpError.error) {
     try {
-      let adError: ADErrorResponse;
-      
-      // Handle both JSON objects and JSON strings in the error response
-      if (typeof httpError.error === 'string') {
-        adError = JSON.parse(httpError.error);
-      } else if (httpError.error.errorCode || httpError.error.ErrorCode) {
-        adError = httpError.error;
-      } else {
-        // Fallback: check if error message itself is a JSON string
-        const errorMessage = httpError.error.message || httpError.message;
-        if (errorMessage && typeof errorMessage === 'string') {
-          adError = JSON.parse(errorMessage);
-        } else {
-          throw new Error('No AD error code found');
-        }
-      }
-      
-      // Map AD error codes to specific LoginErrorCode values
-      // Handle both new (errorCode) and legacy (ErrorCode) property names
-      const errorCode = adError.errorCode || adError.errorCode;
-      switch (errorCode) {
-        case ADErrorCode.InvalidCredentials:
-          return LoginErrorCode.InvalidCredentials;
-        case ADErrorCode.AccountDisabled:
-          return LoginErrorCode.AccountDisabled;
-        case ADErrorCode.AccountExpired:
-          return LoginErrorCode.AccountExpired;
-        case ADErrorCode.PasswordExpired:
-          return LoginErrorCode.PasswordExpired;
-        case ADErrorCode.AccountLocked:
-          return LoginErrorCode.AccountLocked;
-        default:
-          return LoginErrorCode.InvalidCredentials; // Default for unknown AD codes
-      }
+      const adError = this.parseADError(httpError.error);
+      return this.mapADErrorCode(adError?.errorCode);
     } catch {
-      // If we can't parse AD error codes, fall back to generic invalid credentials
       return LoginErrorCode.InvalidCredentials;
     }
   }
 
-  // Fall back to HTTP status code mapping for non-401 errors or when AD parsing fails
-  switch (httpError.status) {
-    case 0:
-      return LoginErrorCode.Network;
-    case 400:
-      return LoginErrorCode.BadRequest;
-    case 401:
-      return LoginErrorCode.InvalidCredentials;
-    case 403:
-      return LoginErrorCode.Forbidden;
-    case 429:
-      return LoginErrorCode.RateLimited;
-    case 503:
-      return LoginErrorCode.Unavailable;
+  // HTTP status code mapping
+  const statusMap: Record<number, LoginErrorCode> = {
+    0: LoginErrorCode.Network,
+    400: LoginErrorCode.BadRequest,
+    401: LoginErrorCode.InvalidCredentials,
+    403: LoginErrorCode.Forbidden,
+    429: LoginErrorCode.RateLimited,
+    503: LoginErrorCode.Unavailable
+  };
+
+  if (statusMap[httpError.status]) {
+    return statusMap[httpError.status];
   }
 
-  if (httpError.status >= 500 && httpError.status < 600) {
-    return LoginErrorCode.Server;
+  return httpError.status >= 500 && httpError.status < 600 
+    ? LoginErrorCode.Server 
+    : LoginErrorCode.Unknown;
+}
+
+private parseADError(error: any): ADErrorResponse | null {
+  if (typeof error === 'string') {
+    return JSON.parse(error);
   }
-  return LoginErrorCode.Unknown;
+  if (error.errorCode) {
+    return error;
+  }
+  const errorMessage = error.message;
+  return errorMessage ? JSON.parse(errorMessage) : null;
+}
+
+private mapADErrorCode(errorCode?: string): LoginErrorCode {
+  if (!errorCode) return LoginErrorCode.InvalidCredentials;
+  
+  switch (errorCode) {
+    case ADErrorCode.InvalidCredentials:
+      return LoginErrorCode.InvalidCredentials;
+    case ADErrorCode.AccountDisabled:
+      return LoginErrorCode.AccountDisabled;
+    case ADErrorCode.AccountExpired:
+      return LoginErrorCode.AccountExpired;
+    case ADErrorCode.PasswordExpired: // Maps to 'PasswordHasExpired'
+      return LoginErrorCode.PasswordExpired;
+    case ADErrorCode.AccountLocked: // Maps to 'AccountIsLockedOut'
+      return LoginErrorCode.AccountLocked;
+    case ADErrorCode.AccountLoginError:
+      return LoginErrorCode.AccountLoginError;
+    default:
+      return LoginErrorCode.InvalidCredentials;
+  }
 }
 
 }

@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { delay, Observable, of } from 'rxjs';
 import { PaginationResponse } from '../../../shared/models/Pagination.model';
-import { ActiveQuestionnaire, ActiveQuestionnaireBase, ResponseActiveQuestionnaireBase, TemplateBaseResponse, UserPaginationResult } from '../models/active.models';
+import { ActiveQuestionnaire, ActiveQuestionnaireBase, QuestionnaireGroupOffsetPaginationResult, ResponseActiveQuestionnaireBase, TemplateBaseResponse, UserPaginationResult } from '../models/active.models';
 import { User, Role } from '../../../shared/models/user.model';
 import { Template, TemplateBase, TemplateStatus } from '../../../shared/models/template.model';
+import { IActiveService } from '../../../core/interfaces/service.interfaces';
 
 
 @Injectable({
   providedIn: 'root',
 })
-export class MockActiveService {
+export class MockActiveService implements IActiveService {
 private sessionOffsets = new Map<string, number>();
 private mockUsers: User[] = [
   { id: 's1', userName: 'johnd123', fullName: 'John Doe', role: Role.Student },
@@ -111,6 +112,59 @@ private mockUsers: User[] = [
 
   constructor() {}
 
+  testgetActiveQuestionnaires(
+    page: number,
+    pageSize: number,
+    searchStudent: string = '',
+    searchStudentType: 'fullName' | 'userName' | 'both' = 'both',
+    searchTeacher: string = '',
+    searchTeacherType: 'fullName' | 'userName' | 'both' = 'both'
+  ): Observable<PaginationResponse<ActiveQuestionnaire>> {
+    // For mock implementation, convert filtered data to the expected format
+    let filteredData = [...this.activeQuestionnaires];
+
+    // Apply student search filter if provided
+    if (searchStudent.trim()) {
+      filteredData = filteredData.filter(q =>
+        this.filterByType(q.student.fullName, searchStudent, searchStudentType) ||
+        this.filterByType(q.student.userName, searchStudent, searchStudentType)
+      );
+    }
+
+    // Apply teacher search filter if provided
+    if (searchTeacher.trim()) {
+      filteredData = filteredData.filter(q =>
+        this.filterByType(q.teacher.fullName, searchTeacher, searchTeacherType) ||
+        this.filterByType(q.teacher.userName, searchTeacher, searchTeacherType)
+      );
+    }
+
+    // Mock pagination
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedData = filteredData.slice(startIndex, endIndex);
+
+    // Convert to ActiveQuestionnaire format for response
+    const result: PaginationResponse<ActiveQuestionnaire> = {
+      items: paginatedData.map(q => ({
+        id: q.id,
+        title: q.title || 'Untitled',
+        description: q.description,
+        activatedAt: q.activatedAt,
+        student: q.student,
+        teacher: q.teacher,
+        studentCompletedAt: q.studentCompletedAt,
+        teacherCompletedAt: q.teacherCompletedAt
+      })),
+      totalItems: filteredData.length,
+      currentPage: page,
+      pageSize: pageSize,
+      totalPages: Math.ceil(filteredData.length / pageSize)
+    };
+
+    return of(result).pipe(delay(500));
+  }
+
   getActiveQuestionnaires(
     pageSize: number,
     queryCursor: string = '',
@@ -186,36 +240,53 @@ private mockUsers: User[] = [
   }
 
 
-  getActiveQuestionnaireById(id: string): Observable<ActiveQuestionnaireBase | undefined> {
+  getActiveQuestionnaireById(id: string): Observable<ActiveQuestionnaire> {
     const questionnaire = this.activeQuestionnaires.find(q => q.id === id);
-    return of(questionnaire);
+    if (!questionnaire) {
+      throw new Error(`Active questionnaire with ID ${id} not found`);
+    }
+    // Convert to ActiveQuestionnaire
+    const activeQuestionnaire: ActiveQuestionnaire = {
+      id: questionnaire.id,
+      title: questionnaire.title || 'Untitled',
+      description: questionnaire.description,
+      activatedAt: questionnaire.activatedAt,
+      student: questionnaire.student,
+      teacher: questionnaire.teacher,
+      studentCompletedAt: questionnaire.studentCompletedAt,
+      teacherCompletedAt: questionnaire.teacherCompletedAt
+    };
+    return of(activeQuestionnaire);
   }
 
-  createActiveQuestionnaire(data: { studentId: string; teacherId: string; templateId: string }): Observable<ActiveQuestionnaire | null> {
-    // Find the existing student, teacher, and template
-    const student = this.mockUsers.find(user => user.id === data.studentId && user.role === 'student');
-    const teacher = this.mockUsers.find(user => user.id === data.teacherId && user.role === 'teacher');
-    const template = this.mockTemplates.find(t => t.id === data.templateId);
-
-    // Ensure all required entities exist
-    if (!student || !teacher || !template) {
-      console.error('Invalid student, teacher, or template ID');
-      return of(null);
-    }
-
-    const newQuestionnaire: ActiveQuestionnaire = {
-      id: `q${this.activeQuestionnaires.length + 1}`,
-      title: template?.title ?? 'unknown',
-      activatedAt: new Date(),
-      student: student,
-      teacher: teacher,
-      studentCompletedAt: null,
-      teacherCompletedAt: null,
-    };
+  createActiveQuestionnaire(aq: { studentIds: string[]; teacherIds: string[]; templateId: string }): Observable<ActiveQuestionnaire[]> {
+    const questionnaires: ActiveQuestionnaire[] = [];
     
+    // Create questionnaires for each student-teacher combination
+    for (const studentId of aq.studentIds) {
+      for (const teacherId of aq.teacherIds) {
+        const student = this.mockUsers.find(user => user.id === studentId && user.role === Role.Student);
+        const teacher = this.mockUsers.find(user => user.id === teacherId && user.role === Role.Teacher);
+        const template = this.mockTemplates.find(t => t.id === aq.templateId);
 
-    this.activeQuestionnaires.push(newQuestionnaire);
-    return of(newQuestionnaire);
+        if (student && teacher && template) {
+          const newQuestionnaire: ActiveQuestionnaire = {
+            id: `q${Date.now()}-${Math.random()}`,
+            title: template.title,
+            activatedAt: new Date(),
+            student: student,
+            teacher: teacher,
+            studentCompletedAt: null,
+            teacherCompletedAt: null
+          };
+          
+          questionnaires.push(newQuestionnaire);
+          this.activeQuestionnaires.push(newQuestionnaire as ActiveQuestionnaireBase);
+        }
+      }
+    }
+    
+    return of(questionnaires).pipe(delay(500));
   }
 
   updateActiveQuestionnaire(id: string, data: Partial<ActiveQuestionnaire>): Observable<ActiveQuestionnaireBase | undefined> {
@@ -317,5 +388,92 @@ searchTemplates(term: string, queryCursor: string = ''): Observable<TemplateBase
     queryCursor: nextCursor,
     totalCount: filtered.length
   }).pipe(delay(300));
+}
+
+createActiveQuestionnaireGroup(aq: { name: string; templateId: string; studentIds: string[]; teacherIds: string[] }): Observable<any> {
+  const newGroup = {
+    groupId: `group-${Date.now()}`,
+    name: aq.name,
+    templateId: aq.templateId,
+    createdAt: new Date(),
+    studentIds: aq.studentIds,
+    teacherIds: aq.teacherIds
+  };
+  return of(newGroup).pipe(delay(500));
+}
+
+getQuestionnaireGroup(groupId: string): Observable<any> {
+  const mockGroup = {
+    groupId: groupId,
+    name: `Mock Group ${groupId}`,
+    templateId: 't101',
+    createdAt: new Date(),
+    questionnaires: []
+  };
+  return of(mockGroup).pipe(delay(300));
+}
+
+getQuestionnaireGroups(): Observable<any[]> {
+  const mockGroups = [
+    { groupId: 'group1', name: 'Math Group 1', templateId: 't101' },
+    { groupId: 'group2', name: 'History Group 1', templateId: 't102' }
+  ];
+  return of(mockGroups).pipe(delay(300));
+}
+
+createAnonymousQuestionnaireGroup(payload: { participantIds: string[], templateId: string }): Observable<any> {
+  const anonymousGroup = {
+    groupId: `anon-group-${Date.now()}`,
+    templateId: payload.templateId,
+    participantIds: payload.participantIds,
+    createdAt: new Date()
+  };
+  return of(anonymousGroup).pipe(delay(500));
+}
+
+getQuestionnaireGroupsPaginated(
+  pageNumber: number,
+  pageSize: number,
+  searchTitle: string = '',
+  filterPendingStudent: boolean = false,
+  filterPendingTeacher: boolean = false
+): Observable<QuestionnaireGroupOffsetPaginationResult> {
+  // Mock questionnaire groups data
+  let mockGroups = [
+    { groupId: 'group1', name: 'Math Group 1', createdAt: new Date('2024-01-01'), templateId: 't101', pendingStudent: false, pendingTeacher: true },
+    { groupId: 'group2', name: 'History Group 1', createdAt: new Date('2024-01-02'), templateId: 't102', pendingStudent: true, pendingTeacher: false },
+    { groupId: 'group3', name: 'Science Group 1', createdAt: new Date('2024-01-03'), templateId: 't103', pendingStudent: false, pendingTeacher: false }
+  ];
+
+  // Apply filters
+  if (searchTitle) {
+    mockGroups = mockGroups.filter(g => g.name.toLowerCase().includes(searchTitle.toLowerCase()));
+  }
+  if (filterPendingStudent) {
+    mockGroups = mockGroups.filter(g => g.pendingStudent);
+  }
+  if (filterPendingTeacher) {
+    mockGroups = mockGroups.filter(g => g.pendingTeacher);
+  }
+
+  // Pagination
+  const startIndex = (pageNumber - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const paginatedGroups = mockGroups.slice(startIndex, endIndex);
+
+  const result: QuestionnaireGroupOffsetPaginationResult = {
+    groups: paginatedGroups.map(g => ({
+      groupId: g.groupId,
+      name: g.name,
+      createdAt: g.createdAt.toString(),
+      templateId: g.templateId,
+      questionnaires: [] // Mock empty questionnaires array
+    })),
+    totalCount: mockGroups.length,
+    currentPage: pageNumber,
+    totalPages: Math.ceil(mockGroups.length / pageSize)
+  };
+
+  return of(result).pipe(delay(500));
 }
 }
