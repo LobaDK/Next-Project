@@ -5,6 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   standalone: true,
+  selector: 'app-error-dialog',
   imports: [MatDialogModule, MatButtonModule, TranslateModule],
   styleUrls: ['../../../../styles/dialogs.scss'],
   templateUrl: './ErrorDialog.component.html'

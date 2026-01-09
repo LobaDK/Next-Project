@@ -7,7 +7,8 @@
     "VIEW_RESULTS": "View results",
     "TITLE_TEMPLATE_LIST": "Template list",
     "FILTER_STUDENT_PENDING": "Student pending",
-    "FILTER_TEACHER_PENDING": "Teacher pending"
+    "FILTER_TEACHER_PENDING": "Teacher pending",
+    "SEARCH_GROUP_PLACEHOLDER": "Search questionnaire groups..."
   },
 
   "PAGINATION": {

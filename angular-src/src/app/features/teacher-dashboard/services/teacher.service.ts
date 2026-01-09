@@ -5,6 +5,7 @@ import { environment } from '../../../../environments/environment';
 import { ApiService } from '../../../core/services/api.service';
 import { PaginationResponse } from '../../../shared/models/Pagination.model';
 import { HttpParams } from '@angular/common/http';
+import { ITeacherService } from '../../../core/interfaces/service.interfaces';
 
 /**
  * Teacher service.
@@ -19,7 +20,7 @@ import { HttpParams } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
 })
-export class TeacherService {
+export class TeacherService implements ITeacherService {
   private apiUrl = `${environment.apiUrl}/user/teacher`;
   private apiService = inject(ApiService);
 

@@ -3,11 +3,12 @@ import { TemplateBaseResponse } from '../models/template.model';
 import { delay, Observable, of } from 'rxjs';
 import { PaginationResponse } from '../../../shared/models/Pagination.model';
 import { Template, TemplateBase, TemplateStatus } from '../../../shared/models/template.model';
+import { ITemplateService } from '../../../core/interfaces/service.interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
-export class MockTemplateService {
+export class MockTemplateService implements ITemplateService {
 private templates: Template[] = [
   {
     id: '1',
@@ -651,13 +652,13 @@ upgradeTemplate(templateId: string): Observable<Template> {
 }
 
 
-  updateTemplate(templateId: string, updatedTemplate: Template): Observable<void> {
+  updateTemplate(templateId: string, updatedTemplate: Template): Observable<Template> {
     const index = this.templates.findIndex((t) => t.id === templateId);
     if (index === -1) {
       throw new Error(`Template with ID ${templateId} not found`);
     }
     this.templates[index] = { ...updatedTemplate };
-    return of(void 0).pipe(delay(500));
+    return of(this.templates[index]).pipe(delay(500));
   }
 
   /**
@@ -666,5 +667,15 @@ upgradeTemplate(templateId: string): Observable<Template> {
   deleteTemplate(templateId: string): Observable<void> {
     this.templates = this.templates.filter((t) => t.id !== templateId);
     return of(void 0).pipe(delay(500));
+  }
+
+  /**
+   * Checks if a template title is available (not already in use).
+   * @param title The title to check
+   * @returns Observable<boolean> - true if available, false if already exists
+   */
+  checkTitleAvailability(title: string): Observable<boolean> {
+    const titleExists = this.templates.some(t => t.title.toLowerCase() === title.toLowerCase());
+    return of(!titleExists).pipe(delay(300));
   }
 }

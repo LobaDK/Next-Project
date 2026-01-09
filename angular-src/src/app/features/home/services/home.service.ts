@@ -2,11 +2,12 @@ import { inject, Injectable } from '@angular/core';
 import { ApiService } from '../../../core/services/api.service';
 import { environment } from '../../../../environments/environment';
 import { Observable, map } from 'rxjs';
+import { IHomeService } from '../../../core/interfaces/service.interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
-export class HomeService {
+export class HomeService implements IHomeService {
   private apiUrl = environment.apiUrl;
   private apiService = inject(ApiService);
 

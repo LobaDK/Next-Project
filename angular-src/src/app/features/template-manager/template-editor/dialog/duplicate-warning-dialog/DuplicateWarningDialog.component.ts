@@ -5,6 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   standalone: true,
+  selector: 'app-duplicate-warning-dialog',
   imports: [MatDialogModule, MatButtonModule, TranslateModule],
   styleUrls: ['../../../../../styles/dialogs.scss'],
   templateUrl: './DuplicateWarningDialog.component.html'

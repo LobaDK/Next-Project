@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { delay, Observable, of } from 'rxjs';
-import { ActiveQuestionnaireBase, ActiveQuestionnaireResponse } from '../models/dashboard.model';
+import { ActiveQuestionnaireBase, ActiveQuestionnaireResponse, QuestionnaireGroupResponse } from '../models/dashboard.model';
+import { ITeacherService } from '../../../core/interfaces/service.interfaces';
 
 @Injectable({
   providedIn: 'root',
 })
-export class MockTeacherService {
+export class MockTeacherService implements ITeacherService {
   // Generate mock data as ActiveQuestionnaireBase objects.
   private readonly MOCK_DATA: ActiveQuestionnaireBase[] = Array.from({ length: 40 }, (_, i) => {
     const now = new Date();
@@ -78,5 +79,83 @@ export class MockTeacherService {
 
     // Return the response with a delay to simulate an HTTP call.
     return of(response).pipe(delay(2000));
+  }
+
+  /**
+   * Mock implementation of getQuestionnaireGroups to match the interface
+   */
+  getQuestionnaireGroups(
+    pageNumber: number,
+    pageSize: number,
+    searchTitle: string,
+    filterPendingStudent: boolean,
+    filterPendingTeacher: boolean
+  ): Observable<QuestionnaireGroupResponse> {
+    // Mock questionnaire groups data
+    const mockGroups = [
+      {
+        groupId: 'group1',
+        groupName: 'Math Group 1',
+        createdAt: new Date('2024-01-01').toISOString(),
+        templateId: 't101',
+        questionnaires: this.MOCK_DATA.slice(0, 3)
+      },
+      {
+        groupId: 'group2', 
+        groupName: 'History Group 1',
+        createdAt: new Date('2024-01-02').toISOString(),
+        templateId: 't102',
+        questionnaires: this.MOCK_DATA.slice(3, 6)
+      },
+      {
+        groupId: 'group3',
+        groupName: 'Science Group 1', 
+        createdAt: new Date('2024-01-03').toISOString(),
+        templateId: 't103',
+        questionnaires: this.MOCK_DATA.slice(6, 9)
+      }
+    ];
+
+    // Apply search filter
+    let filteredGroups = mockGroups;
+    if (searchTitle) {
+      filteredGroups = mockGroups.filter(g => 
+        g.groupName.toLowerCase().includes(searchTitle.toLowerCase())
+      );
+    }
+
+    // Apply pending filters (mock logic)
+    if (filterPendingStudent || filterPendingTeacher) {
+      filteredGroups = filteredGroups.filter(g => {
+        const hasPendingStudent = g.questionnaires.some(q => q.studentCompletedAt === null);
+        const hasPendingTeacher = g.questionnaires.some(q => q.teacherCompletedAt === null);
+        
+        if (filterPendingStudent && filterPendingTeacher) {
+          return hasPendingStudent && hasPendingTeacher;
+        }
+        if (filterPendingStudent) {
+          return hasPendingStudent;
+        }
+        if (filterPendingTeacher) {
+          return hasPendingTeacher;
+        }
+        return true;
+      });
+    }
+
+    // Pagination
+    const totalCount = filteredGroups.length;
+    const totalPages = Math.ceil(totalCount / pageSize);
+    const startIndex = (pageNumber - 1) * pageSize;
+    const paginatedGroups = filteredGroups.slice(startIndex, startIndex + pageSize);
+
+    const response: QuestionnaireGroupResponse = {
+      groups: paginatedGroups,
+      totalCount,
+      currentPage: pageNumber,
+      totalPages
+    };
+
+    return of(response).pipe(delay(1000));
   }
 }
