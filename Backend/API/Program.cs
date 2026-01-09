@@ -34,6 +34,7 @@ Serilog.Core.Logger seriLogger = new LoggerConfiguration().ReadFrom.Configuratio
         .CreateLogger();
 
 builder.Logging.AddSerilog(seriLogger);
+bootstrapLoggerFactory.AddSerilog(seriLogger);
 
 // Add services to the container.
 
@@ -200,7 +201,7 @@ builder.Services.AddAuthorizationBuilder()
 
 builder.Services.AddRateLimiter(options =>
 {
-    options.AddPolicy<string>("global", new GlobalRateLimiterPolicy());
+    options.AddPolicy<string>("global", new GlobalRateLimiterPolicy(new Logger<GlobalRateLimiterPolicy>(bootstrapLoggerFactory)));
 });
 
 var app = builder.Build();
