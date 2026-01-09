@@ -1,5 +1,3 @@
-using API.Attributes;
-
 namespace Database.DTO.QuestionnaireTemplate;
 
 /// <summary>

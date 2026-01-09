@@ -1,5 +1,3 @@
-using System.ComponentModel;
-using Database.Enums;
 
 namespace API.DTO.Requests.QuestionnaireTemplate;
 
@@ -34,5 +32,14 @@ public record class TemplateKeysetPaginationRequest
     /// The cursor for where the query should start/resume from
     /// </summary>
     public string? QueryCursor { get; set; }
-    public TemplateStatus? templateStatus { get; set; }
+
+    /// <summary>
+    /// The teacher ID to filter templates created for a specific teacher.
+    /// </summary>
+    public Guid? TeacherId { get; set; }
+
+    /// <summary>
+    /// The status of the template to filter by.
+    /// </summary>
+    public TemplateStatus? TemplateStatus { get; set; }
 }

@@ -1,6 +1,4 @@
-using System.ComponentModel.DataAnnotations;
-
-namespace API.Attributes;
+namespace Database.Attributes;
 
 /// <summary>
 /// Validation attribute that ensures a collection of questionnaire options does not exceed the maximum allowed count.

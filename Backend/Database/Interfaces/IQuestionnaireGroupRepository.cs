@@ -1,12 +1,4 @@
-﻿using Database.DTO.ActiveQuestionnaire;
-using Database.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Database.Enums;
-
+﻿
 namespace Database.Interfaces
 {
     public interface IQuestionnaireGroupRepository
@@ -33,6 +25,8 @@ namespace Database.Interfaces
         /// This operation loads all navigation properties for immediate consumption.
         /// </remarks>
         Task<IEnumerable<QuestionnaireGroupModel>> GetAllAsync();
+
+        Task<IEnumerable<QuestionnaireGroupModel>> GetGroupsByTemplateIdAsync(Guid templateId);
 
         /// <summary>
         /// Retrieves a questionnaire group by its unique identifier.

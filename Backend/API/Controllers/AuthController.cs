@@ -1,20 +1,4 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using API.DTO.User;
-using API.DTO.Requests.Auth;
-using API.DTO.Responses.Auth;
-using API.Exceptions;
-using API.Interfaces;
-using API.Services;
-using API.Utils;
-using Database.DTO.User;
-using Database.Enums;
-using Logging.LogEvents;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.Net.Http.Headers;
-using Settings.Models;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace API.Controllers
 {
@@ -45,14 +29,15 @@ namespace API.Controllers
     public class AuthController : ControllerBase
     {
         // TODO: Add a service to move the majority of the code out of the controller
-        private readonly JwtService _jwtService;
+        private readonly IJwtService _jwtService;
         private readonly IAuthenticationBridge _authenticationBridge;
         private readonly JWTSettings _JWTSettings;
+        private readonly LDAPSettings _LDAPSettings;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger _logger;
 
         public AuthController(
-            JwtService jwtService,
+            IJwtService jwtService,
             IAuthenticationBridge ldapService,
             IConfiguration configuration,
             IUnitOfWork unitOfWork,
@@ -61,6 +46,7 @@ namespace API.Controllers
             _jwtService = jwtService;
             _authenticationBridge = ldapService;
             _JWTSettings = ConfigurationBinderService.Bind<JWTSettings>(configuration);
+            _LDAPSettings = ConfigurationBinderService.Bind<LDAPSettings>(configuration);
             _unitOfWork = unitOfWork;
             _logger = loggerFactory.CreateLogger(GetType());
         }
@@ -99,13 +85,25 @@ namespace API.Controllers
             {
                 _authenticationBridge.Authenticate(userLogin.Username, userLogin.Password);
             }
-            catch (LDAPException.ConnectionError)
+            catch (ConnectionError)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
             catch (UnauthorizedAccessException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            catch (LdapAuthenticationErrorException e)
+            {
+                return Unauthorized(new AuthenticationError()
+                {
+                   ErrorCode = e.ErrorCode.ToString(),
+                   Message = e.Message 
+                });
             }
 
             if (_authenticationBridge.IsConnected())
@@ -125,7 +123,7 @@ namespace API.Controllers
                 try
                 {
                     // Converts ldap role to an internal role
-                    userRole = _JWTSettings.Roles.First(x => ldapUser.MemberOf.Any(y => y.Contains(x.Value, StringComparison.OrdinalIgnoreCase))).Key;
+                    userRole = _LDAPSettings.RoleMappingsCN.First(x => ldapUser.MemberOf.Any(y => y.Contains(x.Value, StringComparison.OrdinalIgnoreCase))).Key;
                 }
                 catch (Exception e)
                 {

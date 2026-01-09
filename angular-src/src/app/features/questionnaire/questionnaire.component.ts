@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, computed, DestroyRef, HostListener, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { QuestionComponent } from './question/question.component';
@@ -7,7 +7,11 @@ import { Answer, AnswerSubmission, QuestionnaireState } from './models/answer.mo
 import { LoadingComponent } from '../../shared/loading/loading.component';
 import { Role, User } from '../../shared/models/user.model';
 import { AuthService } from '../../core/services/auth.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SubmitConfirmDialog } from './submit-confirm-modal/SubmitConfirmDialog.component';
 import { map } from 'rxjs';
 
 
@@ -21,11 +25,10 @@ import { map } from 'rxjs';
  * - Submitting answers when all questions are completed.
  */
 @Component({
-  selector: 'app-answer-questionnaire',
-  standalone: true,
-  imports: [CommonModule, QuestionComponent, LoadingComponent, TranslateModule],
-  templateUrl: './questionnaire.component.html',
-  styleUrls: ['./questionnaire.component.css'],
+    selector: 'app-answer-questionnaire',
+    imports: [CommonModule, QuestionComponent, TranslateModule],
+    templateUrl: './questionnaire.component.html',
+    styleUrls: ['./questionnaire.component.css']
 })
 export class QuestionnaireComponent {
   private answerService = inject(AnswerService);
@@ -33,6 +36,9 @@ export class QuestionnaireComponent {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
+  private dialog = inject(MatDialog);
+  private snackBar = inject(MatSnackBar);
+  private translate = inject(TranslateService);
 
   readonly user = this.authService.user;
 
@@ -52,6 +58,56 @@ export class QuestionnaireComponent {
 
   isLoading = true;
   errorMessage: string | null = null;
+
+ @HostListener('window:keydown', ['$event'])
+handleKeyboardEvent(event: KeyboardEvent): void {
+  // Don't handle keyboard events if user is typing in a textarea
+  const target = event.target as HTMLElement;
+  if (target.tagName === 'TEXTAREA') {
+    return;
+  }
+
+  switch (event.key) {
+    case 'ArrowRight':
+    case 'Enter':
+      event.preventDefault();
+      if (this.state.currentQuestionIndex === this.state.template.questions.length - 1) {
+        // Last question - submit if all answered
+        if (this.allQuestionsAnswered) {
+          this.submitQuestionnaire();
+        }
+      } else if (this.isAnswered) {
+        // Not last question - go to next if current is answered
+        this.nextQuestion();
+      }
+      break;
+
+    case 'ArrowLeft':
+    case 'Backspace':
+      event.preventDefault();
+      this.previousQuestion();
+      break;
+
+    case 'ArrowUp':
+      event.preventDefault();
+      this.selectPreviousOption();
+      break;
+
+    case 'ArrowDown':
+      event.preventDefault();
+      this.selectNextOption();
+      break;
+
+    case 'Escape':
+      event.preventDefault();
+      if (confirm('Are you sure you want to leave? Your progress will be lost.')) {
+        this.router.navigate(['/']);
+      }
+      break;
+  }
+}
+
+
 
   ngOnInit() {
     const u = this.user(); 
@@ -178,24 +234,62 @@ export class QuestionnaireComponent {
  * On success, marks as completed and navigates home.
  */
   submitQuestionnaire(): void {
-    if (this.allQuestionsAnswered) {
-      const submission: AnswerSubmission = { answers: this.state.answers };
-      this.answerService.submitAnswers(this.state.template.id, submission).subscribe({
-        next: () => {
-          this.state.isCompleted = true;
-          alert('Questionnaire submitted successfully!');
-          // Navigate to root after submission
-          this.router.navigate(['/']);
-        },
-        error: (error) => {
-          console.error('Error submitting questionnaire:', error);
-          alert('There was an error submitting your questionnaire. Please try again later.');
+    if (!this.allQuestionsAnswered) {
+      alert('Please answer all questions before submitting.');
+      return;
+    }
+    this.openSubmitConfirmDialog();
+  }
+
+  openSubmitConfirmDialog(): void {
+    this.dialog
+      .open(SubmitConfirmDialog, {
+        panelClass: 'app-modal',
+        maxWidth: '28rem',
+        width: '100%',
+        disableClose: true,
+      })
+      .afterClosed()
+      .subscribe(confirmed => {
+        if (confirmed) {
+          this.performSubmit();
         }
       });
-    } else {
-      alert('Please answer all questions before submitting.');
-    }
   }
+
+  private performSubmit(): void {
+    const submission: AnswerSubmission = { answers: this.state.answers };
+    this.answerService.submitAnswers(this.state.template.id, submission).subscribe({
+      next: () => {
+        this.state.isCompleted = true;
+        this.snackBar.open(
+          this.translate.instant('QUESTIONNAIRE.SUBMIT_SUCCESS'),
+          this.translate.instant('COMMON.BUTTONS.CLOSE'),
+          {
+            duration: 5000,
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom',
+            panelClass: ['success-snackbar']
+          }
+        );
+        this.router.navigate(['/']);
+      },
+      error: (error) => {
+        console.error('Error submitting questionnaire:', error);
+        this.snackBar.open(
+          this.translate.instant('QUESTIONNAIRE.SUBMIT_ERROR'),
+          this.translate.instant('COMMON.BUTTONS.CLOSE'),
+          {
+            duration: 8000,
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom',
+            panelClass: ['error-snackbar']
+          }
+        );
+      }
+    });
+  }
+
 
   /** Recomputes progress percentage based on index and whether the current question is answered. */
   private updateProgress(): void {
@@ -206,7 +300,59 @@ export class QuestionnaireComponent {
     this.state.progress = Math.min(progressForCurrent + progressForAnswer, 100);
   }
 
+  /** Select previous option in current question (wraps around) */
+  private selectPreviousOption(): void {
+    const question = this.currentQuestion;
+    if (!question || question.options.length === 0) return;
 
+    const currentAnswer = this.currentAnswer;
+    let currentIndex = -1;
+
+    if (currentAnswer?.optionId) {
+      currentIndex = question.options.findIndex(opt => opt.id === currentAnswer.optionId);
+    }
+
+    // Move to previous option (wrap around to last if at first)
+    const newIndex = currentIndex <= 0 
+      ? question.options.length - 1 
+      : currentIndex - 1;
+
+    const selectedOption = question.options[newIndex];
+    
+    // Reuse onAnswerChange
+    this.onAnswerChange({
+      questionId: question.id,
+      optionId: selectedOption.id,
+      customAnswer: undefined
+    });
+  }
+
+  /** Select next option in current question (wraps around) */
+  private selectNextOption(): void {
+    const question = this.currentQuestion;
+    if (!question || question.options.length === 0) return;
+
+    const currentAnswer = this.currentAnswer;
+    let currentIndex = -1;
+
+    if (currentAnswer?.optionId) {
+      currentIndex = question.options.findIndex(opt => opt.id === currentAnswer.optionId);
+    }
+
+    // Move to next option (wrap around to first if at last)
+    const newIndex = currentIndex >= question.options.length - 1 
+      ? 0 
+      : currentIndex + 1;
+
+    const selectedOption = question.options[newIndex];
+    
+    // Reuse onAnswerChange
+    this.onAnswerChange({
+      questionId: question.id,
+      optionId: selectedOption.id,
+      customAnswer: undefined
+    });
+  }
   /**
  * Returns collaborator display text based on the viewer's role:
  * - Student sees teacher, teacher sees student.
