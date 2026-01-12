@@ -122,6 +122,7 @@ export class HeaderComponent {
    */
   logout(): void {
     this.authService.logout();
+    this.showProfileDropdown = false;
     this.cdr.markForCheck();
     this.router.navigate(["/"]);
   }
