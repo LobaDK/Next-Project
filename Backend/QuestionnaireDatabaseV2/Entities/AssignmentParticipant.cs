@@ -22,11 +22,6 @@ public class AssignmentParticipant
     public Guid UserId { get; set; }
 
     /// <summary>
-    /// Gets or sets whether participation is mandatory for this user.
-    /// </summary>
-    public bool IsRequired { get; set; } = true;
-
-    /// <summary>
     /// Gets or sets the permissions this participant has for the assignment.
     /// Determines what actions they can perform (answer, view own results, view others' results).
     /// </summary>

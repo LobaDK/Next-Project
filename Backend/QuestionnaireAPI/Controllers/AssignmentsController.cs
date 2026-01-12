@@ -25,7 +25,6 @@ namespace QuestionnaireAPI.Controllers
             return await _context.Assignments
                 .Include(a => a.Questionnaire)
                 .Include(a => a.Participants)
-                .Include(a => a.Viewers)
                 .ToListAsync();
         }
 
@@ -38,7 +37,6 @@ namespace QuestionnaireAPI.Controllers
             var assignment = await _context.Assignments
                 .Include(a => a.Questionnaire)
                 .Include(a => a.Participants)
-                .Include(a => a.Viewers)
                 .FirstOrDefaultAsync(a => a.Id == id);
 
             if (assignment == null)
