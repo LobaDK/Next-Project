@@ -19,7 +19,6 @@ public partial class QuestionnaireDbContext
         ConfigureQuestionnaireEntity(modelBuilder);
         ConfigureAssignmentEntity(modelBuilder);
         ConfigureAssignmentParticipantEntity(modelBuilder);
-        ConfigureAssignmentViewerEntity(modelBuilder);
         ConfigureResponseEntity(modelBuilder);
         ConfigureEnumConversions(modelBuilder);
     }
@@ -42,11 +41,6 @@ public partial class QuestionnaireDbContext
             entity.HasMany(u => u.AssignmentParticipants)
                 .WithOne(ap => ap.User)
                 .HasForeignKey(ap => ap.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            entity.HasMany(u => u.AssignmentViewers)
-                .WithOne(av => av.User)
-                .HasForeignKey(av => av.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
     }
@@ -96,11 +90,6 @@ public partial class QuestionnaireDbContext
                 .HasForeignKey(ap => ap.AssignmentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            entity.HasMany(a => a.Viewers)
-                .WithOne(av => av.Assignment)
-                .HasForeignKey(av => av.AssignmentId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             entity.HasMany(a => a.Responses)
                 .WithOne(r => r.Assignment)
                 .HasForeignKey(r => r.AssignmentId)
@@ -119,14 +108,6 @@ public partial class QuestionnaireDbContext
                 .WithMany()
                 .HasForeignKey(ap => ap.AddedByUserId)
                 .OnDelete(DeleteBehavior.Restrict);
-        });
-    }
-
-    private void ConfigureAssignmentViewerEntity(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<AssignmentViewer>(entity =>
-        {
-            // Currently no special configuration needed
         });
     }
 
@@ -159,11 +140,11 @@ public partial class QuestionnaireDbContext
             .HasConversion<string>();
 
         modelBuilder.Entity<Assignment>()
-            .Property(a => a.Type)
+            .Property(a => a.Status)
             .HasConversion<string>();
 
-        modelBuilder.Entity<Assignment>()
-            .Property(a => a.Status)
+        modelBuilder.Entity<AssignmentParticipant>()
+            .Property(ap => ap.Permissions)
             .HasConversion<string>();
     }
 }

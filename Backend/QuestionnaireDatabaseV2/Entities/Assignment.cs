@@ -42,10 +42,10 @@ public class Assignment
     public Guid QuestionnaireId { get; set; }
 
     /// <summary>
-
-    /// Gets or sets the type of assignment which affects visibility rules.
+    /// Gets or sets whether managers can view results with anonymized participant identities.
+    /// When true, managers see results without participant names or personal identifiers.
     /// </summary>
-    public AssignmentType Type { get; set; } = AssignmentType.Individual;
+    public bool AllowAnonymizedManagerViewing { get; set; } = false;
 
     /// <summary>
     /// Gets or sets the current status of this assignment.
@@ -53,32 +53,7 @@ public class Assignment
     public AssignmentStatus Status { get; set; } = AssignmentStatus.Draft;
 
     /// <summary>
-    /// Gets or sets whether this assignment enforces anonymous responses.
-    /// When true, participant identities must never be shown in any results.
-    /// </summary>
-    public bool IsAnonymous { get; set; } = false;
 
-    /// <summary>
-    /// Gets or sets whether multiple responses are allowed per participant.
-    /// </summary>
-    public bool AllowMultipleResponses { get; set; } = false;
-
-    /// <summary>
-    /// Gets or sets when participants can start responding (optional).
-    /// </summary>
-    public DateTime? StartDate { get; set; }
-
-    /// <summary>
-    /// Gets or sets when participants must complete responses by (optional).
-    /// </summary>
-    public DateTime? EndDate { get; set; }
-
-    /// <summary>
-    /// Gets or sets the maximum number of responses allowed (optional).
-    /// </summary>
-    public int? MaxResponses { get; set; }
-
-    /// <summary>
     /// Gets or sets who created this assignment.
     /// </summary>
     [Required]
@@ -110,11 +85,6 @@ public class Assignment
     /// Gets or sets the participants assigned to this assignment.
     /// </summary>
     public virtual ICollection<AssignmentParticipant> Participants { get; set; } = new List<AssignmentParticipant>();
-
-    /// <summary>
-    /// Gets or sets the viewers who can see results from this assignment.
-    /// </summary>
-    public virtual ICollection<AssignmentViewer> Viewers { get; set; } = new List<AssignmentViewer>();
 
     /// <summary>
     /// Gets or sets the responses submitted for this assignment.

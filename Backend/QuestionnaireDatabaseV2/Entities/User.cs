@@ -75,11 +75,6 @@ public class User
     public virtual ICollection<AssignmentParticipant> AssignmentParticipants { get; set; } = new List<AssignmentParticipant>();
 
     /// <summary>
-    /// Gets or sets the assignment viewing permissions for this user.
-    /// </summary>
-    public virtual ICollection<AssignmentViewer> AssignmentViewers { get; set; } = new List<AssignmentViewer>();
-
-    /// <summary>
     /// Gets or sets the responses submitted by this user.
     /// </summary>
     public virtual ICollection<Response> Responses { get; set; } = new List<Response>();

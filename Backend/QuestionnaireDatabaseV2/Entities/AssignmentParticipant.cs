@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using QuestionnaireDatabaseV2.Enums;
 
 namespace QuestionnaireDatabaseV2.Entities;
 
@@ -24,6 +25,12 @@ public class AssignmentParticipant
     /// Gets or sets whether participation is mandatory for this user.
     /// </summary>
     public bool IsRequired { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets the permissions this participant has for the assignment.
+    /// Determines what actions they can perform (answer, view own results, view others' results).
+    /// </summary>
+    public ParticipantPermissions Permissions { get; set; } = ParticipantPermissions.CanAnswerAndViewOwn;
 
     /// <summary>
     /// Gets or sets when this participant was added to the assignment.

@@ -19,7 +19,6 @@ public partial class QuestionnaireDbContext : DbContext
     public DbSet<Questionnaire> Questionnaires { get; set; } = null!;
     public DbSet<Assignment> Assignments { get; set; } = null!;
     public DbSet<AssignmentParticipant> AssignmentParticipants { get; set; } = null!;
-    public DbSet<AssignmentViewer> AssignmentViewers { get; set; } = null!;
     public DbSet<Response> Responses { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
