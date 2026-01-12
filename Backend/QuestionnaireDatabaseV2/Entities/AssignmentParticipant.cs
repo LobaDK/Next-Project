@@ -1,0 +1,42 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
+
+namespace QuestionnaireDatabaseV2.Entities;
+
+/// <summary>
+/// Represents a participant in an assignment - a user who is expected to respond to the questionnaire.
+/// </summary>
+[Table("AssignmentParticipants")]
+[Index(nameof(AssignmentId), nameof(UserId), IsUnique = true)]
+public class AssignmentParticipant
+{
+    [Key]
+    public Guid Id { get; set; }
+
+    [Required]
+    public Guid AssignmentId { get; set; }
+
+    [Required]
+    public Guid UserId { get; set; }
+
+    /// <summary>
+    /// Gets or sets whether participation is mandatory for this user.
+    /// </summary>
+    public bool IsRequired { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets when this participant was added to the assignment.
+    /// </summary>
+    public DateTime AddedAt { get; set; }
+
+    /// <summary>
+    /// Gets or sets who added this participant (optional).
+    /// </summary>
+    public Guid? AddedByUserId { get; set; }
+
+    // Navigation properties
+    public virtual Assignment Assignment { get; set; } = null!;
+    public virtual User User { get; set; } = null!;
+    public virtual User? AddedByUser { get; set; }
+}
