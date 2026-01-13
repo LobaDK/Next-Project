@@ -84,7 +84,7 @@ namespace QuestionnaireAPI.Controllers
             response.CreatedAt = existingResponse.CreatedAt;
             
             // If response is being completed, set completion date
-            if (existingResponse.SubmittedAt == null && response.SubmittedAt != null)
+            if (!existingResponse.SubmittedAt.HasValue && response.SubmittedAt.HasValue)
             {
                 response.SubmittedAt = DateTime.UtcNow;
             }
@@ -170,7 +170,7 @@ namespace QuestionnaireAPI.Controllers
                 return NotFound();
             }
 
-            if (response.SubmittedAt != null)
+            if (response.SubmittedAt.HasValue)
             {
                 return BadRequest("Response is already submitted");
             }

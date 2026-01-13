@@ -62,7 +62,7 @@ public class Response
     /// <summary>
     /// Gets or sets when this response was submitted/completed.
     /// </summary>
-    public DateTime SubmittedAt { get; set; }
+    public DateTime? SubmittedAt { get; set; }
 
     // Navigation properties
     /// <summary>

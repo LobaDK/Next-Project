@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuestionnaireDatabaseV2;
 using QuestionnaireDatabaseV2.Entities;
+using QuestionnaireDatabaseV2.Enums;
 
 namespace QuestionnaireAPI.Controllers
 {
@@ -126,8 +127,13 @@ namespace QuestionnaireAPI.Controllers
         [HttpGet("by-role/{role}")]
         public async Task<ActionResult<IEnumerable<User>>> GetUsersByRole(string role)
         {
+            if (!Enum.TryParse<UserRole>(role, true, out var userRole))
+            {
+                return BadRequest($"Invalid role. Valid roles are: {string.Join(", ", Enum.GetNames<UserRole>())}");
+            }
+
             var users = await _context.Users
-                .Where(u => u.UserRoles.Contains(role))
+                .Where(u => u.Role == userRole)
                 .ToListAsync();
 
             return users;
@@ -140,7 +146,7 @@ namespace QuestionnaireAPI.Controllers
         public async Task<ActionResult<IEnumerable<User>>> GetManagers()
         {
             var managers = await _context.Users
-                .Where(u => u.IsManager)
+                .Where(u => u.Role == UserRole.Manager)
                 .ToListAsync();
 
             return managers;

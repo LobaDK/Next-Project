@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using QuestionnaireDatabaseV2.Enums;
 
 namespace QuestionnaireDatabaseV2.Entities;
 
@@ -47,16 +48,11 @@ public class User
     public bool IsDeleted { get; set; } = false;
 
     /// <summary>
-    /// Gets or sets the user roles from external sources (AD groups, etc.).
-    /// Stored as string array of role names.
+    /// Gets or sets the role of the user in the system.
+    /// Managers have elevated permissions, while DefaultUser has standard access.
     /// </summary>
-    public string[] UserRoles { get; set; } = Array.Empty<string>();
-
-    /// <summary>
-    /// Gets or sets whether this user has manager permissions.
-    /// Determined by API logic based on external roles and configuration.
-    /// </summary>
-    public bool IsManager { get; set; } = false;
+    [Required]
+    public UserRole Role { get; set; } = UserRole.DefaultUser;
 
     /// <summary>
     /// Gets or sets when this user was first created in the system.

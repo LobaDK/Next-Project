@@ -1,702 +1,702 @@
 [
   {
-    "Id": "fc86e919-3567-401d-b456-6bea8d974f55",
-    "Username": "mary.ramirez",
-    "FullName": "Mary Ramirez",
-    "Role": 0,
-    "Password": "9f54h7>&*6HK"
+    "Id": "772b9e24-1352-4ea9-96cb-ec2fd2a00137",
+    "Username": "carol.roberts",
+    "FullName": "Carol Roberts",
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "b3f2ed77-657b-4493-a762-cb8aeb844ded",
-    "Username": "matthew.miller",
-    "FullName": "Matthew Miller",
-    "Role": 0,
-    "Password": "j7lrtGm-c6[0"
+    "Id": "bf22c970-5250-4a0f-b693-51b93626e715",
+    "Username": "jennifer.parker",
+    "FullName": "Jennifer Parker",
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "a1ad6846-4ff4-494c-ad24-947734ed4a48",
-    "Username": "jennifer.wilson",
-    "FullName": "Jennifer Wilson",
-    "Role": 0,
-    "Password": "$.qiroYP6E89"
-  },
-  {
-    "Id": "3e6db0d0-edd5-4996-adda-7d66793537a9",
-    "Username": "jason.mitchell",
-    "FullName": "Jason Mitchell",
-    "Role": 0,
-    "Password": "24w!0?o8C:%G"
-  },
-  {
-    "Id": "de9c1486-1b7b-464f-9e7a-32f8c0d6393c",
-    "Username": "brian.mitchell",
-    "FullName": "Brian Mitchell",
-    "Role": 0,
-    "Password": "d[$75EE=kmu8"
-  },
-  {
-    "Id": "8344c21c-0131-4018-81a1-311ab61725f5",
-    "Username": "mary.jones",
-    "FullName": "Mary Jones",
-    "Role": 0,
-    "Password": "g(NJ2H8v474U"
-  },
-  {
-    "Id": "5633aa4c-34d5-4976-b05e-eb924d7f4ae2",
-    "Username": "donald.evans",
-    "FullName": "Donald Evans",
-    "Role": 0,
-    "Password": "t89Vw-n>H;Y0"
-  },
-  {
-    "Id": "09f4e7eb-d40b-4ba4-97b2-00b0409c4879",
-    "Username": "dorothy.smith",
-    "FullName": "Dorothy Smith",
-    "Role": 0,
-    "Password": ".UC2Yr15mvTI"
-  },
-  {
-    "Id": "2a5694a0-8ac6-40e3-8595-949e010298de",
-    "Username": "barbara.diaz",
-    "FullName": "Barbara Diaz",
-    "Role": 0,
-    "Password": "!m>94f&r0!Ex"
-  },
-  {
-    "Id": "e5e13a1f-cf25-4abb-824e-c4cf46c324e0",
-    "Username": "barbara.harris",
-    "FullName": "Barbara Harris",
-    "Role": 0,
-    "Password": "8)DLmU|L)+&L"
-  },
-  {
-    "Id": "711e5bd5-2d58-4b9b-bcf5-85064f66d332",
-    "Username": "kimberly.sanchez",
-    "FullName": "Kimberly Sanchez",
-    "Role": 0,
-    "Password": "j5jMe6|0/+cH"
-  },
-  {
-    "Id": "20261ba8-e12d-4fcb-bea4-7d6a9ff8f2e7",
-    "Username": "dorothy.mitchell",
-    "FullName": "Dorothy Mitchell",
-    "Role": 0,
-    "Password": "ag?lhvKa9.9p"
-  },
-  {
-    "Id": "7959df05-c784-4026-b1cc-e1601e84f01c",
-    "Username": "joseph.turner",
-    "FullName": "Joseph Turner",
-    "Role": 0,
-    "Password": "i#/5kK,iI6>6"
-  },
-  {
-    "Id": "d6dae71c-3a92-467f-a33d-9ab4bd125160",
-    "Username": "linda.diaz",
-    "FullName": "Linda Diaz",
-    "Role": 0,
-    "Password": "{wJ;D+?8<>|k"
-  },
-  {
-    "Id": "8583efc1-b3da-497f-a842-5bbc7228b1ce",
-    "Username": "steven.clark",
-    "FullName": "Steven Clark",
-    "Role": 0,
-    "Password": "Uj^,9W#3.>8j"
-  },
-  {
-    "Id": "cadc8087-510e-40aa-9d98-faddd32758e6",
-    "Username": "jessica.martin",
-    "FullName": "Jessica Martin",
-    "Role": 0,
-    "Password": "M5-MGZg0^3z/"
-  },
-  {
-    "Id": "01a5e224-c0cc-486a-b215-8d4e22d3e33d",
-    "Username": "dorothy.lewis",
-    "FullName": "Dorothy Lewis",
-    "Role": 0,
-    "Password": "J(31E0{j8j>H"
-  },
-  {
-    "Id": "f1e8fb7a-0ebb-49f3-b83a-7af29b0615fe",
-    "Username": "sharon.perez",
-    "FullName": "Sharon Perez",
-    "Role": 0,
-    "Password": "G,9f}?0lg48e"
-  },
-  {
-    "Id": "2382ae86-4333-4ee0-80e8-565101ca02b0",
-    "Username": "timothy.roberts",
-    "FullName": "Timothy Roberts",
-    "Role": 0,
-    "Password": "7kMU1,%mI5W8"
-  },
-  {
-    "Id": "311a63d7-cd4a-4c98-b416-39803032f25a",
-    "Username": "steven.rivera",
-    "FullName": "Steven Rivera",
-    "Role": 0,
-    "Password": "yJ(gfgBY2mcC"
-  },
-  {
-    "Id": "a627d564-89bc-41d1-b104-324a9ce5df81",
-    "Username": "sandra.green",
-    "FullName": "Sandra Green",
-    "Role": 0,
-    "Password": "wlQpl4U{5gwR"
-  },
-  {
-    "Id": "144831ae-4d06-4a8f-aeb8-1fe79c437662",
-    "Username": "charles.lewis",
-    "FullName": "Charles Lewis",
-    "Role": 0,
-    "Password": "Ek|1c7kNSRk9"
-  },
-  {
-    "Id": "5d49b0e6-55d2-46b6-a9fc-c9f2d118effb",
-    "Username": "sharon.diaz",
-    "FullName": "Sharon Diaz",
-    "Role": 0,
-    "Password": "&VyEM2|c4?c1"
-  },
-  {
-    "Id": "8e5d27d0-2c47-4f9b-bfb7-413835a68aa6",
-    "Username": "kenneth.williams",
-    "FullName": "Kenneth Williams",
-    "Role": 0,
-    "Password": "m0@RU{Z4pB%^"
-  },
-  {
-    "Id": "d5829446-7c9c-4f8b-892f-8e0862cecbf4",
-    "Username": "mary.thomas",
-    "FullName": "Mary Thomas",
-    "Role": 0,
-    "Password": "f30JSq7K{#s9"
-  },
-  {
-    "Id": "2034c1b2-e999-4fdd-861c-b84ac92b3e0d",
-    "Username": "laura.wright",
-    "FullName": "Laura Wright",
-    "Role": 0,
-    "Password": "mM&k;e232/_7"
-  },
-  {
-    "Id": "67eae312-d9bb-466f-bf79-a0aa77c96472",
-    "Username": "jennifer.hernandez",
-    "FullName": "Jennifer Hernandez",
-    "Role": 0,
-    "Password": "^-E>r4X$O7;n"
-  },
-  {
-    "Id": "e65cae7c-52fd-4159-b389-9906a43b4c76",
-    "Username": "mary.wright",
-    "FullName": "Mary Wright",
-    "Role": 0,
-    "Password": "4Die7nJ1h(/8"
-  },
-  {
-    "Id": "d5616d63-c439-42b0-bbfe-0ceae6c59d64",
-    "Username": "donna.young",
-    "FullName": "Donna Young",
-    "Role": 0,
-    "Password": "?NXg04<ZqBFO"
-  },
-  {
-    "Id": "d90bf629-4424-4d68-b0d7-8f5b6eef12b4",
-    "Username": "anthony.moore",
-    "FullName": "Anthony Moore",
-    "Role": 0,
-    "Password": "3z]HQ42[${JW"
-  },
-  {
-    "Id": "c0f99819-706b-48e1-b4a5-42622e7496cc",
-    "Username": "donald.campbell",
-    "FullName": "Donald Campbell",
-    "Role": 0,
-    "Password": "}Gv=8+H%fT58"
-  },
-  {
-    "Id": "ea0e784c-98bd-4f46-8f7b-87f90d6ead0e",
-    "Username": "patricia.lee",
-    "FullName": "Patricia Lee",
-    "Role": 0,
-    "Password": "I54=Cr]o2FV5"
-  },
-  {
-    "Id": "cbc63f95-4322-4d8b-8343-f01c00a5ccf6",
-    "Username": "brian.nguyen",
-    "FullName": "Brian Nguyen",
-    "Role": 0,
-    "Password": "+P%f*E9@).>9"
-  },
-  {
-    "Id": "1505332f-4eb7-4990-809d-e70a207d5a48",
-    "Username": "karen.lewis",
-    "FullName": "Karen Lewis",
-    "Role": 0,
-    "Password": "DKY>1?U7(/St"
-  },
-  {
-    "Id": "35fd14b2-021b-4f71-abb5-1278a4a302bb",
-    "Username": "helen.garcia",
-    "FullName": "Helen Garcia",
-    "Role": 0,
-    "Password": "X5Ne:Wp0Ono,"
-  },
-  {
-    "Id": "990a937b-ffe0-46c3-9efd-92474a40708c",
-    "Username": "linda.lopez",
-    "FullName": "Linda Lopez",
-    "Role": 0,
-    "Password": "K[(Tj*)50362"
-  },
-  {
-    "Id": "6cc159d2-534c-4d52-aff3-591966d34f3a",
-    "Username": "michael.harris",
-    "FullName": "Michael Harris",
-    "Role": 0,
-    "Password": "0M,{uCM$(5Z5"
-  },
-  {
-    "Id": "fee1bfdc-5a42-487b-9c44-c5fab30a8ec5",
-    "Username": "lisa.miller",
-    "FullName": "Lisa Miller",
-    "Role": 0,
-    "Password": "j6.AC8g73K,J"
-  },
-  {
-    "Id": "baa6f1ee-311c-4c60-8c3c-868ed67ce87e",
-    "Username": "michelle.evans",
-    "FullName": "Michelle Evans",
-    "Role": 0,
-    "Password": "(0EtbsW+[0%T"
-  },
-  {
-    "Id": "7580ad19-32d4-4fd9-a8cd-9e7ed3141fe9",
-    "Username": "andrew.hill",
-    "FullName": "Andrew Hill",
-    "Role": 0,
-    "Password": "EK9_|LOeD%f4"
-  },
-  {
-    "Id": "7b7defb2-2be7-4112-a0a0-3e4f76457ac4",
-    "Username": "thomas.lopez",
-    "FullName": "Thomas Lopez",
-    "Role": 0,
-    "Password": "pZb^e6nMr4[y"
-  },
-  {
-    "Id": "9d0b06a1-c943-4f5d-9f81-73ef0692964e",
-    "Username": "daniel.smith",
-    "FullName": "Daniel Smith",
-    "Role": 0,
-    "Password": "h]c/52OH6b2_"
-  },
-  {
-    "Id": "7a6b9510-a649-4a11-abeb-0d504195d214",
-    "Username": "donna.davis",
-    "FullName": "Donna Davis",
-    "Role": 0,
-    "Password": "m0&!U(nrQ5nc"
-  },
-  {
-    "Id": "83435718-9b9a-4c05-8142-79c380b668a2",
-    "Username": "lisa.hall",
-    "FullName": "Lisa Hall",
-    "Role": 0,
-    "Password": "]5V:miJ6xf9c"
-  },
-  {
-    "Id": "7124b2c8-60da-42df-9af2-5c30049c8437",
-    "Username": "matthew.davis",
-    "FullName": "Matthew Davis",
-    "Role": 0,
-    "Password": "xJm8E26+_3zb"
-  },
-  {
-    "Id": "fa75f319-910e-47b3-a695-14c049e3d51b",
-    "Username": "edward.rodriguez",
-    "FullName": "Edward Rodriguez",
-    "Role": 0,
-    "Password": "0#a33)0S01b&"
-  },
-  {
-    "Id": "66dd6294-025f-448e-ab17-1a44ef0010b0",
-    "Username": "sharon.scott",
-    "FullName": "Sharon Scott",
-    "Role": 0,
-    "Password": "3,YZ-wh6F_4:"
-  },
-  {
-    "Id": "b5fcff38-1c2d-4eac-8c08-53ecd589847c",
-    "Username": "christopher.phillips",
-    "FullName": "Christopher Phillips",
-    "Role": 0,
-    "Password": "s4.3^0^ndXF@"
-  },
-  {
-    "Id": "f3ee99dc-de32-4913-9511-578d7376ec02",
-    "Username": "mary.martin",
-    "FullName": "Mary Martin",
-    "Role": 0,
-    "Password": "<84UJ9jS7MiA"
-  },
-  {
-    "Id": "1421de63-4dfc-40e8-8c56-45851732e877",
-    "Username": "george.jones",
-    "FullName": "George Jones",
-    "Role": 0,
-    "Password": "[p30VUwt0=0P"
-  },
-  {
-    "Id": "39a8473d-9f3e-4061-a268-a5855ac3c1bd",
-    "Username": "jessica.adams",
-    "FullName": "Jessica Adams",
-    "Role": 0,
-    "Password": "o<vt{34z,>cO"
-  },
-  {
-    "Id": "1bdb13f5-afd9-4a6e-a881-daa1cb015e7b",
-    "Username": "kevin.thompson",
-    "FullName": "Kevin Thompson",
-    "Role": 0,
-    "Password": "Vm*H&7/12iyc"
-  },
-  {
-    "Id": "5d0143e1-4255-4fe3-98f3-76a0dafd245d",
-    "Username": "laura.martin",
-    "FullName": "Laura Martin",
-    "Role": 0,
-    "Password": "42@L/4%SnBX^"
-  },
-  {
-    "Id": "f02dcddd-4690-4a50-9d5d-00406db8d724",
-    "Username": "anthony.wright",
-    "FullName": "Anthony Wright",
-    "Role": 0,
-    "Password": "^DXD.pj;3&h+"
-  },
-  {
-    "Id": "a1ce74bf-e8ac-466b-9532-dabc961a412f",
-    "Username": "james.thompson",
-    "FullName": "James Thompson",
-    "Role": 0,
-    "Password": ",nC-YT1?2wvI"
-  },
-  {
-    "Id": "56cc78a5-ce23-433e-aa98-9436320e37d8",
-    "Username": "timothy.lee",
-    "FullName": "Timothy Lee",
-    "Role": 0,
-    "Password": "W3+xg5[{21G6"
-  },
-  {
-    "Id": "7ca55dd7-9efb-4857-996c-20a6160e5586",
-    "Username": "karen.lee",
-    "FullName": "Karen Lee",
-    "Role": 0,
-    "Password": "ko-do0@89GTK"
-  },
-  {
-    "Id": "5d8a0a4e-3660-41a0-8aa1-d7011fcc0690",
-    "Username": "brian.miller",
-    "FullName": "Brian Miller",
-    "Role": 0,
-    "Password": "&,>^>kYb/3I3"
-  },
-  {
-    "Id": "acf2de9a-e69f-42be-a976-0785ae68944e",
-    "Username": "patricia.hill",
-    "FullName": "Patricia Hill",
-    "Role": 0,
-    "Password": "_CGe90)5ef9-"
-  },
-  {
-    "Id": "9bc6a7b2-26bf-437e-9dfa-263cdb5805d5",
-    "Username": "robert.rodriguez",
-    "FullName": "Robert Rodriguez",
-    "Role": 0,
-    "Password": "98TO:n3?pFiz"
-  },
-  {
-    "Id": "e2c98e39-0ad4-47e2-ac85-3aaffc0a21e3",
-    "Username": "daniel.moore",
-    "FullName": "Daniel Moore",
-    "Role": 0,
-    "Password": "z{^78Uo_Ci,8"
-  },
-  {
-    "Id": "ee3d6acc-fe38-4f0f-b165-fe32a602e661",
-    "Username": "betty.hill",
-    "FullName": "Betty Hill",
-    "Role": 0,
-    "Password": "c+0&k.96C7N#"
-  },
-  {
-    "Id": "2c4dbc21-5bc2-4f8f-aa5d-f94aacaec3c1",
-    "Username": "joseph.roberts",
-    "FullName": "Joseph Roberts",
-    "Role": 0,
-    "Password": "Xd{4Nh7Qv#A3"
-  },
-  {
-    "Id": "2e4ef4e3-b19a-4d20-8560-50860b762a63",
-    "Username": "carol.wilson",
-    "FullName": "Carol Wilson",
-    "Role": 0,
-    "Password": "=duy2X[^Vpo;"
-  },
-  {
-    "Id": "1c9a7de7-5636-489a-b321-a45b893d7ad6",
-    "Username": "joseph.scott",
-    "FullName": "Joseph Scott",
-    "Role": 0,
-    "Password": "H&=jb3Jo4-5?"
-  },
-  {
-    "Id": "3f3bf586-2ca5-4fae-8998-f13b5fc6c085",
-    "Username": "christopher.walker",
-    "FullName": "Christopher Walker",
-    "Role": 0,
-    "Password": "2z8<J8!5CDaV"
-  },
-  {
-    "Id": "da06930d-b4c4-4b2d-8b41-221216be409b",
-    "Username": "joseph.martinez",
-    "FullName": "Joseph Martinez",
-    "Role": 0,
-    "Password": "ga52_9IE1[s7"
-  },
-  {
-    "Id": "228e9256-3c51-4fb6-8221-90f804e77282",
-    "Username": "jennifer.martin",
-    "FullName": "Jennifer Martin",
-    "Role": 0,
-    "Password": "[}3[1hfcHru6"
-  },
-  {
-    "Id": "359a57e3-76d7-400b-ad77-cbc95570729a",
-    "Username": "dorothy.king",
-    "FullName": "Dorothy King",
-    "Role": 0,
-    "Password": "5t37V_XmFe:Z"
-  },
-  {
-    "Id": "7ff6838a-dd7c-40b9-88e3-3e52cb4cc38b",
-    "Username": "david.gonzalez",
-    "FullName": "David Gonzalez",
-    "Role": 0,
-    "Password": ":Klt9Z:79QS4"
-  },
-  {
-    "Id": "80730e83-6db4-4cb2-90f9-9d3c68654ec5",
+    "Id": "ab1caf75-87c8-4735-a6f9-ecbfc58a4224",
     "Username": "karen.moore",
     "FullName": "Karen Moore",
-    "Role": 0,
-    "Password": "v(3L8Uw;0vq>"
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "7e3c5a8c-6972-4aff-831e-baf9030ac96d",
-    "Username": "jessica.rivera",
-    "FullName": "Jessica Rivera",
-    "Role": 0,
-    "Password": "M4WoY8,!3ve2"
+    "Id": "9835dd42-785b-4538-b375-33ed71d37c3f",
+    "Username": "charles.thomas",
+    "FullName": "Charles Thomas",
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "c1a4e225-a173-4222-bd6b-6e452b4b9601",
-    "Username": "linda.parker",
-    "FullName": "Linda Parker",
-    "Role": 0,
-    "Password": "nVH7606ZM{zY"
+    "Id": "1d7dc4b0-6bb8-4d11-a88b-b61aac9ccacc",
+    "Username": "nancy.hall",
+    "FullName": "Nancy Hall",
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "efa38bc5-848b-42bf-9f88-919fcf375d8b",
-    "Username": "christopher.walker1",
-    "FullName": "Christopher Walker",
-    "Role": 0,
-    "Password": "G+zS3aArs14!"
+    "Id": "2af0ed07-bc2a-40aa-a652-df254c627a6a",
+    "Username": "susan.parker",
+    "FullName": "Susan Parker",
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "77ca79f7-c3ec-4906-9152-8abc682e9cf9",
-    "Username": "richard.clark",
-    "FullName": "Richard Clark",
-    "Role": 0,
-    "Password": "^33WuI0T02u8"
+    "Id": "4de72e1f-7944-479e-8729-0ee80592ec0c",
+    "Username": "sarah.parker",
+    "FullName": "Sarah Parker",
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "4e0a6cc3-1327-4ac7-ab2b-e724d68243ad",
-    "Username": "dorothy.king1",
-    "FullName": "Dorothy King",
-    "Role": 0,
-    "Password": "HmGEm+8n@62L"
+    "Id": "59cb8f00-6dba-44a3-84e5-128cbddec6cf",
+    "Username": "ruth.carter",
+    "FullName": "Ruth Carter",
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "020db790-1f09-4152-aeef-4dba9c25b8d5",
-    "Username": "susan.hernandez",
-    "FullName": "Susan Hernandez",
-    "Role": 0,
-    "Password": "9$R0Mc1z0:)!"
+    "Id": "58459da3-0ec6-4ab9-80eb-d4d3d4ec9082",
+    "Username": "barbara.adams",
+    "FullName": "Barbara Adams",
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "efc0b4ad-ca95-4860-9fef-071dc4eeca3d",
-    "Username": "ruth.sanchez",
-    "FullName": "Ruth Sanchez",
-    "Role": 0,
-    "Password": "5rjj5jtSkK/<"
+    "Id": "38393ab7-b8b7-49e7-a440-7ce5faff9557",
+    "Username": "paul.ramirez",
+    "FullName": "Paul Ramirez",
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "d4d50193-2b02-4c83-998c-d4fe4fe72099",
-    "Username": "robert.parker",
-    "FullName": "Robert Parker",
-    "Role": 0,
-    "Password": "ST%8OyHj0ui3"
+    "Id": "52072a19-29e7-4dd3-a412-464710df77d5",
+    "Username": "matthew.anderson",
+    "FullName": "Matthew Anderson",
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "f4a7d7fd-23f8-4419-84c4-0098e8f7e6ad",
-    "Username": "richard.mitchell",
-    "FullName": "Richard Mitchell",
-    "Role": 0,
-    "Password": "R9|tM%4d/3$="
+    "Id": "11cc86d8-f46c-4dc7-8344-632d9bfbbe21",
+    "Username": "jason.jones",
+    "FullName": "Jason Jones",
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "c2999dac-2160-49fd-882c-3d2abb7cb9a6",
-    "Username": "robert.lewis",
-    "FullName": "Robert Lewis",
-    "Role": 1,
-    "Password": "Z1f-}3nE=HAz"
+    "Id": "c2073463-872d-42e7-b89c-d2991ff8e5bc",
+    "Username": "deborah.gomez",
+    "FullName": "Deborah Gomez",
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "e4909ba1-9fd5-4fa0-8f76-3900bd489773",
-    "Username": "edward.adams",
-    "FullName": "Edward Adams",
-    "Role": 1,
-    "Password": "2|-2A.>aZ891"
+    "Id": "6d4a3e18-479d-4e81-a9cc-70df7a5206d9",
+    "Username": "andrew.clark",
+    "FullName": "Andrew Clark",
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "2e84237f-a940-4f8f-a2d8-348982b3117b",
-    "Username": "kimberly.green",
-    "FullName": "Kimberly Green",
-    "Role": 1,
-    "Password": "w]qJv3o4arw#"
+    "Id": "4330ccdb-d030-4a12-b0a3-27ae5235f5e1",
+    "Username": "brian.lewis",
+    "FullName": "Brian Lewis",
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "bdcaf35e-be15-4d98-865e-7240763c8a1b",
-    "Username": "steven.king",
-    "FullName": "Steven King",
-    "Role": 1,
-    "Password": "kp]8J8O}fyls"
+    "Id": "062ec424-4c82-41dc-a8fe-d659c060764a",
+    "Username": "jessica.roberts",
+    "FullName": "Jessica Roberts",
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "cc078235-44c1-4a34-8f47-139312f0acad",
-    "Username": "james.roberts",
-    "FullName": "James Roberts",
-    "Role": 1,
-    "Password": "x-m6M8B,f^<Z"
+    "Id": "d87d7994-f2e2-466d-976b-f7e342c2a966",
+    "Username": "sarah.hall",
+    "FullName": "Sarah Hall",
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "703ebee9-ed72-45e6-9b20-1c21e99091c0",
-    "Username": "sandra.wilson",
-    "FullName": "Sandra Wilson",
-    "Role": 1,
-    "Password": "ZOQq5sn[-<G8"
+    "Id": "d487715b-4308-4927-bbdc-8579c32d3767",
+    "Username": "jessica.hall",
+    "FullName": "Jessica Hall",
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "6ddd2d0a-f6db-4169-9e30-e11a707ec62f",
-    "Username": "karen.davis",
-    "FullName": "Karen Davis",
-    "Role": 1,
-    "Password": ".{HPaH=(Mu0n"
+    "Id": "22a45ca8-8a14-4f06-ba46-dae23d85c589",
+    "Username": "laura.phillips",
+    "FullName": "Laura Phillips",
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "b85ccc82-15f8-4c76-af7b-a56cf4d6f4a8",
-    "Username": "lisa.gonzalez",
-    "FullName": "Lisa Gonzalez",
-    "Role": 1,
-    "Password": "4eo}jk3Ac:d{"
+    "Id": "83d1d2b0-9eee-429e-9707-a63640a23ca3",
+    "Username": "carol.sanchez",
+    "FullName": "Carol Sanchez",
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "1b77bf89-44dd-487a-94d6-98fd5e9748e9",
-    "Username": "andrew.allen",
-    "FullName": "Andrew Allen",
-    "Role": 1,
-    "Password": "!a44N9C]^SnQ"
+    "Id": "9e670fe4-e1fc-478d-a040-63f51c2daa9f",
+    "Username": "lisa.hernandez",
+    "FullName": "Lisa Hernandez",
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "d9d5d021-1b54-494e-8a04-74702d909be6",
-    "Username": "joseph.clark",
-    "FullName": "Joseph Clark",
-    "Role": 1,
-    "Password": "DmXxT7sOF@25"
+    "Id": "c74ade31-6608-4646-b4cb-a1a9ff6ec34b",
+    "Username": "michelle.walker",
+    "FullName": "Michelle Walker",
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "5715a4c2-3839-42a1-952c-b2fb8864c0d4",
-    "Username": "kimberly.moore",
-    "FullName": "Kimberly Moore",
-    "Role": 1,
-    "Password": "v2NV<H54>,jB"
+    "Id": "0438dfdb-3546-483f-83c7-c84aa4a7f607",
+    "Username": "john.martinez",
+    "FullName": "John Martinez",
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "efcd6059-0766-47a2-914f-22af21c0c31f",
-    "Username": "susan.brown",
-    "FullName": "Susan Brown",
-    "Role": 1,
-    "Password": "w^Ns}A1iB}?4"
+    "Id": "5cd8fae9-046a-49f8-9be5-05aa76c39d95",
+    "Username": "richard.roberts",
+    "FullName": "Richard Roberts",
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "25bcee6f-a0e5-4351-8cb4-6228d9aec105",
-    "Username": "elizabeth.nguyen",
-    "FullName": "Elizabeth Nguyen",
-    "Role": 1,
-    "Password": "$?b@;j1{)4?Y"
+    "Id": "1b7371d9-83b1-44e9-96f4-f46a56189f16",
+    "Username": "donald.phillips",
+    "FullName": "Donald Phillips",
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "766b2b13-68cd-4b27-805b-5a612e178ca9",
+    "Id": "1e754a97-21ed-4edc-866e-463b54d1b2cb",
+    "Username": "joshua.carter",
+    "FullName": "Joshua Carter",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "97e29c42-8e6d-4ddc-8fda-d5fe8922e123",
+    "Username": "laura.campbell",
+    "FullName": "Laura Campbell",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "38ec088d-42df-4c3a-8038-5604eec5bec3",
+    "Username": "lisa.martinez",
+    "FullName": "Lisa Martinez",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "b63259a5-bbaa-4549-bc54-34119a8427d4",
+    "Username": "james.allen",
+    "FullName": "James Allen",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "5962bddf-859d-4475-856a-779773541469",
+    "Username": "jason.hall",
+    "FullName": "Jason Hall",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "04b5fdc1-58f5-4d8b-892a-1be5f7c05cc2",
+    "Username": "deborah.roberts",
+    "FullName": "Deborah Roberts",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "2dd040b5-4879-4064-bf44-33f1f963b3f6",
+    "Username": "edward.scott",
+    "FullName": "Edward Scott",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "da4e31b1-5d62-45df-a051-6c8ff964feda",
+    "Username": "sandra.parker",
+    "FullName": "Sandra Parker",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "55888cbf-e848-4fa7-bc52-b44b6f83002b",
+    "Username": "patricia.nguyen",
+    "FullName": "Patricia Nguyen",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "cc7c24a2-527c-45a0-ab99-8f6617446892",
+    "Username": "carol.williams",
+    "FullName": "Carol Williams",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "e485eea3-9e4d-402a-bb2a-75f7cf52d4f0",
+    "Username": "jessica.parker",
+    "FullName": "Jessica Parker",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "91c91f30-3137-4830-b5ae-361427fc36fd",
+    "Username": "sharon.roberts",
+    "FullName": "Sharon Roberts",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "4ee01d24-8d96-4d5c-a84f-618c8cea848e",
+    "Username": "mark.phillips",
+    "FullName": "Mark Phillips",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "12040f7f-2bf1-4dce-8b16-2abb0dbff933",
+    "Username": "jessica.smith",
+    "FullName": "Jessica Smith",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "3413226a-cc64-4de0-9288-450a2f56c074",
+    "Username": "mary.mitchell",
+    "FullName": "Mary Mitchell",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "6f32ac26-6ce4-4793-b60c-3356feaebf35",
+    "Username": "mary.thomas",
+    "FullName": "Mary Thomas",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "a768abc4-8aeb-45f4-8716-19f57eb6bb13",
+    "Username": "george.miller",
+    "FullName": "George Miller",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "09552e0a-81ca-4617-8471-9140c760be50",
+    "Username": "mary.jones",
+    "FullName": "Mary Jones",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "a349239e-5fe5-422c-816e-478367ecaef7",
+    "Username": "barbara.parker",
+    "FullName": "Barbara Parker",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "d7b82c7d-87e5-4582-9228-3b347a316951",
+    "Username": "susan.thompson",
+    "FullName": "Susan Thompson",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "0443d1ff-554b-446c-b29b-db8dde21f433",
     "Username": "sarah.brown",
     "FullName": "Sarah Brown",
-    "Role": 1,
-    "Password": "^/8PWN823=Er"
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "2644d744-6296-4de7-aab0-cf8353e64e1a",
-    "Username": "anthony.gomez",
-    "FullName": "Anthony Gomez",
-    "Role": 1,
-    "Password": "p7Z{22V1l<95"
+    "Id": "193d7928-7cca-4d91-8061-2d193014b7fb",
+    "Username": "william.smith",
+    "FullName": "William Smith",
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "eb92f164-6808-46bb-a671-3c5e6d6de7aa",
+    "Id": "1f1fad0a-3ca8-469f-ae74-77fee77faf67",
+    "Username": "michael.hill",
+    "FullName": "Michael Hill",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "bdbae826-13f5-4813-9daf-8e74976fd9de",
+    "Username": "jennifer.baker",
+    "FullName": "Jennifer Baker",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "6a1b2c86-fe87-4886-a3f9-56c098973ebc",
+    "Username": "james.williams",
+    "FullName": "James Williams",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "f69a6c87-fc6d-44ab-a05d-fa2dfd6df7b6",
+    "Username": "kevin.scott",
+    "FullName": "Kevin Scott",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "65e13d54-630c-42fb-84da-241021cb1118",
+    "Username": "george.miller1",
+    "FullName": "George Miller",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "055a9e67-4ac6-40af-8edd-14bf4a338f7a",
+    "Username": "susan.nguyen",
+    "FullName": "Susan Nguyen",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "1478c053-6eb1-42c8-833c-4b895711690f",
+    "Username": "kevin.smith",
+    "FullName": "Kevin Smith",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "760c943b-3467-48a0-a852-edd2a8eecb10",
+    "Username": "paul.perez",
+    "FullName": "Paul Perez",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "e8d4edbc-41e2-4e27-81fa-2c8ddc3b29cc",
+    "Username": "steven.garcia",
+    "FullName": "Steven Garcia",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "4b1fbcc4-d47a-4b95-b07e-12ea8a42cbc0",
+    "Username": "dorothy.perez",
+    "FullName": "Dorothy Perez",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "03a3bee6-60cb-46d2-b9e1-53952943bb49",
+    "Username": "linda.roberts",
+    "FullName": "Linda Roberts",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "4d5a663c-b7a1-402f-9bab-ceb18a822b49",
+    "Username": "brian.harris",
+    "FullName": "Brian Harris",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "940ccb26-7580-4a82-9d3c-3894b29ebd54",
+    "Username": "karen.gomez",
+    "FullName": "Karen Gomez",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "e4d555f8-b472-455e-8463-1ceadd5803af",
+    "Username": "sharon.davis",
+    "FullName": "Sharon Davis",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "00c19ac5-dff0-47a4-b4bc-38acf4e06da2",
+    "Username": "joshua.carter1",
+    "FullName": "Joshua Carter",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "6e239f4b-115d-400f-9834-25c1f503a232",
+    "Username": "linda.brown",
+    "FullName": "Linda Brown",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "a50c0137-c104-4023-b023-2d5e1f7ef63e",
+    "Username": "edward.smith",
+    "FullName": "Edward Smith",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "40960a44-c2b3-4fb9-bd28-88b34e399243",
+    "Username": "sharon.robinson",
+    "FullName": "Sharon Robinson",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "33300f6d-681c-4853-80e0-97b2636898f2",
+    "Username": "david.martinez",
+    "FullName": "David Martinez",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "b6e31b19-b024-4f09-afd8-5a8cc4412354",
+    "Username": "joshua.lewis",
+    "FullName": "Joshua Lewis",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "f56923e7-964a-4c0b-81c5-4a14c1e0f404",
+    "Username": "donna.mitchell",
+    "FullName": "Donna Mitchell",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "86346579-75d3-42a9-b7b0-d6e4b9978504",
+    "Username": "karen.walker",
+    "FullName": "Karen Walker",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "bd1244b2-1869-4c63-8d13-af805f6d5381",
+    "Username": "james.clark",
+    "FullName": "James Clark",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "6297769d-ffd3-4f07-8631-eff924ec5fac",
+    "Username": "david.nelson",
+    "FullName": "David Nelson",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "084f4c58-cf57-43c3-9f1a-be25e324fd81",
+    "Username": "betty.lopez",
+    "FullName": "Betty Lopez",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "23b2e2c4-7b33-4cc2-8fc2-a2e5df0ea9d5",
+    "Username": "mary.mitchell1",
+    "FullName": "Mary Mitchell",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "a20e2dee-7067-4b0e-a7e3-db975c54418e",
     "Username": "richard.evans",
     "FullName": "Richard Evans",
-    "Role": 1,
-    "Password": "579qD.2wDeH!"
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "c664cf95-5c27-4945-a216-197cd2178247",
-    "Username": "karen.baker",
-    "FullName": "Karen Baker",
-    "Role": 1,
-    "Password": "G.U5>6_FybQB"
+    "Id": "fe66c477-2cd1-47bd-99f6-e0a2f1b242fc",
+    "Username": "daniel.lee",
+    "FullName": "Daniel Lee",
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "3b7d535d-3d22-409f-b34d-6c0ec82805e8",
-    "Username": "richard.perez",
-    "FullName": "Richard Perez",
-    "Role": 1,
-    "Password": "<f1TEQ[g2th4"
+    "Id": "2b1566bc-928a-4d3e-b50f-589052ec833d",
+    "Username": "christopher.harris",
+    "FullName": "Christopher Harris",
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "3224f221-9876-4b64-8529-b013007e4023",
-    "Username": "steven.jackson",
-    "FullName": "Steven Jackson",
-    "Role": 1,
-    "Password": "VOX(9Y3s=1#x"
+    "Id": "b90abf55-8681-493e-85af-a4defe4d3ae1",
+    "Username": "donald.rivera",
+    "FullName": "Donald Rivera",
+    "Role": "DefaultUser",
+    "Password": "password"
   },
   {
-    "Id": "6135465f-74d1-4295-b45a-29aec4322429",
-    "Username": "timothy.miller",
-    "FullName": "Timothy Miller",
-    "Role": 1,
-    "Password": "W,(hCY6}#6)I"
+    "Id": "8c7839a0-7a99-4bce-ba10-3b25b8fd7a20",
+    "Username": "karen.torres",
+    "FullName": "Karen Torres",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "00c15976-0f5f-4319-9134-e4bc3e518b49",
+    "Username": "anthony.turner",
+    "FullName": "Anthony Turner",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "a7ac0d10-e9bf-4711-9c54-9c80c54e32f1",
+    "Username": "lisa.wilson",
+    "FullName": "Lisa Wilson",
+    "Role": "DefaultUser",
+    "Password": "password"
+  },
+  {
+    "Id": "a23e178a-5ba7-4e38-8fe8-f29bdc4dc548",
+    "Username": "timothy.roberts",
+    "FullName": "Timothy Roberts",
+    "Role": "Manager",
+    "Password": "password"
+  },
+  {
+    "Id": "ea9267df-d7b5-44b4-ab24-fe06315cfd38",
+    "Username": "elizabeth.lee",
+    "FullName": "Elizabeth Lee",
+    "Role": "Manager",
+    "Password": "password"
+  },
+  {
+    "Id": "01eb1595-81f5-4bdb-8db6-7d89425c6e23",
+    "Username": "andrew.wright",
+    "FullName": "Andrew Wright",
+    "Role": "Manager",
+    "Password": "password"
+  },
+  {
+    "Id": "0c7d1758-fbe7-4feb-9fa8-fb788af0b4cd",
+    "Username": "elizabeth.sanchez",
+    "FullName": "Elizabeth Sanchez",
+    "Role": "Manager",
+    "Password": "password"
+  },
+  {
+    "Id": "0167c384-0810-4eeb-84ba-330fc3744994",
+    "Username": "john.adams",
+    "FullName": "John Adams",
+    "Role": "Manager",
+    "Password": "password"
+  },
+  {
+    "Id": "806578a8-dabe-452b-9478-ce22d7ec4581",
+    "Username": "richard.garcia",
+    "FullName": "Richard Garcia",
+    "Role": "Manager",
+    "Password": "password"
+  },
+  {
+    "Id": "4340af09-8f5a-4022-ac56-831b2319492b",
+    "Username": "susan.carter",
+    "FullName": "Susan Carter",
+    "Role": "Manager",
+    "Password": "password"
+  },
+  {
+    "Id": "3ef808b9-0b2f-4ba9-b6a7-3736d0fb1a54",
+    "Username": "jason.young",
+    "FullName": "Jason Young",
+    "Role": "Manager",
+    "Password": "password"
+  },
+  {
+    "Id": "b729e353-f7eb-4a49-ab98-47f3e437bea3",
+    "Username": "michael.smith",
+    "FullName": "Michael Smith",
+    "Role": "Manager",
+    "Password": "password"
+  },
+  {
+    "Id": "8a205315-bac8-4dcb-ba7e-f3d08f6274f1",
+    "Username": "karen.scott",
+    "FullName": "Karen Scott",
+    "Role": "Manager",
+    "Password": "password"
+  },
+  {
+    "Id": "5a761217-1098-4696-8385-cf70511ced96",
+    "Username": "laura.torres",
+    "FullName": "Laura Torres",
+    "Role": "Manager",
+    "Password": "password"
+  },
+  {
+    "Id": "c27a2ee0-9be9-4f0c-a23a-e8193faf3f34",
+    "Username": "kenneth.hall",
+    "FullName": "Kenneth Hall",
+    "Role": "Manager",
+    "Password": "password"
+  },
+  {
+    "Id": "a74d0c9a-dbf5-402d-b628-308b8ee03877",
+    "Username": "jennifer.miller",
+    "FullName": "Jennifer Miller",
+    "Role": "Manager",
+    "Password": "password"
+  },
+  {
+    "Id": "abe71712-d580-4836-b52c-07a371d51c08",
+    "Username": "lisa.perez",
+    "FullName": "Lisa Perez",
+    "Role": "Manager",
+    "Password": "password"
+  },
+  {
+    "Id": "5047e302-47b0-4053-a95a-9580df7ba43a",
+    "Username": "kenneth.clark",
+    "FullName": "Kenneth Clark",
+    "Role": "Manager",
+    "Password": "password"
+  },
+  {
+    "Id": "e2bd860d-ca53-4a32-8c79-106bc8439afa",
+    "Username": "kevin.jackson",
+    "FullName": "Kevin Jackson",
+    "Role": "Manager",
+    "Password": "password"
+  },
+  {
+    "Id": "80a416d4-2716-4b04-8539-40e93443a053",
+    "Username": "kimberly.parker",
+    "FullName": "Kimberly Parker",
+    "Role": "Manager",
+    "Password": "password"
+  },
+  {
+    "Id": "02a1a475-006d-4e22-884f-bdaa81c23a53",
+    "Username": "paul.hernandez",
+    "FullName": "Paul Hernandez",
+    "Role": "Manager",
+    "Password": "password"
+  },
+  {
+    "Id": "77fb9789-d327-4501-8011-a88dd75463a0",
+    "Username": "jason.clark",
+    "FullName": "Jason Clark",
+    "Role": "Manager",
+    "Password": "password"
+  },
+  {
+    "Id": "b0d83654-a020-43b5-b144-b6e61648600b",
+    "Username": "karen.jones",
+    "FullName": "Karen Jones",
+    "Role": "Manager",
+    "Password": "password"
   }
 ]

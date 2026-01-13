@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace API.Mock;
 
 public class MockedUser
@@ -9,6 +11,7 @@ public class MockedUser
     public required string Password { get; set; }
 }
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum UserRoles
 {
     DefaultUser,

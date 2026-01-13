@@ -14,6 +14,15 @@ using API.Utils;
 
 const string settingsFile = "config.json";
 
+// Check for generate-mock command
+if (args.Contains("--generate-mock") || args.Contains("-gm"))
+{
+    Console.WriteLine("Generating mock user data...");
+    MockUserDataGenerator.GenerateMockUsers();
+    Console.WriteLine("Mock data generation complete. Exiting.");
+    return;
+}
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Bootstrap logger for settings helper before the main logging pipeline is configured
@@ -181,13 +190,6 @@ using (IServiceScope scope = app.Services.CreateScope())
             if (context.Database.CanConnect())
             {
                 context.Database.Migrate();
-                
-                // Generate mock data for development
-                if (app.Environment.IsDevelopment())
-                {
-                    logger.LogInformation("Generating mock user data for development...");
-                    MockUserDataGenerator.GenerateMockUsers();
-                }
                 break;
             }
             else if (!databaseCreator.Exists())
@@ -195,13 +197,6 @@ using (IServiceScope scope = app.Services.CreateScope())
                 logger.LogInformation("Database does not exist, creating it...");
                 databaseCreator.Create();
                 context.Database.Migrate();
-                
-                // Generate mock data for development
-                if (app.Environment.IsDevelopment())
-                {
-                    logger.LogInformation("Generating mock user data for development...");
-                    MockUserDataGenerator.GenerateMockUsers();
-                }
                 break;
             }
             else

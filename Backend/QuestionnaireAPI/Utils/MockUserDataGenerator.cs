@@ -62,7 +62,7 @@ public class MockUserDataGenerator
                 FullName = $"{firstName} {lastName}",
                 Username = username,
                 Role = role,
-                Password = GeneratePassword()
+                Password = "password"
             });
         }
     }
