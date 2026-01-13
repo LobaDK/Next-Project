@@ -1,52 +1,179 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using System.Text.Json.Serialization;
+using System.Net;
+using Serilog;
 using QuestionnaireDatabaseV2;
+using API.Services;
+using API.Interfaces;
+using API.Services.Authentication;
+using API.Utils;
+
+const string settingsFile = "config.json";
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Bootstrap logger for settings helper before the main logging pipeline is configured
+using var bootstrapLoggerFactory = LoggerFactory.Create(logging => logging.AddConsole());
+ILogger<SettingsHelper> settingsLogger = bootstrapLoggerFactory.CreateLogger<SettingsHelper>();
+
+SettingsHelper settingsHelper = new(settingsFile, settingsLogger);
+
+if (!settingsHelper.SettingsExists())
+{
+    settingsHelper.CreateDefault();
+}
+else
+{
+    settingsHelper.CheckSettingsVersion();
+}
+
+builder.Configuration.AddJsonFile(settingsFile, optional: false, reloadOnChange: true);
+
+builder.Logging.ClearProviders();
+builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
+
+DatabaseSettings databaseSettings = ConfigurationBinderService.Bind<DatabaseSettings>(builder.Configuration);
+JWTSettings jWTSettings = ConfigurationBinderService.Bind<JWTSettings>(builder.Configuration);
+SystemSettings systemSettings = ConfigurationBinderService.Bind<SystemSettings>(builder.Configuration);
+
+Serilog.Core.Logger seriLogger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration)
+        .CreateLogger();
+
+builder.Logging.AddSerilog(seriLogger);
+
 // Add services to the container.
-builder.Services.AddControllers();
 
-// Configure Entity Framework
-builder.Services.AddDbContext<QuestionnaireDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+if (File.Exists("USEMOCKAUTH") || File.Exists("USEMOCKAUTH.txt"))
+{   
+    builder.Services.AddScoped<IAuthenticationBridge, MockedAuthenticationBridge>();
+    seriLogger.Warning("Using MOCK authentication bridge, this should NOT be used in production!");
+}
+else
+{
+    builder.Services.AddScoped<IAuthenticationBridge, ActiveDirectoryAuthenticationBridge>();
+}
 
-// Add Swagger/OpenAPI
+builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddSingleton<CacheService>();
+builder.Services.AddMemoryCache();
+builder.Services.AddAuthentication(cfg => {
+    cfg.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    cfg.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    cfg.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer("AccessToken", x => {
+    x.RequireHttpsMetadata = false;
+    x.SaveToken = false;
+    x.TokenValidationParameters = JwtService.GetAccessTokenValidationParameters(jWTSettings.AccessTokenSecret, issuer: jWTSettings.Issuer, audience: jWTSettings.Audience);
+
+    // ASP.NET likes to map JWT claim names to their own URL schema claims
+    // making it difficult to work with incoming tokens. This disables that.
+    x.MapInboundClaims = false;
+}).AddJwtBearer("RefreshToken", x => {
+    x.RequireHttpsMetadata = false;
+    x.SaveToken = false;
+    x.TokenValidationParameters = JwtService.GetRefreshTokenValidationParameters(jWTSettings.RefreshTokenSecret);
+
+    // ASP.NET likes to map JWT claim names to their own URL schema claims
+    // making it difficult to work with incoming tokens. This disables that.
+    x.MapInboundClaims = false;
+});
+
+builder.Services.Configure<RouteOptions>(o => {
+    o.LowercaseUrls = true;
+    o.LowercaseQueryStrings = true;
+});
+
+builder.Services.AddControllers(options =>{
+    options.Conventions.Add(new RouteTokenTransformerConvention(new SlugifyParameterTransformer()));
+}).AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new() { Title = "Questionnaire API", Version = "v1" });
+    c.SwaggerDoc("v1", new() { Title = "Questionnaire API v2", Version = "v1" });
 });
 
-// Add CORS
-builder.Services.AddCors(options =>
+builder.Services.AddDbContext<QuestionnaireDbContext>(o =>
+    o.UseSqlServer(databaseSettings.ConnectionString,
+        options => {
+            options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+            }));
+
+// We have to configure Kestrel before building the app instance
+string environment = builder.Configuration["ASPNETCORE_ENVIRONMENT"] ?? "Production";
+if (environment != "Development")
 {
-    options.AddPolicy(name: "AllowedOrigins",
-        policy =>
+    builder.WebHost.ConfigureKestrel(options =>
+    {
+        IPAddress? address = null;
+        if (!string.IsNullOrEmpty(systemSettings.ListenIP))
         {
+            IPHostEntry hostEntry = Dns.GetHostEntry(systemSettings.ListenIP);
+            address = hostEntry.AddressList.SingleOrDefault(host => host.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork) ?? IPAddress.Loopback;
+        }
+
+        if (address is not null)
+        {
+            options.Listen(address, systemSettings.HttpPort);
+        }
+        else
+        {
+            options.ListenAnyIP(systemSettings.HttpPort);
+        }
+        
+        if (systemSettings.UseSSL)
+        {
+            if (address is not null)
+            {
+                options.Listen(address, systemSettings.HttpsPort, listenOptions =>
+                {
+                    listenOptions.UseHttps(systemSettings.PfxCertificatePath);
+                });
+            }
+            else
+            {
+                options.ListenAnyIP(systemSettings.HttpsPort, listenOptions =>
+                {
+                    listenOptions.UseHttps(systemSettings.PfxCertificatePath);
+                });
+            }
+        }
+    });
+}
+
+// CORS
+builder.Services.AddCors(options => {
+    options.AddPolicy(name: "AllowedOrigins",
+        policy => {
             policy.WithOrigins("http://localhost:4200", "http://127.0.0.1:4200", "http://10.0.1.5")
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
+            .AllowAnyHeader()
+            .AllowAnyMethod();
         });
 });
 
-// Access Policies
+// Access Policies - Updated for new role structure
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy("ManagerOnly", policy => policy.RequireRole("Manager"))
-    .AddPolicy("DefaultUserOnly", policy => policy.RequireRole("defaultUser"))
-    .AddPolicy("ManagerAndDefaultUserOnly", policy => policy.RequireRole("Manager", "defaultUser"));
+    .AddPolicy("DefaultUserOnly", policy => policy.RequireRole("DefaultUser"))
+    .AddPolicy("ManagerAndDefaultUserOnly", policy => policy.RequireRole("Manager", "DefaultUser"));
 
 var app = builder.Build();
 
+app.UseCors("AllowedOrigins");
+
 // Ensure the database is created and migrated
-using (var scope = app.Services.CreateScope())
+using (IServiceScope scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<QuestionnaireDbContext>();
+    IServiceProvider services = scope.ServiceProvider;
+    QuestionnaireDbContext context = services.GetRequiredService<QuestionnaireDbContext>();
     if (context.Database.GetService<IDatabaseCreator>() is RelationalDatabaseCreator databaseCreator)
     {
-        var logger = services.GetRequiredService<ILogger<Program>>();
+        ILogger<Program> logger = services.GetRequiredService<ILogger<Program>>();
         int max_attempts = 3;
         
         for (int attempt = 0; attempt < max_attempts; attempt++)
@@ -54,6 +181,13 @@ using (var scope = app.Services.CreateScope())
             if (context.Database.CanConnect())
             {
                 context.Database.Migrate();
+                
+                // Generate mock data for development
+                if (app.Environment.IsDevelopment())
+                {
+                    logger.LogInformation("Generating mock user data for development...");
+                    MockUserDataGenerator.GenerateMockUsers();
+                }
                 break;
             }
             else if (!databaseCreator.Exists())
@@ -61,6 +195,13 @@ using (var scope = app.Services.CreateScope())
                 logger.LogInformation("Database does not exist, creating it...");
                 databaseCreator.Create();
                 context.Database.Migrate();
+                
+                // Generate mock data for development
+                if (app.Environment.IsDevelopment())
+                {
+                    logger.LogInformation("Generating mock user data for development...");
+                    MockUserDataGenerator.GenerateMockUsers();
+                }
                 break;
             }
             else
@@ -81,12 +222,23 @@ using (var scope = app.Services.CreateScope())
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options => {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+        options.RoutePrefix = string.Empty;
+    });
 }
 
-app.UseHttpsRedirection();
-app.UseCors("AllowedOrigins");
+if (systemSettings.UseSSL)
+{
+    app.UseHttpsRedirection();
+}
+
+app.UseAuthentication();
+
 app.UseAuthorization();
+
+app.UseWebSockets();
+
 app.MapControllers();
 
 app.Run();
