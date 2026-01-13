@@ -18,6 +18,7 @@ global using Settings.Models;
 global using API.DTO.User;
 global using API.DTO.Responses.User;
 global using API.DTO.Responses.Auth;
+global using API.DTO.Requests.Auth;
 global using API.Enums;
 global using API.Extensions;
 global using API.Mock;
