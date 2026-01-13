@@ -25,3 +25,7 @@ global using API.Mock;
 global using API.Interfaces;
 global using API.FieldMappers;
 global using API.Services.Authentication;
+global using API.Services;
+global using API.Exceptions;
+global using Novell.Directory.Ldap;
+global using Novell.Directory.Ldap.Controls;
