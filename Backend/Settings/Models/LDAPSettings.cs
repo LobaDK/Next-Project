@@ -30,6 +30,9 @@ public class LDAPSettings : Base, ILDAPSettings
     [Description("The Service Account (SA) password for LDAP authentication.")]
     public string SAPassword { get; set; } = string.Empty;
 
-    [Description("A dictionary mapping the internal roles to the LDAP CN (Common Names) of groups.")]
-    public Dictionary<string, string> RoleMappingsCN { get; set; } = new Dictionary<string, string>() { { "student", "" }, {"teacher", ""}, {"admin", ""} };
+    [Description("The LDAP CN (Common Name) of the group for Manager role. Users in this group will be assigned Manager role, all others will be DefaultUser.")]
+    public string ManagerGroupCN { get; set; } = "Manager";
+
+    [Obsolete("This property is deprecated. Use ManagerGroupCN instead. Will be removed in future versions.")]
+    public Dictionary<string, string> RoleMappingsCN { get; set; } = new Dictionary<string, string>();
 }

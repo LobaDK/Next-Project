@@ -125,20 +125,19 @@ public class AuthController : ControllerBase
     {
         try
         {
-            // Try to map LDAP role to internal role using simplified Manager/DefaultUser structure
-            if (_ldapSettings?.RoleMappingsCN != null)
+            // Check if user is in the Manager group
+            if (!string.IsNullOrEmpty(_ldapSettings?.ManagerGroupCN))
             {
-                var roleMapping = _ldapSettings.RoleMappingsCN
-                    .FirstOrDefault(x => userInfo.MemberOf?.Any(group => 
-                        group.Contains(x.Value, StringComparison.OrdinalIgnoreCase)) == true);
+                bool isManager = userInfo.MemberOf?.Any(group => 
+                    group.Contains(_ldapSettings.ManagerGroupCN, StringComparison.OrdinalIgnoreCase)) == true;
 
-                if (roleMapping.Key != null)
+                if (isManager)
                 {
-                    return roleMapping.Key;
+                    return "Manager";
                 }
             }
 
-            // Default to DefaultUser if no specific role mapping found
+            // Default to DefaultUser if not in Manager group
             return "DefaultUser";
         }
         catch (Exception ex)
