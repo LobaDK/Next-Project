@@ -52,6 +52,7 @@ public class User
     /// Managers have elevated permissions, while DefaultUser has standard access.
     /// </summary>
     [Required]
+    [Column(TypeName = "nvarchar(50)")]
     public UserRole Role { get; set; } = UserRole.DefaultUser;
 
     /// <summary>

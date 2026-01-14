@@ -1,160 +1,81 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 using QuestionnaireDatabaseV2;
 using QuestionnaireDatabaseV2.Entities;
 using QuestionnaireDatabaseV2.Enums;
+using QuestionnaireAPI.Services.User;
+using QuestionnaireAPI.DTO.Responses.User;
+using QuestionnaireAPI.DTO.Responses;
+using QuestionnaireAPI.DTO.Requests;
 
 namespace QuestionnaireAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly QuestionnaireDbContext _context;
+        private readonly IUserService _userService;
+        private readonly ILogger<UsersController> _logger;
 
-        public UsersController(QuestionnaireDbContext context)
+        public UsersController(
+            QuestionnaireDbContext context,
+            IUserService userService,
+            ILogger<UsersController> logger)
         {
             _context = context;
+            _userService = userService;
+            _logger = logger;
         }
 
         /// <summary>
-        /// Get all users
+        /// Gets the current authenticated user's information
         /// </summary>
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        [HttpGet("me")]
+        [ProducesResponseType(typeof(UserDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<UserDTO>> GetCurrentUser()
         {
-            return await _context.Users.ToListAsync();
-        }
-
-        /// <summary>
-        /// Get user by ID
-        /// </summary>
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(Guid id)
-        {
-            var user = await _context.Users.FindAsync(id);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return user;
-        }
-
-        /// <summary>
-        /// Get user by Active Directory GUID
-        /// </summary>
-        [HttpGet("by-ad-guid/{adGuid}")]
-        public async Task<ActionResult<User>> GetUserByAdGuid(Guid adGuid)
-        {
-            var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.ActiveDirectoryGuid == adGuid);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return user;
-        }
-
-        /// <summary>
-        /// Create a new user
-        /// </summary>
-        [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
-        {
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
-        }
-
-        /// <summary>
-        /// Update user
-        /// </summary>
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(Guid id, User user)
-        {
-            if (id != user.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(user).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
+                var currentUser = await _userService.GetCurrentUserAsync(User);
+                
+                if (currentUser == null)
                 {
-                    return NotFound();
+                    return NotFound("User not found");
                 }
-                else
-                {
-                    throw;
-                }
+
+                return Ok(currentUser);
             }
-
-            return NoContent();
-        }
-
-        /// <summary>
-        /// Delete user
-        /// </summary>
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(Guid id)
-        {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                _logger.LogError(ex, "Error retrieving current user information");
+                return StatusCode(500, "Internal server error");
             }
-
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
         }
 
         /// <summary>
-        /// Get users by role
+        /// Search and paginate users by name and role
         /// </summary>
-        [HttpGet("by-role/{role}")]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsersByRole(string role)
+        [HttpGet("search")]
+        [ProducesResponseType(typeof(PagedResult<UserDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<PagedResult<UserDTO>>> SearchUsers([FromQuery] UserSearchRequest request)
         {
-            if (!Enum.TryParse<UserRole>(role, true, out var userRole))
+            try
             {
-                return BadRequest($"Invalid role. Valid roles are: {string.Join(", ", Enum.GetNames<UserRole>())}");
+                var result = await _userService.SearchUsersAsync(request);
+                return Ok(result);
             }
-
-            var users = await _context.Users
-                .Where(u => u.Role == userRole)
-                .ToListAsync();
-
-            return users;
-        }
-
-        /// <summary>
-        /// Get managers only
-        /// </summary>
-        [HttpGet("managers")]
-        public async Task<ActionResult<IEnumerable<User>>> GetManagers()
-        {
-            var managers = await _context.Users
-                .Where(u => u.Role == UserRole.Manager)
-                .ToListAsync();
-
-            return managers;
-        }
-
-        private bool UserExists(Guid id)
-        {
-            return _context.Users.Any(e => e.Id == id);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error searching users");
+                return StatusCode(500, "Internal server error");
+            }
         }
     }
 }

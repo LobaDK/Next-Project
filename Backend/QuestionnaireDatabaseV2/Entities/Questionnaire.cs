@@ -6,24 +6,6 @@ using QuestionnaireDatabaseV2.Enums;
 namespace QuestionnaireDatabaseV2.Entities;
 
 /// <summary>
-/// Contains version-related properties for questionnaire tracking.
-/// </summary>
-public class QuestionnaireVersion
-{
-    /// <summary>
-    /// Gets or sets the original questionnaire this was copied from.
-    /// </summary>
-    public Guid? CopiedFromQuestionnaireId { get; set; }
-
-    /// <summary>
-    /// Gets or sets the title of the original questionnaire this was copied from.
-    /// Preserved even if original is deleted, for audit trail.
-    /// </summary>
-    [MaxLength(200)]
-    public string? CopiedFromTitle { get; set; }
-}
-
-/// <summary>
 /// Represents a questionnaire definition that can be used to create assignments.
 /// Questionnaires contain metadata and can have multiple versions for schema evolution.
 /// </summary>
@@ -54,18 +36,15 @@ public class Questionnaire
     /// <summary>
     /// Gets or sets the current status of this questionnaire.
     /// </summary>
+    [Column(TypeName = "nvarchar(50)")]
     public QuestionnaireStatus Status { get; set; } = QuestionnaireStatus.Draft;
-
-    /// <summary>
-    /// Gets or sets the category or tag for organizing questionnaires.
-    /// </summary>
-    [MaxLength(100)]
-    public string? Category { get; set; }
+ 
 
     /// <summary>
     /// Gets or sets the user who created this questionnaire.
     /// </summary>
     [Required]
+    [ForeignKey(nameof(CreatedByUser))]
     public Guid CreatedByUserId { get; set; }
 
     /// <summary>
@@ -87,10 +66,18 @@ public class Questionnaire
     public string SchemaJson { get; set; } = string.Empty;
 
     /// <summary>
-    /// Gets or sets version information for this questionnaire.
-    /// Tracks copy relationships and lineage.
+    /// Gets or sets the original questionnaire this was copied from.
+    /// Used for tracking questionnaire lineage and versioning.
     /// </summary>
-    public QuestionnaireVersion Version { get; set; } = new QuestionnaireVersion();
+    [ForeignKey(nameof(CopiedFromQuestionnaire))]
+    public Guid? CopiedFromQuestionnaireId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the title of the original questionnaire this was copied from.
+    /// Preserved even if original is deleted, for audit trail.
+    /// </summary>
+    [MaxLength(200)]
+    public string? CopiedFromTitle { get; set; }
 
     /// <summary>
     /// Gets or sets whether this questionnaire has been soft deleted.
@@ -100,8 +87,11 @@ public class Questionnaire
     public bool IsDeleted { get; set; } = false;
 
     // Navigation properties
-    /// <summary>
-    /// Gets or sets the original questionnaire this was copied from (if any).
+    /// <summary>    /// Gets or sets the user who created this questionnaire.
+    /// </summary>
+    public virtual User CreatedByUser { get; set; } = null!;
+
+    /// <summary>    /// Gets or sets the original questionnaire this was copied from (if any).
     /// </summary>
     public virtual Questionnaire? CopiedFromQuestionnaire { get; set; }
 

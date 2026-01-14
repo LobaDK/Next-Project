@@ -16,15 +16,18 @@ public class AssignmentParticipant
     public Guid Id { get; set; }
 
     [Required]
+    [ForeignKey(nameof(Assignment))]
     public Guid AssignmentId { get; set; }
 
     [Required]
+    [ForeignKey(nameof(User))]
     public Guid UserId { get; set; }
 
     /// <summary>
     /// Gets or sets the permissions this participant has for the assignment.
     /// Determines what actions they can perform (answer, view own results, view others' results).
     /// </summary>
+    [Column(TypeName = "nvarchar(100)")]
     public ParticipantPermissions Permissions { get; set; } = ParticipantPermissions.CanAnswerAndViewOwn;
 
     /// <summary>
@@ -35,6 +38,7 @@ public class AssignmentParticipant
     /// <summary>
     /// Gets or sets who added this participant (optional).
     /// </summary>
+    [ForeignKey(nameof(AddedByUser))]
     public Guid? AddedByUserId { get; set; }
 
     // Navigation properties

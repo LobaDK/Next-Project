@@ -50,6 +50,7 @@ public class Assignment
     /// <summary>
     /// Gets or sets the current status of this assignment.
     /// </summary>
+    [Column(TypeName = "nvarchar(50)")]
     public AssignmentStatus Status { get; set; } = AssignmentStatus.Draft;
 
     /// <summary>
@@ -57,6 +58,7 @@ public class Assignment
     /// Gets or sets who created this assignment.
     /// </summary>
     [Required]
+    [ForeignKey(nameof(CreatedByUser))]
     public Guid CreatedByUserId { get; set; }
 
     /// <summary>

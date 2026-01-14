@@ -25,12 +25,14 @@ public class Response
     /// Gets or sets the assignment this response belongs to.
     /// </summary>
     [Required]
+    [ForeignKey(nameof(Assignment))]
     public Guid AssignmentId { get; set; }
 
     /// <summary>
     /// Gets or sets the user who submitted this response.
     /// </summary>
     [Required]
+    [ForeignKey(nameof(Participant))]
     public Guid ParticipantId { get; set; }
 
     /// <summary>
@@ -38,6 +40,7 @@ public class Response
     /// Maintains integrity by storing questionnaire ID at time of response.
     /// </summary>
     [Required]
+    [ForeignKey(nameof(Questionnaire))]
     public Guid QuestionnaireId { get; set; }
 
     /// <summary>

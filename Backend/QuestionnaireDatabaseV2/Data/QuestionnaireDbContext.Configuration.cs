@@ -27,20 +27,13 @@ public partial class QuestionnaireDbContext
     {
         modelBuilder.Entity<User>(entity =>
         {
-            entity.Property(u => u.CreatedAt)
-                .HasDefaultValueSql("GETUTCDATE()");
-            entity.Property(u => u.LastUpdatedAt)
-                .HasDefaultValueSql("GETUTCDATE()");
-
-            // Configure relationships
+            // Only keeping delete behavior that can't be specified via attributes
             entity.HasMany(u => u.CreatedAssignments)
                 .WithOne(a => a.CreatedByUser)
-                .HasForeignKey(a => a.CreatedByUserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             entity.HasMany(u => u.AssignmentParticipants)
                 .WithOne(ap => ap.User)
-                .HasForeignKey(ap => ap.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
     }
@@ -49,29 +42,15 @@ public partial class QuestionnaireDbContext
     {
         modelBuilder.Entity<Questionnaire>(entity =>
         {
-            entity.Property(q => q.CreatedAt)
-                .HasDefaultValueSql("GETUTCDATE()");
-            entity.Property(q => q.LastUpdatedAt)
-                .HasDefaultValueSql("GETUTCDATE()");
-
-            // Configure QuestionnaireVersion complex type
-            entity.OwnsOne(q => q.Version, version =>
-            {
-                version.Property(v => v.CopiedFromQuestionnaireId)
-                    .HasColumnName("CopiedFromQuestionnaireId");
-                version.Property(v => v.CopiedFromTitle)
-                    .HasColumnName("CopiedFromTitle")
-                    .HasMaxLength(200);
-            });
-
+            // Self-referencing relationship for copied questionnaires
             entity.HasOne(q => q.CopiedFromQuestionnaire)
                 .WithMany(q => q.CopiedQuestionnaires)
-                .HasForeignKey("Version_CopiedFromQuestionnaireId")
+                .HasForeignKey(q => q.CopiedFromQuestionnaireId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Delete behavior for responses
             entity.HasMany(q => q.Responses)
                 .WithOne(r => r.Questionnaire)
-                .HasForeignKey(r => r.QuestionnaireId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
     }
@@ -80,19 +59,13 @@ public partial class QuestionnaireDbContext
     {
         modelBuilder.Entity<Assignment>(entity =>
         {
-            entity.Property(a => a.CreatedAt)
-                .HasDefaultValueSql("GETUTCDATE()");
-            entity.Property(a => a.LastUpdatedAt)
-                .HasDefaultValueSql("GETUTCDATE()");
-
+            // Only delete behavior (can't be specified via attributes)
             entity.HasMany(a => a.Participants)
                 .WithOne(ap => ap.Assignment)
-                .HasForeignKey(ap => ap.AssignmentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasMany(a => a.Responses)
                 .WithOne(r => r.Assignment)
-                .HasForeignKey(r => r.AssignmentId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
     }
@@ -101,12 +74,9 @@ public partial class QuestionnaireDbContext
     {
         modelBuilder.Entity<AssignmentParticipant>(entity =>
         {
-            entity.Property(ap => ap.AddedAt)
-                .HasDefaultValueSql("GETUTCDATE()");
-
+            // Only delete behavior for AddedByUser (complex relationship)
             entity.HasOne(ap => ap.AddedByUser)
                 .WithMany()
-                .HasForeignKey(ap => ap.AddedByUserId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
     }
@@ -115,36 +85,16 @@ public partial class QuestionnaireDbContext
     {
         modelBuilder.Entity<Response>(entity =>
         {
-            entity.Property(r => r.CreatedAt)
-                .HasDefaultValueSql("GETUTCDATE()");
-            entity.Property(r => r.SubmittedAt)
-                .HasDefaultValueSql("GETUTCDATE()");
-
+            // Only delete behavior (can't be specified via attributes)
             entity.HasOne(r => r.Participant)
                 .WithMany(u => u.Responses)
-                .HasForeignKey(r => r.ParticipantId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            entity.HasOne(r => r.Questionnaire)
-                .WithMany(q => q.Responses)
-                .HasForeignKey(r => r.QuestionnaireId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
     }
 
     private void ConfigureEnumConversions(ModelBuilder modelBuilder)
     {
-        // Configure enum conversions to strings for better readability
-        modelBuilder.Entity<Questionnaire>()
-            .Property(q => q.Status)
-            .HasConversion<string>();
-
-        modelBuilder.Entity<Assignment>()
-            .Property(a => a.Status)
-            .HasConversion<string>();
-
-        modelBuilder.Entity<AssignmentParticipant>()
-            .Property(ap => ap.Permissions)
-            .HasConversion<string>();
+        // Enum string conversions are now handled via [Column(TypeName = "nvarchar(50)")] attributes
+        // This method can be removed or kept for any custom enum conversions if needed
     }
 }

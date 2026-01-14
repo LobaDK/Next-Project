@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuestionnaireDatabaseV2;
 using QuestionnaireDatabaseV2.Entities;
+using QuestionnaireAPI.DTO.Requests.Questionnaire;
+using QuestionnaireAPI.DTO.Responses.Questionnaire;
 
 namespace QuestionnaireAPI.Controllers
 {
@@ -20,21 +22,52 @@ namespace QuestionnaireAPI.Controllers
         /// Get all questionnaires (excluding deleted)
         /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Questionnaire>>> GetQuestionnaires()
+        public async Task<ActionResult<IEnumerable<QuestionnaireBaseDTO>>> GetQuestionnaires()
         {
-            return await _context.Questionnaires
+            var questionnaires = await _context.Questionnaires
                 .Where(q => !q.IsDeleted)
+                .Select(q => new QuestionnaireBaseDTO
+                {
+                    Id = q.Id,
+                    Title = q.Title,
+                    Status = q.Status,
+                    CreatedAt = q.CreatedAt,
+                    LastUpdatedAt = q.LastUpdatedAt,
+                    Version = new QuestionnaireVersionDTO
+                    {
+                        CopiedFromQuestionnaireId = q.CopiedFromQuestionnaireId,
+                        CopiedFromTitle = q.CopiedFromTitle
+                    },
+                    IsDeleted = q.IsDeleted
+                })
                 .ToListAsync();
+
+            return questionnaires;
         }
 
         /// <summary>
         /// Get questionnaire by ID
         /// </summary>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Questionnaire>> GetQuestionnaire(Guid id)
+        public async Task<ActionResult<QuestionnaireBaseDTO>> GetQuestionnaire(Guid id)
         {
             var questionnaire = await _context.Questionnaires
-                .FirstOrDefaultAsync(q => q.Id == id && !q.IsDeleted);
+                .Where(q => q.Id == id && !q.IsDeleted)
+                .Select(q => new QuestionnaireBaseDTO
+                {
+                    Id = q.Id,
+                    Title = q.Title,
+                    Status = q.Status,
+                    CreatedAt = q.CreatedAt,
+                    LastUpdatedAt = q.LastUpdatedAt,
+                    Version = new QuestionnaireVersionDTO
+                    {
+                        CopiedFromQuestionnaireId = q.CopiedFromQuestionnaireId,
+                        CopiedFromTitle = q.CopiedFromTitle
+                    },
+                    IsDeleted = q.IsDeleted
+                })
+                .FirstOrDefaultAsync();
 
             if (questionnaire == null)
             {
@@ -48,60 +81,45 @@ namespace QuestionnaireAPI.Controllers
         /// Create a new questionnaire
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<Questionnaire>> PostQuestionnaire(Questionnaire questionnaire)
+        public async Task<ActionResult<QuestionnaireBaseDTO>> PostQuestionnaire(CreateQuestionnaireDTO createDto)
         {
-            questionnaire.CreatedAt = DateTime.UtcNow;
-            questionnaire.LastUpdatedAt = DateTime.UtcNow;
-            questionnaire.IsDeleted = false;
+            // Extract user ID from JWT token
+            var userIdClaim = User.FindFirst("sub")?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized("Invalid or missing user ID in token");
+            }
+
+            var questionnaire = new Questionnaire
+            {
+                Title = createDto.Title,
+                Description = createDto.Description,
+                SchemaJson = createDto.SchemaJson,
+                CreatedByUserId = userId,
+                CreatedAt = DateTime.UtcNow,
+                LastUpdatedAt = DateTime.UtcNow,
+                IsDeleted = false
+            };
 
             _context.Questionnaires.Add(questionnaire);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetQuestionnaire", new { id = questionnaire.Id }, questionnaire);
-        }
-
-        /// <summary>
-        /// Update questionnaire
-        /// </summary>
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutQuestionnaire(Guid id, Questionnaire questionnaire)
-        {
-            if (id != questionnaire.Id)
+            var responseDto = new QuestionnaireBaseDTO
             {
-                return BadRequest();
-            }
-
-            var existingQuestionnaire = await _context.Questionnaires.FindAsync(id);
-            if (existingQuestionnaire == null || existingQuestionnaire.IsDeleted)
-            {
-                return NotFound();
-            }
-
-            // Preserve some fields during update
-            questionnaire.CreatedAt = existingQuestionnaire.CreatedAt;
-            questionnaire.LastUpdatedAt = DateTime.UtcNow;
-            questionnaire.IsDeleted = existingQuestionnaire.IsDeleted;
-
-            _context.Entry(existingQuestionnaire).State = EntityState.Detached;
-            _context.Entry(questionnaire).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!QuestionnaireExists(id))
+                Id = questionnaire.Id,
+                Title = questionnaire.Title,
+                Status = questionnaire.Status,
+                CreatedAt = questionnaire.CreatedAt,
+                LastUpdatedAt = questionnaire.LastUpdatedAt,
+                Version = new QuestionnaireVersionDTO
                 {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+                    CopiedFromQuestionnaireId = questionnaire.CopiedFromQuestionnaireId,
+                    CopiedFromTitle = questionnaire.CopiedFromTitle
+                },
+                IsDeleted = questionnaire.IsDeleted
+            };
 
-            return NoContent();
+            return CreatedAtAction("GetQuestionnaire", new { id = questionnaire.Id }, responseDto);
         }
 
         /// <summary>
@@ -117,51 +135,12 @@ namespace QuestionnaireAPI.Controllers
             }
 
             // Soft delete
+            questionnaire.Status = QuestionnaireDatabaseV2.Enums.QuestionnaireStatus.Deleted;
             questionnaire.IsDeleted = true;
             questionnaire.LastUpdatedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        /// <summary>
-        /// Copy questionnaire to create a new version
-        /// </summary>
-        [HttpPost("{id}/copy")]
-        public async Task<ActionResult<Questionnaire>> CopyQuestionnaire(Guid id)
-        {
-            var originalQuestionnaire = await _context.Questionnaires
-                .FirstOrDefaultAsync(q => q.Id == id && !q.IsDeleted);
-
-            if (originalQuestionnaire == null)
-            {
-                return NotFound();
-            }
-
-            // Create copy
-            var copiedQuestionnaire = new Questionnaire
-            {
-                Title = $"{originalQuestionnaire.Title} - Copy",
-                Description = originalQuestionnaire.Description,
-                SchemaJson = originalQuestionnaire.SchemaJson,
-                Category = originalQuestionnaire.Category,
-                CreatedByUserId = originalQuestionnaire.CreatedByUserId,
-                CreatedAt = DateTime.UtcNow,
-                LastUpdatedAt = DateTime.UtcNow,
-                IsDeleted = false
-            };
-
-            // Set version information
-            copiedQuestionnaire.Version = new QuestionnaireVersion
-            {
-                CopiedFromQuestionnaireId = originalQuestionnaire.Id,
-                CopiedFromTitle = originalQuestionnaire.Title
-            };
-
-            _context.Questionnaires.Add(copiedQuestionnaire);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetQuestionnaire", new { id = copiedQuestionnaire.Id }, copiedQuestionnaire);
         }
 
         private bool QuestionnaireExists(Guid id)

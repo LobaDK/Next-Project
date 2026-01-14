@@ -12,6 +12,8 @@ using API.Services;
 using API.Interfaces;
 using API.Services.Authentication;
 using API.Utils;
+using QuestionnaireAPI.Services.Authentication;
+using QuestionnaireAPI.Services.User;
 
 const string settingsFile = "config.json";
 
@@ -68,12 +70,14 @@ else
 }
 
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSingleton<CacheService>();
 builder.Services.AddMemoryCache();
 builder.Services.AddAuthentication(cfg => {
-    cfg.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    cfg.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    cfg.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    cfg.DefaultAuthenticateScheme = "AccessToken";
+    cfg.DefaultChallengeScheme = "AccessToken";
+    cfg.DefaultScheme = "AccessToken";
 }).AddJwtBearer("AccessToken", x => {
     x.RequireHttpsMetadata = false;
     x.SaveToken = false;
