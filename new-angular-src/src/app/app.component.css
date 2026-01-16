@@ -1,0 +1,82 @@
+
+
+/* General Button Styles */
+.btn {
+    background-color: aliceblue;
+    border-radius: 5px;
+    padding: 8px;
+    margin: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #e0f7fa;
+}
+
+/* Specific Button Variants */
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 16px;
+    width: auto;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-danger {
+    background-color: #ff4c4c;
+    color: white;
+    padding: 8px 16px;
+    width: auto;
+}
+
+.btn-danger:hover {
+    background-color: #ff1c1c;
+}
+
+/* Layout for the Top Section */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 10px;
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #007bff;
+    position: sticky;
+    top: 0;
+    z-index: 1000; /* Ensures the header stays on top of other content */
+}
+
+.header-title {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.welcome {
+    flex-grow: 1;
+    text-align: center;
+}
+
+/* Responsive Layout for Buttons and Nav */
+.nav {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+}
+
+.nav .btn {
+    margin-left: 8px;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.token-actions {
+    margin-left: 10px;
+}
+
+/* Responsive Design */

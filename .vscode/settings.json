@@ -1,3 +1,9 @@
 {
-    "dotnet.defaultSolution": "QuestionnaireSystem.sln"
+    "dotnet.defaultSolution": "Backend/QuestionnaireSystem.sln",
+    "omnisharp.defaultLaunchSolution": "Backend/QuestionnaireSystem.sln",
+    "files.exclude": {
+        "**/Backend.sln": true,
+        "**/Backend/QuestionnaireAPI/QuestionnaireAPI.sln": true
+    },
+    "dotnetAcquisitionExtension.enableTelemetry": false
 }
