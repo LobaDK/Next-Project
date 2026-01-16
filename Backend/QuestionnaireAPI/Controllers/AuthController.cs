@@ -38,7 +38,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(typeof(AuthenticationResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Login([FromBody] UserLogin userLogin)
+    public async Task<IActionResult> Login([FromForm] UserLogin userLogin)
     {
         try
         {
