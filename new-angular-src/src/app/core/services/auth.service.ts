@@ -5,8 +5,7 @@ import { environment } from '../../../environments/environment';
 import { TokenService } from './token.service';
 import { ApiService } from './api.service';
 import { Role, User } from '../../shared/models/user.model';
-import { LoginErrorCode, LoginResult, ADErrorCode, ADErrorResponse } from '../../features/home/models/login.model';
-import { IAuthService } from '../interfaces/service.interfaces';
+import { LoginErrorCode, LoginResult, ADErrorCode, ADErrorResponse } from '../../shared/models/login.model';
 
 interface AuthTokens {
   authToken: string;
@@ -26,7 +25,7 @@ interface AuthTokens {
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService implements IAuthService {
+export class AuthService {
 
   // Configuration - adjust these values as needed
   /**
@@ -328,8 +327,8 @@ private mapToRoleEnum(value: string | null): Role | null {
       return Role.Student;
     case Role.Teacher:
       return Role.Teacher;
-    case Role.Admin:
-      return Role.Admin;
+    case Role.Manager:
+      return Role.Manager;
     default:
       return null;
   }

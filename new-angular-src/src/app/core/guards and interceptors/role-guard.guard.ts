@@ -26,7 +26,7 @@ import { Role } from '../../shared/models/user.model';
  *     path: 'templates',
  *     component: TemplateManagerComponent,
  *     canActivate: [authGuard, roleGuard],
- *     data: { roles: [Role.Admin] } // only Admins allowed
+ *     data: { roles: [Role.Manager] } // only Managers allowed
  *   },
  *   {
  *     path: 'results/:id',

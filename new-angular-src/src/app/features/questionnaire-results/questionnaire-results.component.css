@@ -1,0 +1,177 @@
+/* Questionnaire Results specific styles */
+
+/* Search dropdowns */
+.search-dropdown {
+  @apply absolute z-10 w-full mt-1 max-h-40 overflow-y-auto bg-white border border-gray-200 rounded-md shadow-lg;
+}
+
+.search-dropdown-item {
+  @apply px-3 py-2 cursor-pointer hover:bg-gray-50 border-b border-gray-100 last:border-b-0;
+}
+
+/* Selected filter badges */
+.filter-badge {
+  @apply inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-800 border border-blue-200 rounded-full text-sm font-medium;
+}
+
+.filter-badge-remove {
+  @apply cursor-pointer hover:text-blue-600 transition-colors;
+}
+
+/* Chart container */
+.chart-container {
+  @apply p-4 bg-gray-50 border border-gray-200 rounded-lg;
+}
+
+.chart-title {
+  @apply font-semibold text-sm mb-3 text-gray-800;
+}
+
+.chart-bar-container {
+  @apply w-full bg-gray-200 rounded-full h-4 overflow-hidden;
+}
+
+.chart-bar {
+  @apply bg-primary_orange_1 h-full rounded-full transition-all duration-500;
+}
+
+.chart-stats {
+  @apply text-sm text-gray-600 mb-2;
+}
+
+.chart-meta {
+  @apply text-xs text-gray-500 mt-1;
+}
+
+/* Pagination enhancements */
+.pagination-container {
+  @apply flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 bg-gray-50 border-t border-gray-200;
+}
+
+.pagination-info {
+  @apply text-sm text-gray-600 order-2 sm:order-1;
+}
+
+.pagination-controls {
+  @apply flex items-center gap-1 order-1 sm:order-2;
+}
+
+.page-size-selector {
+  @apply flex items-center gap-2 order-3 sm:order-1;
+}
+
+/* Table cell content constraints */
+.table-question-header {
+  @apply max-w-32 truncate;
+}
+
+.table-text-content {
+  @apply max-w-64 break-words;
+}
+
+.table-rating-content {
+  @apply flex items-center gap-1 justify-center;
+}
+
+.table-rating-value {
+  @apply font-semibold text-primary_orange_1 text-base;
+}
+
+.table-rating-max {
+  @apply text-xs text-gray-500;
+}
+
+/* Question type indicators */
+.question-type-badge {
+  @apply inline-block px-2 py-0.5 text-xs font-medium rounded-full;
+}
+
+.question-type-rating {
+  @apply bg-blue-100 text-blue-800;
+}
+
+.question-type-text {
+  @apply bg-green-100 text-green-800;
+}
+
+/* Empty state */
+.empty-state {
+  @apply text-center py-16;
+}
+
+.empty-state-icon {
+  @apply text-6xl mb-4 opacity-50;
+}
+
+.empty-state-text {
+  @apply text-gray-500 text-lg;
+}
+
+/* Responsive table adjustments */
+@media (max-width: 1024px) {
+  .table-question-header {
+    @apply max-w-24 text-xs;
+  }
+  
+  .table-text-content {
+    @apply max-w-32 text-xs;
+  }
+}
+
+@media (max-width: 768px) {
+  .pagination-container {
+    @apply flex-col gap-3;
+  }
+  
+  .pagination-controls {
+    @apply order-1;
+  }
+  
+  .pagination-info {
+    @apply order-2 text-center;
+  }
+  
+  .page-size-selector {
+    @apply order-3 justify-center;
+  }
+  
+  .table-question-header {
+    @apply max-w-20;
+  }
+  
+  .table-text-content {
+    @apply max-w-24;
+  }
+}
+
+/* Loading states */
+.loading-overlay {
+  @apply absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center;
+}
+
+.loading-spinner {
+  @apply animate-spin rounded-full h-8 w-8 border-b-2 border-primary_orange_1;
+}
+
+/* Accessibility improvements */
+.sr-only {
+  @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+}
+
+/* Focus states */
+.search-dropdown-item:focus {
+  @apply bg-blue-50 outline-none;
+}
+
+button:focus {
+  @apply outline-none ring-2 ring-offset-2 ring-primary_orange_1;
+}
+
+/* Hover effects for better UX */
+.table-row:hover .table-text-content {
+  @apply bg-yellow-50 transition-colors;
+}
+
+.chart-container:hover {
+  @apply shadow-md transition-shadow;
+}

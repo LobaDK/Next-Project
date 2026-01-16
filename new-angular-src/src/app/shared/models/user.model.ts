@@ -22,8 +22,8 @@ export interface User {
  *
  * @example
  * ```ts
- * if (user.role === Role.Admin) {
- *   // grant admin access
+ * if (user.role === Role.Manager) {
+ *   // grant manager access
  * }
  * ```
  */
@@ -31,5 +31,5 @@ export interface User {
 export enum Role {
   Student = 'student',
   Teacher = 'teacher',
-  Admin = 'admin',
+  Manager = 'manager',
 }

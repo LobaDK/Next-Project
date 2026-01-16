@@ -82,27 +82,15 @@ export class HeaderComponent {
   /** Role-specific navigation links (labels use translation keys). */
   navLinks: Record<Role, { name: string; route: string }[]> = {
     [Role.Student]: [
-      {
-        name: "NAV.ACTIVE_QUESTIONNAIRES",
-        route: "/show-active-questionnaires",
-      },
-      { name: "NAV.USER_GUIDE", route: "/user-guide" }
+      { name: "Nothing Yet", route: "/templates" },
     ],
     [Role.Teacher]: [
-      //{ name: 'Overview', route: '/hub' },
-      { name: "NAV.OVERVIEW", route: "/teacher-dashboard" },
-      {
-        name: "NAV.ACTIVE_QUESTIONNAIRES",
-        route: "/show-active-questionnaires",
-      },
-      { name: "NAV.RESULTS", route: "/result-history" },
-      { name: "NAV.USER_GUIDE", route: "/user-guide" }
+      { name: "Nothing Yet", route: "/templates" },
+
     ],
-    [Role.Admin]: [
+    [Role.Manager]: [
       //{ name: 'Overview', route: '/hub' },
-      { name: "NAV.TEMPLATES", route: "/templates" },
-      { name: "NAV.ACTIVE_QUESTIONNAIRES", route: "/active-questionnaire" },
-      { name: "NAV.USER_GUIDE", route: "/user-guide" }
+      { name: "Nothing Yet", route: "/templates" },
     ],
   };
 

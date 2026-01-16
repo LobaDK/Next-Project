@@ -1,0 +1,173 @@
+<!-- Test component to showcase CSS classes -->
+<div class="center-content w-full min-h-full section-spacing p-4">
+  
+  <!-- Main Title Card -->
+  <div class="app-card center-content">
+    <h1 class="app-title-primary mb-4">{{ title }}</h1>
+    <p class="app-text-muted text-lg">
+      This component demonstrates the custom CSS classes we've created.
+    </p>
+  </div>
+
+  <!-- Card Examples Section -->
+  <div class="w-full max-w-6xl">
+    <h2 class="app-title-secondary mb-6 text-center">Card Examples</h2>
+    
+    <div class="grid-cards">
+      <!-- Regular Card -->
+      <div class="app-card">
+        <h3 class="app-title-secondary mb-3">Regular Card</h3>
+        <p class="app-text-muted mb-4">
+          This is the main app-card class with full padding, large shadows, and max width.
+        </p>
+        <div class="bg-gray-100 p-3 rounded text-sm">
+          <code>.app-card</code>
+        </div>
+      </div>
+
+      <!-- Small Card -->
+      <div class="app-card-sm">
+        <h3 class="app-title-secondary mb-3">Small Card</h3>
+        <p class="app-text-muted mb-4">
+          The app-card-sm class with medium padding and smaller max width.
+        </p>
+        <div class="bg-gray-100 p-3 rounded text-sm">
+          <code>.app-card-sm</code>
+        </div>
+      </div>
+
+      <!-- Compact Card -->
+      <div class="app-card-compact">
+        <h3 class="app-title-secondary mb-2">Compact</h3>
+        <p class="app-text-muted text-sm mb-3">
+          Compact card with minimal padding.
+        </p>
+        <div class="bg-gray-100 p-2 rounded text-xs">
+          <code>.app-card-compact</code>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Button Examples Section -->
+  <div class="app-card-sm w-full max-w-4xl">
+    <h2 class="app-title-secondary mb-6 text-center">Button Examples</h2>
+    
+    <div class="grid-buttons">
+      <button class="btn-primary">
+        Primary Button
+      </button>
+      
+      <button class="btn-secondary">
+        Secondary Button
+      </button>
+      
+      <button class="btn-success">
+        Success Button
+      </button>
+      
+      <button class="btn-danger">
+        Danger Button
+      </button>
+    </div>
+  </div>
+
+  <!-- Form Examples Section -->
+  <div class="app-card w-full max-w-4xl">
+    <h2 class="app-title-secondary mb-6 text-center">Form Examples</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label class="form-label">Input Field</label>
+        <input 
+          type="text" 
+          placeholder="Enter text here..."
+          class="input-field">
+      </div>
+      
+      <div>
+        <label class="form-label">Select Field</label>
+        <select class="select-field">
+          <option>Option 1</option>
+          <option>Option 2</option>
+          <option>Option 3</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="mt-6">
+      <label class="form-label">Textarea</label>
+      <textarea 
+        rows="4"
+        placeholder="Enter your message..."
+        class="textarea-field">
+      </textarea>
+    </div>
+  </div>
+
+  <!-- Badge Examples Section -->
+  <div class="app-card-sm w-full max-w-4xl">
+    <h2 class="app-title-secondary mb-6 text-center">Badge Examples</h2>
+    
+    <div class="flex flex-wrap gap-4 justify-center">
+      <span class="badge-active">Active</span>
+      <span class="badge-pending">Pending</span>
+      <span class="badge-inactive">Inactive</span>
+    </div>
+  </div>
+
+  <!-- Text Color Examples Section -->
+  <div class="app-card-sm w-full max-w-4xl">
+    <h2 class="app-title-secondary mb-6 text-center">Text Color Examples</h2>
+    
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-center">
+      <div>
+        <p class="text-brand-primary font-medium">Brand Primary</p>
+        <code class="text-xs">.text-brand-primary</code>
+      </div>
+      <div>
+        <p class="text-brand-orange font-medium">Brand Orange</p>
+        <code class="text-xs">.text-brand-orange</code>
+      </div>
+      <div>
+        <p class="text-muted font-medium">Muted Text</p>
+        <code class="text-xs">.text-muted</code>
+      </div>
+      <div>
+        <p class="text-success font-medium">Success</p>
+        <code class="text-xs">.text-success</code>
+      </div>
+      <div>
+        <p class="text-warning font-medium">Warning</p>
+        <code class="text-xs">.text-warning</code>
+      </div>
+      <div>
+        <p class="text-danger font-medium">Danger</p>
+        <code class="text-xs">.text-danger</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- List Examples Section -->
+  <div class="app-card-sm w-full max-w-4xl">
+    <h2 class="app-title-secondary mb-6 text-center">List Examples</h2>
+    
+    <div class="space-y-3">
+      <div class="list-item">
+        <span class="app-text-brand font-medium">List Item 1</span>
+        <span class="badge-active">Active</span>
+      </div>
+      
+      <div class="list-item">
+        <span class="app-text-brand font-medium">List Item 2</span>
+        <span class="badge-pending">Pending</span>
+      </div>
+      
+      <div class="list-item cursor-pointer">
+        <span class="app-text-brand font-medium">Clickable List Item 3</span>
+        <span class="badge-inactive">Inactive</span>
+      </div>
+    </div>
+  </div>
+
+</div>

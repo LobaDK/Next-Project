@@ -1,0 +1,188 @@
+<!-- Table Examples Page -->
+<div class="center-content w-full min-h-full section-spacing p-4">
+  
+  <!-- Main Title Card -->
+  <div class="app-card center-content">
+    <h1 class="app-title-primary mb-4">{{ title }}</h1>
+    <p class="app-text-muted text-lg">
+      Examples of tables using our design system CSS classes.
+    </p>
+  </div>
+
+  <!-- Full Featured Table -->
+  <div class="app-card w-full max-w-7xl">
+    <h2 class="app-title-secondary mb-6">User Management Table</h2>
+    
+    <div class="table-container">
+      <table class="data-table">
+        <thead class="table-header">
+          <tr>
+            <th class="table-th">ID</th>
+            <th class="table-th">Name</th>
+            <th class="table-th">Email</th>
+            <th class="table-th">Role</th>
+            <th class="table-th">Status</th>
+            <th class="table-th">Last Login</th>
+            <th class="table-th">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="table-body">
+          @for (item of tableData; track item.id) {
+            <tr class="table-row">
+              <td class="table-td">{{ item.id }}</td>
+              <td class="table-td font-medium">{{ item.name }}</td>
+              <td class="table-td app-text-muted">{{ item.email }}</td>
+              <td class="table-td">
+                <span class="text-brand-primary font-medium">{{ item.role }}</span>
+              </td>
+              <td class="table-td">
+                <span [class]="getStatusBadgeClass(item.status)">
+                  {{ item.status }}
+                </span>
+              </td>
+              <td class="table-td app-text-muted text-sm">{{ item.lastLogin }}</td>
+              <td class="table-td">
+                <div class="flex gap-2">
+                  <button 
+                    class="btn-sm btn-secondary" 
+                    (click)="onEdit(item)">
+                    Edit
+                  </button>
+                  <button 
+                    class="btn-sm btn-danger" 
+                    (click)="onDelete(item)">
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Simple Table -->
+  <div class="app-card-sm w-full max-w-4xl">
+    <h2 class="app-title-secondary mb-6">Simple Product Table</h2>
+    
+    <div class="table-container">
+      <table class="data-table table-simple">
+        <thead class="table-header">
+          <tr>
+            <th class="table-th">Product</th>
+            <th class="table-th">Price</th>
+            <th class="table-th">Stock</th>
+          </tr>
+        </thead>
+        <tbody class="table-body">
+          @for (item of simpleData; track $index) {
+            <tr class="table-row">
+              <td class="table-td font-medium">{{ item.product }}</td>
+              <td class="table-td text-brand-orange font-semibold">{{ item.price }}</td>
+              <td class="table-td app-text-muted">{{ item.stock }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Responsive Card Table -->
+  <div class="app-card-sm w-full max-w-5xl">
+    <h2 class="app-title-secondary mb-6">Mobile-Friendly Card Table</h2>
+    
+    <!-- Desktop Table -->
+    <div class="hidden md:block table-container">
+      <table class="data-table">
+        <thead class="table-header">
+          <tr>
+            <th class="table-th">User</th>
+            <th class="table-th">Role</th>
+            <th class="table-th">Status</th>
+            <th class="table-th">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="table-body">
+          @for (item of tableData.slice(0,3); track item.id) {
+            <tr class="table-row">
+              <td class="table-td">
+                <div>
+                  <div class="font-medium">{{ item.name }}</div>
+                  <div class="app-text-muted text-sm">{{ item.email }}</div>
+                </div>
+              </td>
+              <td class="table-td text-brand-primary">{{ item.role }}</td>
+              <td class="table-td">
+                <span [class]="getStatusBadgeClass(item.status)">{{ item.status }}</span>
+              </td>
+              <td class="table-td">
+                <button class="btn-sm btn-primary">View</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mobile Cards -->
+    <div class="md:hidden space-y-4">
+      @for (item of tableData.slice(0,3); track item.id) {
+        <div class="app-card-compact">
+          <div class="flex justify-between items-start mb-2">
+            <div>
+              <div class="font-medium text-brand-primary">{{ item.name }}</div>
+              <div class="app-text-muted text-sm">{{ item.email }}</div>
+            </div>
+            <span [class]="getStatusBadgeClass(item.status)">{{ item.status }}</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-sm app-text-muted">{{ item.role }}</span>
+            <button class="btn-sm btn-primary">View</button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Table with Pagination -->
+  <div class="app-card w-full max-w-6xl">
+    <h2 class="app-title-secondary mb-6">Table with Pagination</h2>
+    
+    <div class="table-container">
+      <table class="data-table">
+        <thead class="table-header">
+          <tr>
+            <th class="table-th">Name</th>
+            <th class="table-th">Email</th>
+            <th class="table-th">Status</th>
+          </tr>
+        </thead>
+        <tbody class="table-body">
+          @for (item of tableData; track item.id) {
+            <tr class="table-row">
+              <td class="table-td font-medium">{{ item.name }}</td>
+              <td class="table-td app-text-muted">{{ item.email }}</td>
+              <td class="table-td">
+                <span [class]="getStatusBadgeClass(item.status)">{{ item.status }}</span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
+      <div class="app-text-muted text-sm">
+        Showing 1 to 5 of 5 entries
+      </div>
+      <div class="flex gap-2">
+        <button class="btn-sm btn-secondary" disabled>Previous</button>
+        <button class="btn-sm btn-primary">1</button>
+        <button class="btn-sm btn-secondary" disabled>Next</button>
+      </div>
+    </div>
+  </div>
+
+</div>
