@@ -14,6 +14,7 @@ using API.Services.Authentication;
 using API.Utils;
 using QuestionnaireAPI.Services.Authentication;
 using QuestionnaireAPI.Services.User;
+using Microsoft.OpenApi.Models;
 
 const string settingsFile = "config.json";
 
@@ -117,9 +118,16 @@ builder.Services.AddSwaggerGen(options =>
         Description = "JWT Authorization header using the Bearer scheme."
     });
 
-    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
-        [new OpenApiSecuritySchemeReference("bearer", document)] = []
+        [new OpenApiSecurityScheme
+        {
+            Reference = new OpenApiReference
+            {
+                Type = ReferenceType.SecurityScheme,
+                Id = "bearer"
+            }
+        }] = []
     });
 });
 
