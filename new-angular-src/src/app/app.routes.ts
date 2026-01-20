@@ -6,8 +6,10 @@ import { Role } from './shared/models/user.model';
 import { TestComponent } from './features/test/test.component';
 import { TableExampleComponent } from './features/table-example/table-example.component';
 import { QuestionnaireResultsComponent } from './features/questionnaire-results/questionnaire-results.component';
+import { LoginComponent } from './features/login/login.component';
 
 export const routes: Routes = [
+  {path: 'login', component: LoginComponent},
   { path: '', redirectTo: '/test', pathMatch: 'full' },
   { path: 'test', component: TestComponent },
   { path: 'table-example', component: TableExampleComponent },

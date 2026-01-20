@@ -74,7 +74,7 @@ export class AuthService {
    * @returns Observable emitting API response or `false` on failure.
    */
   public login(userName: string, password: string): Observable<LoginResult> {
-    const url = `${this.baseUrl}/auth`;
+    const url = `${this.baseUrl}/auth/login`;
     const body = new URLSearchParams();
     body.set('username', userName);
     body.set('password', password);
