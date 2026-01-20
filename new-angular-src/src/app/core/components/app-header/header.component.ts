@@ -93,7 +93,6 @@ export class HeaderComponent {
     */
     [Role.DefaultUser]: [],
     [Role.Manager]: [
-      //{ name: 'Overview', route: '/hub' },
       { name: "Nothing Yet", route: "/templates" },
     ],
   };

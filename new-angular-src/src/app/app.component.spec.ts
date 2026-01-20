@@ -10,19 +10,6 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { jwtInterceptor } from './core/guards and interceptors/jwt.interceptor';
 import { AuthService } from './core/services/auth.service';
 import { environment } from '../environments/environment';
-import { MockAuthService } from './core/services/mock/mock.auth.service';
-import { HomeService } from './features/home/services/home.service';
-import { MockHomeService } from './features/home/services/mock.home.service';
-import { AnswerService } from './features/questionnaire/services/answer.service';
-import { MockAnswerService } from './features/questionnaire/services/mock.answer.service';
-import { TemplateService } from './features/template-manager/services/template.service';
-import { MockTemplateService } from './features/template-manager/services/mock-template.service';
-import { ActiveService } from './features/active-questionnaire-manager/services/active.service';
-import { MockActiveService } from './features/active-questionnaire-manager/services/mock.active.service';
-import { ResultService } from './features/result/services/result.service';
-import { MockResultService } from './features/result/services/mock.result.service';
-import { TeacherService } from './features/teacher-dashboard/services/teacher.service';
-import { MockTeacherService } from './features/teacher-dashboard/services/mock.teacher.service';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { I18nService } from './core/services/I18n.service';
@@ -40,16 +27,6 @@ describe('AppComponent (standalone)', () => {
 
         // animations
         provideAnimationsAsync(),
-
-        // swap real services for mocks so the test doesn't try to talk to backend/etc.
-        { provide: AuthService, useClass: MockAuthService },
-        { provide: HomeService, useClass: MockHomeService },
-        { provide: AnswerService, useClass: MockAnswerService },
-        { provide: TemplateService, useClass: MockTemplateService },
-        { provide: ActiveService, useClass: MockActiveService },
-        { provide: ResultService, useClass: MockResultService },
-        { provide: TeacherService, useClass: MockTeacherService },
-
         // i18n / translate
         provideTranslateService({
           lang: I18nService.getInitialLanguage(),

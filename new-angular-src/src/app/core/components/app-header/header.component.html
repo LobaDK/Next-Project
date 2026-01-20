@@ -43,7 +43,7 @@
           }
         </div>
         <div class="flex flex-col flex-1 gap-1">
-          <a [routerLink]="'/'" routerLinkActive="router-link-active" [routerLinkActiveOptions]="{ exact: true }"
+          <a [routerLink]="'/login'" routerLinkActive="router-link-active" [routerLinkActiveOptions]="{ exact: true }"
             class="rounded-md px-3 py-2 text-base font-medium text-primary_orange_light hover:bg-primary_orange_light hover:text-primary_dark_blue"
             (click)="toggleMenu()">
             {{ 'NAV.HOME' | translate : {} : 'Home' }}
@@ -81,7 +81,7 @@
          bg-primary_background_white/80 rounded-xl shadow-lg px-6 
          print:hidden border-2 border-primary_orange_1">
     <!-- Left -->
-    <a [routerLink]="'/'" class="justify-self-start">
+    <a [routerLink]="'/login'" class="justify-self-start">
       <img src="assets/images/next_logo.png" class="h-8 w-auto cursor-pointer" />
     </a>
     <!-- Center -->
