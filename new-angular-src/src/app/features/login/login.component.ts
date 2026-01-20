@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { AuthService } from '../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -32,7 +32,7 @@ const ERROR_I18N: Record<LoginErrorCode, string> = {
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   
@@ -47,6 +47,13 @@ export class LoginComponent {
   // Flag to control whether to show specific AD error messages or generic ones
   showSpecificErrors = environment.showSpecificErrors ?? false;
 
+  ngOnInit() {
+    // Redirect to home if already authenticated
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/home']);
+    }
+  }
+
   login() {
     if (this.isLoading) return;
     this.isLoading = true;
@@ -56,6 +63,7 @@ export class LoginComponent {
       finalize(() => this.isLoading = false)
     ).subscribe(res => {
       if (res.success) {
+        this.router.navigate(['/home']);
         return;
       }
       

@@ -76,7 +76,7 @@ public class AuthController : ControllerBase
     /// Simple ping endpoint for frontend health checks
     /// </summary>
     /// <returns>Pong response with timestamp</returns>
-    [HttpGet("ping")]
+    [HttpHead("ping")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
     public IActionResult Ping()

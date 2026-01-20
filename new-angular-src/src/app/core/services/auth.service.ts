@@ -186,9 +186,9 @@ public refreshToken() {
     );
   }
 
-  /** Performs a `HEAD /system/ping` to confirm server connectivity. */
+  /** Performs a `HEAD /auth/ping` to confirm server connectivity. */
   private checkServerConnection() {
-    return this.apiService.head<boolean>(`${this.baseUrl}/system/ping`).pipe(
+    return this.apiService.head<boolean>(`${this.baseUrl}/auth/ping`).pipe(
       map(() => true),
       catchError(() => of(false))
     );
@@ -315,18 +315,16 @@ private buildUserFromToken(): User | null {
 
 /**
  * Maps a string value to a Role enum.
- * Compares against Role enum values (which are string enums) in a case-insensitive manner.
+ * Compares against Role enum values in a case-sensitive manner.
  * @param value - The string value from the token to map to a Role enum
  * @returns The corresponding Role enum value, or null if no match found
  */
 private mapToRoleEnum(value: string | null): Role | null {
   if (!value) return null;
 
-  switch (value.toLowerCase()) {
-    case Role.Student:
-      return Role.Student;
-    case Role.Teacher:
-      return Role.Teacher;
+  switch (value) {
+    case Role.DefaultUser:
+      return Role.DefaultUser;
     case Role.Manager:
       return Role.Manager;
     default:

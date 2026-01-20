@@ -29,7 +29,6 @@ export interface User {
  */
 
 export enum Role {
-  Student = 'student',
-  Teacher = 'teacher',
-  Manager = 'manager',
+  DefaultUser = 'DefaultUser',
+  Manager = 'Manager',
 }

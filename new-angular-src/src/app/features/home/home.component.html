@@ -1,0 +1,18 @@
+<div class="flex items-center justify-center p-6">
+  <div class="app-card-sm">
+    <h1 class="app-title-primary mb-4">
+      Welcome home, {{ user()?.fullName || user()?.userName || 'User' }}!
+    </h1>
+    <p class="app-text-muted text-lg">
+      You have successfully logged in to the system.
+    </p>
+    
+    <div class="mt-6">
+      <button 
+        (click)="logout()" 
+        class="btn-secondary">
+        Logout
+      </button>
+    </div>
+  </div>
+</div>

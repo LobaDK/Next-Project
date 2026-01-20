@@ -7,9 +7,11 @@ import { TestComponent } from './features/test/test.component';
 import { TableExampleComponent } from './features/table-example/table-example.component';
 import { QuestionnaireResultsComponent } from './features/questionnaire-results/questionnaire-results.component';
 import { LoginComponent } from './features/login/login.component';
+import { HomeComponent } from './features/home/home.component';
 
 export const routes: Routes = [
   {path: 'login', component: LoginComponent},
+  {path: 'home', component: HomeComponent, canActivate: [authGuard]},
   { path: '', redirectTo: '/test', pathMatch: 'full' },
   { path: 'test', component: TestComponent },
   { path: 'table-example', component: TableExampleComponent },

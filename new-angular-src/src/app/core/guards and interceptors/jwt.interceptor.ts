@@ -13,7 +13,7 @@ function addAuth(req: any, token: string | null) {
 
 function isAuthOrRefreshUrl(url: string) {
   // Adjust to your exact endpoints if needed
-  return url.endsWith('/auth') || url.endsWith('/auth/refresh');
+  return url.endsWith('/auth/login') || url.endsWith('/auth/refresh');
 }
 
 /**
@@ -27,7 +27,7 @@ function isAuthOrRefreshUrl(url: string) {
  *
  * Notes:
  * - Uses a module-level `isRefreshingFlag` and a `refreshSubject` to coordinate concurrent requests.
- * - Never attaches tokens to `/auth` or `/auth/refresh`, and never tries to refresh for those calls.
+ * - Never attaches tokens to `/auth/login` or `/auth/refresh`, and never tries to refresh for those calls.
  *
  * @param req - The outgoing HTTP request.
  * @param next - The next interceptor/backend handler.

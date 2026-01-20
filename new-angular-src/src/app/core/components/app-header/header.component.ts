@@ -79,8 +79,9 @@ export class HeaderComponent {
     { name: "NAV.USER_GUIDE", route: "/user-guide" },
   ];
 
-  /** Role-specific navigation links (labels use translation keys). */
+
   navLinks: Record<Role, { name: string; route: string }[]> = {
+      /*
     [Role.Student]: [
       { name: "Nothing Yet", route: "/templates" },
     ],
@@ -88,6 +89,9 @@ export class HeaderComponent {
       { name: "Nothing Yet", route: "/templates" },
 
     ],
+
+    */
+    [Role.DefaultUser]: [],
     [Role.Manager]: [
       //{ name: 'Overview', route: '/hub' },
       { name: "Nothing Yet", route: "/templates" },
