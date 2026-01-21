@@ -5,6 +5,8 @@ using QuestionnaireAPI.DTO.Responses;
 using QuestionnaireAPI.DTO.Requests;
 using QuestionnaireAPI.Mappers;
 using System.Security.Claims;
+using QuestionnaireDatabaseV2.Enums;
+using QuestionnaireDatabaseV2.Entities;
 
 namespace QuestionnaireAPI.Services.User;
 
@@ -50,8 +52,9 @@ public class UserService : IUserService
     {
         try
         {
-            var user = await _dbContext.Users
+            UserDTO? user = await _dbContext.Users
                 .Where(u => u.Id == userId && !u.IsDeleted)
+                .Include(u => u.AuxiliaryRoles)
                 .Select(UserMapper.ToUserDtoExpression)
                 .FirstOrDefaultAsync();
 
@@ -162,7 +165,7 @@ public class UserService : IUserService
     /// <param name="query">The query to execute</param>
     /// <param name="request">The pagination request</param>
     /// <returns>List of user DTOs</returns>
-    private async Task<List<UserDTO>> ExecutePaginatedQuery(IQueryable<QuestionnaireDatabaseV2.Entities.User> query, UserSearchRequest request)
+    private static async Task<List<UserDTO>> ExecutePaginatedQuery(IQueryable<QuestionnaireDatabaseV2.Entities.User> query, UserSearchRequest request)
     {
         return await query
             .OrderBy(u => u.FullName)

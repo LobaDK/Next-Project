@@ -14,6 +14,16 @@ public enum UserRole
     DefaultUser,
 
     /// <summary>
+    /// Student role with permissions tailored for students.
+    /// </summary>
+    Student,
+
+    /// <summary>
+    /// Teacher role with permissions tailored for teachers.
+    /// </summary>
+    Teacher,
+
+    /// <summary>
     /// Manager with elevated permissions for managing assignments and viewing aggregated data.
     /// </summary>
     Manager

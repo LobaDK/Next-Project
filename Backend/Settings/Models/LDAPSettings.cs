@@ -33,6 +33,6 @@ public class LDAPSettings : Base, ILDAPSettings
     [Description("The LDAP CN (Common Name) of the group for Manager role. Users in this group will be assigned Manager role, all others will be DefaultUser.")]
     public string ManagerGroupCN { get; set; } = "Manager";
 
-    [Obsolete("This property is deprecated. Use ManagerGroupCN instead. Will be removed in future versions.")]
+    [Description("A mapping of application roles to their corresponding LDAP group CNs (Common Names).")]
     public Dictionary<string, string> RoleMappingsCN { get; set; } = new Dictionary<string, string>();
 }

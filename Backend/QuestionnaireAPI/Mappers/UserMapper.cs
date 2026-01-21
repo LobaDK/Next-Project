@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
-using QuestionnaireDatabaseV2;
 using QuestionnaireAPI.DTO.Responses.User;
+using QuestionnaireAPI.Services.User;
 
 namespace QuestionnaireAPI.Mappers;
 
@@ -20,6 +20,7 @@ public static class UserMapper
             UserName = u.UserName,
             FullName = u.FullName,
             Role = u.Role,
+            Permissions = IUserService.CalculateUserPermissions(u.Permissions, u.AuxiliaryRoles.ToList()),
             CreatedAt = u.CreatedAt
         };
 }

@@ -26,13 +26,4 @@ public partial class QuestionnaireDbContext : DbContext
         base.OnModelCreating(modelBuilder);
         ConfigureEntities(modelBuilder);
     }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        if (!optionsBuilder.IsConfigured)
-        {
-            // Default connection string for development - should be overridden in startup
-            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=QuestionnaireSystemV2;Trusted_Connection=true;MultipleActiveResultSets=true");
-        }
-    }
 }
