@@ -56,6 +56,24 @@ public class User
     public UserRole Role { get; set; } = UserRole.DefaultUser;
 
     /// <summary>
+    /// Gets or sets the auxiliary roles assigned to this user.
+    /// </summary>
+    /// <remarks>
+    /// Auxiliary roles provide additional permissions beyond the primary user role.
+    /// A user can have multiple auxiliary roles assigned.
+    /// </remarks>
+    public ICollection<AuxiliaryRole> AuxiliaryRoles { get; set; } = [];
+
+    /// <summary>
+    /// Gets or sets the effective permissions for this user.
+    /// </summary>
+    /// <remarks>
+    /// These are only the base permissions from the primary role. Auxiliary roles are
+    /// applied at runtime to compute the final permission set.
+    /// </remarks>
+    public required UserPermissions Permissions { get; set; }
+
+    /// <summary>
     /// Gets or sets when this user was first created in the system.
     /// </summary>
     public DateTime CreatedAt { get; set; }

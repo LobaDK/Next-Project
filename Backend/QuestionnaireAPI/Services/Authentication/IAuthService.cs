@@ -1,6 +1,7 @@
 using API.DTO.Responses.Auth;
 using QuestionnaireDatabaseV2.Entities;
 using API.Services;
+using QuestionnaireDatabaseV2.Enums;
 
 namespace QuestionnaireAPI.Services.Authentication;
 
@@ -23,14 +24,14 @@ public interface IAuthService
     /// <param name="userInfo">User information from LDAP</param>
     /// <param name="userRole">Determined user role</param>
     /// <returns>Database user entity</returns>
-    Task<QuestionnaireDatabaseV2.Entities.User?> GetOrCreateUserAsync(BasicUserInfoWithUserID userInfo, string userRole);
+    Task<QuestionnaireDatabaseV2.Entities.User?> GetOrCreateUserAsync(BasicUserInfoWithUserID userInfo, UserRole userRole);
 
     /// <summary>
     /// Determines user role from LDAP group membership
     /// </summary>
     /// <param name="userInfo">User information from LDAP</param>
     /// <returns>User role string</returns>
-    string DetermineUserRole(BasicUserInfoWithUserID userInfo);
+    UserRole DetermineUserRole(BasicUserInfoWithUserID userInfo);
 
     /// <summary>
     /// Gets user permissions based on role

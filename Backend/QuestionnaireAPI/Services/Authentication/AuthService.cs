@@ -6,6 +6,7 @@ using QuestionnaireDatabaseV2.Enums;
 using Settings.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using QuestionnaireAPI.Services.User;
 
 namespace QuestionnaireAPI.Services.Authentication;
 
@@ -69,7 +70,7 @@ public class AuthService : IAuthService
             }
 
             // Determine user role from LDAP groups or default
-            string userRole = DetermineUserRole(userInfo);
+            UserRole userRole = DetermineUserRole(userInfo);
 
             // Check if user exists in database, if not create it
             var dbUser = await GetOrCreateUserAsync(userInfo, userRole);
@@ -85,8 +86,8 @@ public class AuthService : IAuthService
                 Guid = dbUser.Id, // Use database user ID
                 Username = userInfo.Username,
                 Name = userInfo.Name,
-                Role = userRole,
-                Permissions = GetUserPermissions(userRole)
+                Role = userRole.ToString(),
+                Permissions = GetUserPermissions(userRole.ToString())
             };
 
             // Generate tokens
@@ -113,7 +114,7 @@ public class AuthService : IAuthService
         }
     }
 
-    public async Task<QuestionnaireDatabaseV2.Entities.User?> GetOrCreateUserAsync(BasicUserInfoWithUserID userInfo, string userRole)
+    public async Task<QuestionnaireDatabaseV2.Entities.User?> GetOrCreateUserAsync(BasicUserInfoWithUserID userInfo, UserRole userRole)
     {
         try
         {
@@ -137,7 +138,8 @@ public class AuthService : IAuthService
                 ActiveDirectoryGuid = activeDirectoryGuid,
                 UserName = userInfo.Username,
                 FullName = userInfo.Name,
-                Role = Enum.Parse<UserRole>(userRole),
+                Role = userRole,
+                Permissions = IUserService.ConvertRoleToUserPermissionsAsync(userRole),
                 CreatedAt = DateTime.UtcNow,
                 LastUpdatedAt = DateTime.UtcNow,
                 IsDeleted = false
@@ -156,29 +158,41 @@ public class AuthService : IAuthService
         }
     }
 
-    public string DetermineUserRole(BasicUserInfoWithUserID userInfo)
+    public UserRole DetermineUserRole(BasicUserInfoWithUserID userInfo)
     {
         try
         {
             // Check if user is in the Manager group
-            if (!string.IsNullOrEmpty(_ldapSettings?.ManagerGroupCN))
+            if (!string.IsNullOrEmpty(_ldapSettings.ManagerGroupCN))
             {
                 bool isManager = userInfo.MemberOf?.Any(group => 
                     group.Contains(_ldapSettings.ManagerGroupCN, StringComparison.OrdinalIgnoreCase)) == true;
 
                 if (isManager)
                 {
-                    return "Manager";
+                    return UserRole.Manager;
+                }
+            }
+
+            if (_ldapSettings.RoleMappingsCN.Count > 0)
+            {
+                foreach (var (role, groupCN) in _ldapSettings.RoleMappingsCN)
+                {
+                    if (userInfo.MemberOf?.Any(group => 
+                        group.Contains(groupCN, StringComparison.OrdinalIgnoreCase)) == true)
+                    {
+                        return Enum.Parse<UserRole>(role);
+                    }
                 }
             }
 
             // Default to DefaultUser if not in Manager group
-            return "DefaultUser";
+            return UserRole.DefaultUser;
         }
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Could not determine role for user {Username}, defaulting to DefaultUser", userInfo.Username);
-            return "DefaultUser";
+            return UserRole.DefaultUser;
         }
     }
 
