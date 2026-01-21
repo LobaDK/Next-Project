@@ -1,15 +1,28 @@
+export enum QuestionType {
+  Rating = "rating",
+  MatrixSingle = "matrix",
+  RadioGroup = "radiogroup",
+}
+
+export interface EditorBaseQuestion {
+  id: string;                 // stable question id
+  type: QuestionType;
+  prompt: string;
+
+  // purely editor:
+  expanded?: boolean;
+}
+
 export interface RatingOption {
   value: number;              // 1..N
+  description?: string;
   label: string;              // REQUIRED (your new rule)
 }
 
 
-export interface RatingQuestion {
-  id: string;
-  type: "rating";
-  prompt: string;
-
-  scale: RatingOption[];
+export interface RatingQuestion extends EditorBaseQuestion{
+    type: QuestionType.Rating;
+    scale: RatingOption[];
 }
 
 
@@ -18,32 +31,26 @@ export interface MatrixItem {
   label: string;              // displayed text
 }
 
-export interface SingleChoiceMatrixQuestion {
-  id: string;
-  type: "matrix_single";
-  prompt: string;
-
-  rows: MatrixItem[];
-  columns: MatrixItem[];
+export interface SingleChoiceMatrixQuestion extends EditorBaseQuestion {
+  type: QuestionType.MatrixSingle;
+  rows: string[];                 // row labels only
+  columns: string[];              // column labels only
 }
 
 
 export interface RadioOption {
-  value: string;              // stored answer value (stable)
+  value: string;              // displayed text
   label: string;              // displayed text
 }
 
 
-export interface RadioGroupQuestion {
-  id: string;                 // internal stable id (uuid or q1/q2)
-  type: "radiogroup";
-  prompt: string;
-
-  options: RadioOption[];
-
-  allowOtherComment: boolean; // checkbox: "Other / describe"
-  otherLabel?: string | null; // e.g. "Other" or "Other (describe)"
+export interface RadioGroupQuestion extends EditorBaseQuestion {
+  type: QuestionType.RadioGroup;
+  options: string[];              // just labels
+  allowOtherComment: boolean;
+  otherLabel?: string | null;
 }
+
 
 
 export type TemplateQuestion =

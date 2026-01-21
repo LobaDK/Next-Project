@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { QuestionComponent } from './question/question.component';
-import { TemplateQuestion } from './template-edit.model';
+import { QuestionType, TemplateQuestion } from './template-edit.model';
 
 @Component({
   selector: 'app-template-edit',
@@ -10,24 +10,20 @@ import { TemplateQuestion } from './template-edit.model';
   styleUrls: ['./template-edit.component.css'],
 })
 export class TemplateEditComponent {
-  expandedIndex: number | null = 1; // example: open question 2 by default
+  expandedIndex: number | null = null; // example: open question 2 by default
 
   questions: TemplateQuestion[] = [
     {
       id: 'q1',
-      type: 'radiogroup',
+      type: QuestionType.RadioGroup,
       prompt: 'What is your primary focus area?',
-      options: [
-        { value: 'a', label: 'Option A' },
-        { value: 'b', label: 'Option B' },
-        { value: 'c', label: 'Option C' },
-      ],
+      options: ['Option A', 'Option B', 'Option C'], // ✅ string[]
       allowOtherComment: true,
       otherLabel: 'Other (describe)',
     },
     {
       id: 'q2',
-      type: 'rating',
+      type: QuestionType.Rating,
       prompt: 'How would you rate the student’s overall performance?',
       scale: [
         { value: 1, label: 'Poor' },
@@ -39,18 +35,10 @@ export class TemplateEditComponent {
     },
     {
       id: 'q3',
-      type: 'matrix_single',
+      type: QuestionType.MatrixSingle,
       prompt: 'Evaluate the student’s skills',
-      rows: [
-        { value: 'r1', label: 'Indlæringsevne' },
-        { value: 'r2', label: 'Arbejdsindsats' },
-        { value: 'r3', label: 'Orden og omhyggelighed' },
-      ],
-      columns: [
-        { value: 'c1', label: 'Low' },
-        { value: 'c2', label: 'Medium' },
-        { value: 'c3', label: 'High' },
-      ],
+      rows: ['Indlæringsevne', 'Arbejdsindsats', 'Orden og omhyggelighed'],
+      columns: ['Low', 'Medium', 'High'],
     },
   ];
 

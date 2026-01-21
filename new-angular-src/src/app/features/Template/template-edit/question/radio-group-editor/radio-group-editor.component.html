@@ -1,0 +1,98 @@
+<div class="space-y-4" (click)="$event.stopPropagation()">
+
+  <!-- Prompt -->
+  <div>
+    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide">
+      Prompt
+    </label>
+    <input
+      class="w-full border rounded px-3 py-2"
+      [ngModel]="question.prompt"
+      (ngModelChange)="updatePrompt($event)"
+      placeholder="Enter question prompt"
+      type="text"
+    />
+  </div>
+
+  <!-- Options -->
+  <div>
+    <div class="flex items-center justify-between">
+      <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+        Options
+      </p>
+
+      <button
+        type="button"
+        class="btn-secondary btn-sm"
+        (click)="addOption(); $event.stopPropagation()"
+        [disabled]="!canAddOption"
+      >
+        + Add option
+      </button>
+    </div>
+
+    @if (!canAddOption) {
+      <p class="text-xs text-gray-500 mt-1">
+        Max 10 options reached
+      </p>
+    }
+
+    <div class="space-y-2 mt-2">
+      @for (opt of question.options; track $index; let i = $index) {
+        <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center border rounded p-2">
+
+          <div class="sm:col-span-11">
+            <label class="block text-xs text-gray-500">Label</label>
+            <input
+              class="w-full border rounded px-2 py-1"
+              [ngModel]="opt"
+              (ngModelChange)="updateOption(i, $event)"
+              type="text"
+            />
+          </div>
+
+          <div class="sm:col-span-1 flex justify-end">
+            <button
+              type="button"
+              class="btn-danger btn-sm"
+              (click)="removeOption(i); $event.stopPropagation()"
+              [disabled]="question.options.length <= 1"
+              title="Remove option"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Other/comment -->
+  <div class="border rounded p-3 space-y-2">
+    <div class="flex items-center gap-2">
+      <input
+        type="checkbox"
+        [ngModel]="question.allowOtherComment"
+        (ngModelChange)="toggleOther($event)"
+        (click)="$event.stopPropagation()"
+        id="allowOther"
+      />
+      <label for="allowOther" class="text-sm text-gray-700">
+        Allow "Other" comment
+      </label>
+    </div>
+
+    @if (question.allowOtherComment) {
+      <div>
+        <label class="block text-xs text-gray-500">Other label</label>
+        <input
+          class="w-full border rounded px-2 py-1"
+          [ngModel]="question.otherLabel"
+          (ngModelChange)="updateOtherLabel($event)"
+          type="text"
+        />
+      </div>
+    }
+  </div>
+
+</div>

@@ -51,12 +51,11 @@
       <div class="space-y-4">
         @for (q of questions; track q.id; let i = $index) {
           <app-question
-            [item]="q"
+            [(item)]="questions[i]"
             [index]="i"
             [expanded]="expandedIndex === i"
             (toggle)="toggleExpanded(i)"
             (delete)="deleteQuestion(i)"
-            (edit)="editQuestion(i)"
           />
         }
       </div>

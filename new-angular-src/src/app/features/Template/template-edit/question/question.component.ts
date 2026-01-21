@@ -1,22 +1,24 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { TemplateQuestion } from '../template-edit.model';
+import { RadioGroupQuestion, TemplateQuestion } from '../template-edit.model';
+import { RadioGroupEditorComponent } from './radio-group-editor/radio-group-editor.component';
+import { MatrixEditorComponent } from './matrix-editor/matrix-editor.component';
 
 @Component({
   selector: 'app-question',
-  imports: [],
+  standalone: true,
+  imports: [RadioGroupEditorComponent, MatrixEditorComponent],
   templateUrl: './question.component.html',
   styleUrls: ['./question.component.css'],
 })
 export class QuestionComponent {
   @Input({ required: true }) item!: TemplateQuestion;
-  @Input() index = 0;
+  @Output() itemChange = new EventEmitter<TemplateQuestion>();
 
+  @Input() index = 0;
   @Input() expanded = false;
 
   @Output() toggle = new EventEmitter<void>();
   @Output() delete = new EventEmitter<void>();
-  @Output() edit = new EventEmitter<void>();
-
   onToggle() {
     this.toggle.emit();
   }
@@ -26,22 +28,22 @@ export class QuestionComponent {
     this.delete.emit();
   }
 
-  onEdit(event: MouseEvent) {
-    event.stopPropagation();
-    this.edit.emit();
+
+  // ✅ When editor updates radiogroup, push it into itemChange
+  onRadioGroupChange(updated: RadioGroupQuestion) {
+    this.itemChange.emit(updated);
   }
 
-  // UI helper
   get typeLabel(): string {
     switch (this.item.type) {
-      case "radiogroup":
-        return "Radio group";
-      case "matrix_single":
-        return "Single choice matrix";
-      case "rating":
-        return "Rating";
+      case 'radiogroup':
+        return 'Radio group';
+      case 'matrix':
+        return 'Single choice matrix';
+      case 'rating':
+        return 'Rating';
       default:
-        return "Unknown";
+        return 'Unknown';
     }
   }
 }
