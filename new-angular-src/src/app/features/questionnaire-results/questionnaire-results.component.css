@@ -32,8 +32,9 @@
 }
 
 .chart-bar {
-  @apply bg-primary_orange_1 h-full rounded-full transition-all duration-500;
+  @apply bg-brand-orange h-full rounded-full transition-all duration-500;
 }
+
 
 .chart-stats {
   @apply text-sm text-gray-600 mb-2;
@@ -74,8 +75,9 @@
 }
 
 .table-rating-value {
-  @apply font-semibold text-primary_orange_1 text-base;
+  @apply font-semibold text-brand-orange text-base;
 }
+
 
 .table-rating-max {
   @apply text-xs text-gray-500;
@@ -150,7 +152,7 @@
 }
 
 .loading-spinner {
-  @apply animate-spin rounded-full h-8 w-8 border-b-2 border-primary_orange_1;
+  @apply animate-spin rounded-full h-8 w-8 border-b-2 border-brand-orange;
 }
 
 /* Accessibility improvements */
@@ -164,7 +166,7 @@
 }
 
 button:focus {
-  @apply outline-none ring-2 ring-offset-2 ring-primary_orange_1;
+  @apply outline-none ring-2 ring-offset-2 ring-brand-orange;
 }
 
 /* Hover effects for better UX */

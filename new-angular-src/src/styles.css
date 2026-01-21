@@ -7,146 +7,109 @@
   backdrop-filter: blur(6px);
 }
 
-/* Custom gradient background for the main app container */
-.app-gradient-background {
-  @apply bg-gradient-to-br from-primary_dark_blue via-primary_orange_darker to-primary_dark_blue;
-}
+@layer components {
+  /* Custom gradient background for the main app container */
+  .app-gradient-background {
+    @apply bg-gradient-to-br from-brand-navy via-brand-orangeDarker to-brand-navy;
+  }
 
-/* General card component inspired by template manager */
-.app-card {
-  @apply flex flex-col w-full max-w-7xl bg-primary_background_white/80 shadow-lg rounded-xl border-2 border-primary_orange_1 p-4 sm:p-10 overflow-hidden;
-}
+  /* General card component inspired by template manager */
+  .app-card {
+    @apply flex flex-col w-full max-w-7xl bg-bg-white/80 shadow-lg rounded-xl border-2 border-brand-orange p-4 sm:p-10 overflow-hidden;
+  }
 
-/* Smaller card variant */
-.app-card-sm {
-  @apply flex flex-col w-full max-w-4xl bg-primary_background_white/80 shadow-md rounded-lg border border-primary_orange_1 p-3 sm:p-6 overflow-hidden;
-}
+  /* Smaller card variant */
+  .app-card-sm {
+    @apply flex flex-col w-full max-w-4xl bg-bg-white/80 shadow-md rounded-lg border border-brand-orange p-3 sm:p-6 overflow-hidden;
+  }
 
-/* Compact card variant */
-.app-card-compact {
-  @apply flex flex-col w-full bg-primary_background_white/80 shadow-sm rounded-lg border border-primary_orange_1 p-3 overflow-hidden;
-}
+  /* Compact card variant */
+  .app-card-compact {
+    @apply flex flex-col w-full bg-bg-white/80 shadow-sm rounded-lg border border-brand-orange p-3 overflow-hidden;
+  }
 
-/* Typography Classes */
-.app-title-primary {
-  @apply text-3xl sm:text-4xl font-bold text-primary_dark_blue;
-}
+  /* Typography Classes */
+  .app-title-primary {
+    @apply text-3xl sm:text-4xl font-bold text-brand-navy;
+  }
 
-.app-title-secondary {
-  @apply text-xl sm:text-2xl font-semibold text-primary_dark_blue;
-}
+  .app-title-secondary {
+    @apply text-xl sm:text-2xl font-semibold text-brand-navy;
+  }
 
-.app-text-muted {
-  @apply text-gray-600;
-}
 
-.app-text-brand {
-  @apply text-primary_dark_blue;
-}
+  /* Button Variants */
+  .btn-base {
+    @apply font-medium py-2 px-4 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors text-center;
+  }
 
-/* Button Variants */
-.btn-base {
-  @apply font-medium py-2 px-4 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors text-center;
-}
+  .btn-primary {
+    @apply btn-base text-white bg-brand-orange hover:bg-brand-orangeLight focus:ring-brand-orange;
+  }
 
-.btn-primary {
-  @apply btn-base text-white bg-primary_orange_1 hover:bg-primary_orange_light focus:ring-primary_orange_1;
-}
+  .btn-secondary {
+    @apply btn-base text-white bg-brand-navy hover:bg-blue-700 focus:ring-brand-navy;
+  }
 
-.btn-secondary {
-  @apply btn-base text-white bg-primary_dark_blue hover:bg-blue-700 focus:ring-primary_dark_blue;
-}
+  .btn-success {
+    @apply btn-base text-white bg-green-500 hover:bg-green-600 focus:ring-green-500;
+  }
 
-.btn-success {
-  @apply btn-base text-white bg-green-500 hover:bg-green-600 focus:ring-green-500;
-}
+  .btn-danger {
+    @apply btn-base text-white bg-red-500 hover:bg-red-600 focus:ring-red-500;
+  }
 
-.btn-danger {
-  @apply btn-base text-white bg-red-500 hover:bg-red-600 focus:ring-red-500;
-}
+  /* Small Button Variant */
+  .btn-sm {
+    @apply px-3 py-1 text-xs font-medium rounded transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1;
+  }
 
-/* Small Button Variant */
-.btn-sm {
-  @apply px-3 py-1 text-xs font-medium rounded transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1;
-}
+  /* Form Input Classes */
+  .input-field {
+    @apply w-full px-4 py-2 border border-brand-orange rounded-lg
+      focus:ring-brand-orange focus:border-brand-orange
+      bg-bg-white/80 text-sm;
+  }
 
-/* Form Input Classes */
-.input-field {
-  @apply w-full px-4 py-2 border border-primary_orange_1 rounded-lg focus:ring-primary_orange_1 focus:border-primary_orange_1 bg-primary_background_white/80 text-sm;
-}
+  .textarea-field {
+    @apply input-field resize-y;
+  }
 
-.select-field {
-  @apply input-field;
-}
+  .form-label {
+    @apply block text-brand-navy font-medium mb-2 text-sm sm:text-base;
+  }
 
-.textarea-field {
-  @apply input-field resize-y;
-}
-
-.form-label {
-  @apply block text-primary_dark_blue font-medium mb-2 text-sm sm:text-base;
-}
-
-/* Status Badge Classes */
-.badge-base {
+  /* Status Badge Classes */
+.badge {
   @apply px-2 py-0.5 rounded text-xs font-semibold;
 }
 
-.badge-active {
-  @apply badge-base bg-green-100 text-green-800;
+.badge-active { @apply badge bg-green-100 text-green-800; }
+.badge-pending { @apply badge bg-yellow-100 text-yellow-800; }
+.badge-inactive { @apply badge bg-red-100 text-red-800; }
+
+  /* List Item Classes */
+  .list-item {
+    @apply w-full flex flex-col sm:flex-row justify-between items-start sm:items-center
+      gap-3 p-4 bg-gray-50 rounded-lg border border-brand-orange shadow-sm
+      hover:bg-bg-hover transition-colors;
+  }
 }
 
-.badge-pending {
-  @apply badge-base bg-yellow-100 text-yellow-800;
-}
+@layer utilities {
+  .section-spacing {
+    @apply space-y-6 sm:space-y-8;
+  }
 
-.badge-inactive {
-  @apply badge-base bg-red-100 text-red-800;
-}
+  .grid-cards {
+    @apply grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6;
+  }
 
-/* Layout Utilities */
-.section-spacing {
-  @apply space-y-6 sm:space-y-8;
-}
+  .grid-buttons {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4;
+  }
 
-.grid-cards {
-  @apply grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6;
-}
-
-.grid-buttons {
-  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4;
-}
-
-.center-content {
-  @apply flex flex-col items-center justify-center text-center;
-}
-
-/* Text Color Utilities */
-.text-brand-primary {
-  @apply text-primary_dark_blue;
-}
-
-.text-brand-orange {
-  @apply text-primary_orange_1;
-}
-
-.text-muted {
-  @apply text-gray-600;
-}
-
-.text-success {
-  @apply text-green-600;
-}
-
-.text-warning {
-  @apply text-yellow-600;
-}
-
-.text-danger {
-  @apply text-red-600;
-}
-
-/* List Item Classes */
-.list-item {
-  @apply w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-4 bg-gray-50 rounded-lg border border-primary_orange_1 shadow-sm hover:bg-secondary_background_hover transition-colors;
+  .center-content {
+    @apply flex flex-col items-center justify-center text-center;
+  }
 }
