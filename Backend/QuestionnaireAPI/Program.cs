@@ -15,6 +15,9 @@ using API.Utils;
 using QuestionnaireAPI.Services.Authentication;
 using QuestionnaireAPI.Services.User;
 using Microsoft.OpenApi.Models;
+using QuestionnaireAPI.Interfaces;
+using QuestionnaireAPI.Services;
+using QuestionnaireDatabaseV2.Migrations;
 
 const string settingsFile = "config.json";
 
@@ -70,6 +73,7 @@ else
     builder.Services.AddScoped<IAuthenticationBridge, ActiveDirectoryAuthenticationBridge>();
 }
 
+builder.Services.AddSingleton<IDatabaseAvailabilityService, DatabaseAvailabilityService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -195,7 +199,11 @@ builder.Services.AddAuthorizationBuilder()
     .AddPolicy("DefaultUserOnly", policy => policy.RequireRole("DefaultUser"))
     .AddPolicy("ManagerAndDefaultUserOnly", policy => policy.RequireRole("Manager", "DefaultUser"));
 
+builder.Services.AddHealthChecks().AddDbContextCheck<QuestionnaireDbContext>("database");
+
 var app = builder.Build();
+
+app.UseHealthChecks("/api/health");
 
 app.UseCors("AllowedOrigins");
 
@@ -213,7 +221,17 @@ using (IServiceScope scope = app.Services.CreateScope())
         {
             if (context.Database.CanConnect())
             {
-                context.Database.Migrate();
+                try
+                {
+                    context.Database.Migrate();
+                }
+                catch (InvalidOperationException ex)
+                {
+                    logger.LogError(ex, "Database migration failed.");
+                    logger.LogWarning("Database migration failed, marking database as unavailable.");
+
+                    services.GetRequiredService<IDatabaseAvailabilityService>().SetDatabaseAvailable(false);
+                }
                 break;
             }
             else if (!databaseCreator.Exists())
