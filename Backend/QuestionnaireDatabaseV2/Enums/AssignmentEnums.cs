@@ -75,5 +75,27 @@ public enum ParticipantPermissions
     /// <summary>
     /// Read-only access: Can view own and others' results but cannot answer.
     /// </summary>
-    ViewOnlyAll = CanViewOwnResults | CanViewOthersResults
+    ViewOnlyAll = CanViewOwnResults | CanViewOthersResults,
+
+    /// <summary>
+    /// Permission to view the list of participants in the assignment.
+    /// </summary>
+    CanViewParticipants = 8
+}
+
+/// <summary>
+/// Represents the type of assignment.
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum AssignmentType
+{
+    /// <summary>
+    /// Standard assignment with identified participants.
+    /// </summary>
+    Standard,
+
+    /// <summary>
+    /// Anonymous assignment where participants are not identified.
+    /// </summary>
+    Anonymous
 }

@@ -27,7 +27,7 @@ public class Assignment
     /// </summary>
     [Required]
     [MaxLength(200)]
-    public string Title { get; set; } = string.Empty;
+    public required string Title { get; set; }
 
     /// <summary>
     /// Gets or sets the description of this assignment.
@@ -42,10 +42,12 @@ public class Assignment
     public Guid QuestionnaireId { get; set; }
 
     /// <summary>
-    /// Gets or sets whether managers can view results with anonymized participant identities.
-    /// When true, managers see results without participant names or personal identifiers.
+    /// Gets or sets the type of this assignment.
     /// </summary>
-    public bool AllowAnonymizedManagerViewing { get; set; } = false;
+    /// <remarks>
+    /// Determines the behavior and rules applied to this assignment.
+    /// </remarks>
+    public required AssignmentType Type { get; set; }
 
     /// <summary>
     /// Gets or sets the current status of this assignment.
@@ -58,7 +60,7 @@ public class Assignment
     /// </summary>
     [Required]
     [ForeignKey(nameof(CreatedByUser))]
-    public Guid CreatedByUserId { get; set; }
+    public required Guid CreatedByUserId { get; set; }
 
     /// <summary>
     /// Gets or sets when this assignment was created.
