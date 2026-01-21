@@ -20,7 +20,7 @@ public class DesignTimeFactory : IDesignTimeDbContextFactory<QuestionnaireDbCont
     public QuestionnaireDbContext CreateDbContext(string[] args)
     {
         var configuration = new ConfigurationBuilder()
-            .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../API"))
+            .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../QuestionnaireAPI"))
             .AddJsonFile("config.json")
             .Build();
 

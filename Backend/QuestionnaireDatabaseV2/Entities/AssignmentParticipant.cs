@@ -27,7 +27,6 @@ public class AssignmentParticipant
     /// Gets or sets the permissions this participant has for the assignment.
     /// Determines what actions they can perform (answer, view own results, view others' results).
     /// </summary>
-    [Column(TypeName = "nvarchar(100)")]
     public ParticipantPermissions Permissions { get; set; } = ParticipantPermissions.CanAnswerAndViewOwn;
 
     /// <summary>
