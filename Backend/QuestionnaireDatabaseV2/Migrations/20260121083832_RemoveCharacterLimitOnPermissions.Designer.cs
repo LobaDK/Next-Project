@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuestionnaireDatabaseV2;
 
@@ -11,9 +12,11 @@ using QuestionnaireDatabaseV2;
 namespace QuestionnaireDatabaseV2.Migrations
 {
     [DbContext(typeof(QuestionnaireDbContext))]
-    partial class QuestionnaireDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260121083832_RemoveCharacterLimitOnPermissions")]
+    partial class RemoveCharacterLimitOnPermissions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
