@@ -1,0 +1,110 @@
+<div class="list-item cursor-pointer" (click)="onToggle()">
+  <div class="w-full flex flex-col gap-3">
+
+    <!-- Top row always visible -->
+    <div class="flex items-start justify-between gap-4 w-full">
+      <div>
+        <p class="text-brand-navy font-semibold">
+          Question {{ index + 1 }}
+        </p>
+        <p class="text-gray-600 text-sm">
+          {{ item.prompt || "Untitled question" }}
+        </p>
+      </div>
+
+      <button type="button" class="btn-danger btn-sm" (click)="onDelete($event)">
+        Delete
+      </button>
+    </div>
+
+    <!-- Expanded content -->
+    @if (expanded) {
+      <div
+        class="bg-bg-white/60 border border-brand-orange/30 rounded-lg p-4 space-y-3"
+      >
+        <!-- Type -->
+        <div>
+          <p class="text-gray-500 text-xs font-semibold uppercase tracking-wide">
+            Type
+          </p>
+          <p class="text-brand-navy font-medium">
+            {{ typeLabel }}
+          </p>
+        </div>
+
+        <!-- Radio group details -->
+        @if (item.type === 'radiogroup') {
+          <div>
+            <p class="text-gray-500 text-xs font-semibold uppercase tracking-wide">
+              Options
+            </p>
+
+            <ul class="list-disc list-inside text-gray-700 text-sm space-y-1">
+              @for (opt of item.options; track opt.value) {
+                <li>{{ opt.label }}</li>
+              }
+            </ul>
+
+            <div class="mt-3">
+              @if (item.allowOtherComment) {
+                <span class="badge-active">Other/comment enabled</span>
+              } @else {
+                <span class="badge-inactive">Other/comment disabled</span>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Rating details -->
+        @if (item.type === 'rating') {
+          <div>
+            <p class="text-gray-500 text-xs font-semibold uppercase tracking-wide">
+              Scale
+            </p>
+
+            <ul class="list-disc list-inside text-gray-700 text-sm space-y-1">
+              @for (s of item.scale; track s.value) {
+                <li>{{ s.value }} - {{ s.label }}</li>
+              }
+            </ul>
+          </div>
+        }
+
+        <!-- Matrix details -->
+        @if (item.type === 'matrix_single') {
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <p class="text-gray-500 text-xs font-semibold uppercase tracking-wide">
+                Rows
+              </p>
+              <ul class="list-disc list-inside text-gray-700 text-sm space-y-1">
+                @for (r of item.rows; track r.value) {
+                  <li>{{ r.label }}</li>
+                }
+              </ul>
+            </div>
+
+            <div>
+              <p class="text-gray-500 text-xs font-semibold uppercase tracking-wide">
+                Columns
+              </p>
+              <ul class="list-disc list-inside text-gray-700 text-sm space-y-1">
+                @for (c of item.columns; track c.value) {
+                  <li>{{ c.label }}</li>
+                }
+              </ul>
+            </div>
+          </div>
+        }
+
+        <!-- Edit button -->
+        <div class="flex justify-end">
+          <button type="button" class="btn-secondary btn-sm" (click)="onEdit($event)">
+            Edit
+          </button>
+        </div>
+      </div>
+    }
+
+  </div>
+</div>

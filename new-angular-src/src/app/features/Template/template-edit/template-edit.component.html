@@ -1,0 +1,66 @@
+<div class="app-page section-spacing">
+  <div class="app-card">
+
+    <h1 class="app-title-primary mb-6">Template Details</h1>
+
+    <!-- Name -->
+    <div class="mb-6">
+      <label class="form-label">Name</label>
+      <input
+        class="input-field"
+        type="text"
+        placeholder="Enter template name..."
+      />
+    </div>
+
+    <!-- Description + Finalize -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
+      <div>
+        <label class="form-label">Description</label>
+        <textarea
+          class="textarea-field"
+          rows="4"
+          placeholder="Enter template description..."
+        ></textarea>
+      </div>
+
+      <div class="flex sm:justify-end">
+        <button
+          type="button"
+          class="btn btn-lg w-full sm:w-auto mt-6 sm:mt-7 bg-purple-600 hover:bg-purple-700 focus:ring-purple-500 text-white"
+        >
+          Finalize
+        </button>
+      </div>
+    </div>
+
+    <!-- Questions -->
+    <div class="mt-10">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div>
+          <h2 class="app-title-secondary mb-1">Questions</h2>
+          <p class="text-gray-600 text-sm">Manage your questions below.</p>
+        </div>
+
+        <button type="button" class="btn-primary w-full sm:w-auto">
+          + Add question
+        </button>
+      </div>
+
+      <!-- Question List -->
+      <div class="space-y-4">
+        @for (q of questions; track q.id; let i = $index) {
+          <app-question
+            [item]="q"
+            [index]="i"
+            [expanded]="expandedIndex === i"
+            (toggle)="toggleExpanded(i)"
+            (delete)="deleteQuestion(i)"
+            (edit)="editQuestion(i)"
+          />
+        }
+      </div>
+    </div>
+
+  </div>
+</div>
