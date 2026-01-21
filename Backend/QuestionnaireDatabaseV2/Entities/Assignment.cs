@@ -54,7 +54,6 @@ public class Assignment
     public AssignmentStatus Status { get; set; } = AssignmentStatus.Draft;
 
     /// <summary>
-
     /// Gets or sets who created this assignment.
     /// </summary>
     [Required]
@@ -78,7 +77,6 @@ public class Assignment
     public virtual Questionnaire Questionnaire { get; set; } = null!;
 
     /// <summary>
-
     /// Gets or sets the user who created this assignment.
     /// </summary>
     public virtual User CreatedByUser { get; set; } = null!;
