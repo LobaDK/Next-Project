@@ -6,6 +6,10 @@ public class SystemSettings : Base, ISystemSettings
     [JsonIgnore]
     public override string Key { get; } = "System";
 
+    public string AdminUsername { get; set; } = "admin";
+
+    public string AdminPassword { get; set; } = RandomNumberGenerator.GetString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".ToCharArray(), 10);
+
     [Description("The IP address that the API should listen on for incoming requests.")]
     public string ListenIP { get; set; } = "localhost";
 
