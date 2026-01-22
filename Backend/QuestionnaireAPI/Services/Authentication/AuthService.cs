@@ -7,36 +7,39 @@ using Settings.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using QuestionnaireAPI.Services.User;
+using QuestionnaireAPI.Interfaces;
+using QuestionnaireAPI.Exceptions;
+using System.Security.Cryptography;
 
 namespace QuestionnaireAPI.Services.Authentication;
 
 /// <summary>
 /// Service for handling authentication operations and user management
 /// </summary>
-public class AuthService : IAuthService
+public class AuthService(
+    IAuthenticationBridge authenticationBridge,
+    IJwtService jwtService,
+    ILogger<AuthService> logger,
+    IConfiguration configuration,
+    QuestionnaireDbContext dbContext,
+    IMaintenanceMonitor maintenanceMonitor) : IAuthService
 {
-    private readonly IAuthenticationBridge _authenticationBridge;
-    private readonly IJwtService _jwtService;
-    private readonly ILogger<AuthService> _logger;
-    private readonly LDAPSettings _ldapSettings;
-    private readonly QuestionnaireDbContext _dbContext;
-
-    public AuthService(
-        IAuthenticationBridge authenticationBridge,
-        IJwtService jwtService,
-        ILogger<AuthService> logger,
-        IConfiguration configuration,
-        QuestionnaireDbContext dbContext)
-    {
-        _authenticationBridge = authenticationBridge;
-        _jwtService = jwtService;
-        _logger = logger;
-        _ldapSettings = ConfigurationBinderService.Bind<LDAPSettings>(configuration);
-        _dbContext = dbContext;
-    }
+    private readonly IAuthenticationBridge _authenticationBridge = authenticationBridge;
+    private readonly IJwtService _jwtService = jwtService;
+    private readonly ILogger<AuthService> _logger = logger;
+    private readonly LDAPSettings _ldapSettings = ConfigurationBinderService.Bind<LDAPSettings>(configuration);
+    private readonly SystemSettings _systemSettings = ConfigurationBinderService.Bind<SystemSettings>(configuration);
+    private readonly QuestionnaireDbContext _dbContext = dbContext;
+    private readonly IMaintenanceMonitor _maintenanceMonitor = maintenanceMonitor;
 
     public async Task<AuthenticationResponse?> AuthenticateAsync(string username, string password)
     {
+        // Check maintenance mode FIRST
+        if (_maintenanceMonitor.IsMaintenanceEnabled)
+        {
+            return await AuthenticateMaintenanceModeAsync(username, password);
+        }
+
         try
         {
             // Authenticate with LDAP/AD
@@ -114,6 +117,47 @@ public class AuthService : IAuthService
         }
     }
 
+    private async Task<AuthenticationResponse?> AuthenticateMaintenanceModeAsync(string username, string password)
+    {
+        // Only allow admin user during maintenance
+        if (!IsAdminUser(username))
+        {
+            _logger.LogWarning("Login attempt during maintenance mode for non-admin user {Username}", username);
+            throw new AuthException.MaintenanceModeException("The server is currently in maintenance mode. Only administrators can log in.");
+        }
+
+        // Validate password against internal admin credentials (skip LDAP/database)
+        if (string.IsNullOrEmpty(_systemSettings.AdminPassword) || !string.Equals(password, _systemSettings.AdminPassword))
+        {
+            _logger.LogWarning("Authentication failed for admin user {Username} during maintenance mode", username);
+            throw new UnauthorizedAccessException("Invalid admin credentials");
+        }
+
+        _logger.LogInformation("Admin user {Username} successfully authenticated during maintenance mode (LDAP/DB bypassed)", username);
+
+        // Create JWT user object without database lookup
+        JWTUser jwtUser = new()
+        {
+            Guid = Guid.Empty, // Placeholder GUID for maintenance mode
+            Username = username,
+            Name = _systemSettings.AdminUsername ?? "Administrator",
+            Role = UserRole.Admin.ToString(),
+            Permissions = GetUserPermissions(UserRole.Admin.ToString())
+        };
+
+        // Generate tokens
+        List<Claim> accessTokenClaims = _jwtService.GetAccessTokenClaims(jwtUser);
+        List<Claim> refreshTokenClaims = _jwtService.GetRefreshTokenClaims(Guid.NewGuid().ToString()); // Use temp GUID for refresh token
+
+        AuthenticationResponse response = new()
+        {
+            AuthToken = _jwtService.GenerateAccessToken(accessTokenClaims),
+            RefreshToken = _jwtService.GenerateRefreshToken(refreshTokenClaims)
+        };
+
+        return response;
+    }
+
     public async Task<QuestionnaireDatabaseV2.Entities.User?> GetOrCreateUserAsync(BasicUserInfoWithUserID userInfo, UserRole userRole)
     {
         try
@@ -174,6 +218,15 @@ public class AuthService : IAuthService
                 }
             }
 
+            if (!string.IsNullOrEmpty(_systemSettings.AdminUsername))
+            {
+                // Check for admin user
+                if (string.Equals(userInfo.Username, _systemSettings.AdminUsername, StringComparison.OrdinalIgnoreCase))
+                {
+                    return UserRole.Admin;
+                }
+            }
+
             if (_ldapSettings.RoleMappingsCN.Count > 0)
             {
                 foreach (var (role, groupCN) in _ldapSettings.RoleMappingsCN)
@@ -205,5 +258,12 @@ public class AuthService : IAuthService
             "defaultuser" => 0, // Basic user permissions
             _ => 0 // Default to basic permissions
         };
+    }
+
+    private bool IsAdminUser(string username)
+    {
+        // Check against configured admin username
+        return !string.IsNullOrEmpty(_systemSettings.AdminUsername) &&
+               string.Equals(username, _systemSettings.AdminUsername, StringComparison.OrdinalIgnoreCase);
     }
 }

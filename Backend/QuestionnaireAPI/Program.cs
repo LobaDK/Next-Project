@@ -73,7 +73,7 @@ else
     builder.Services.AddScoped<IAuthenticationBridge, ActiveDirectoryAuthenticationBridge>();
 }
 
-builder.Services.AddSingleton<IDatabaseAvailabilityService, DatabaseAvailabilityService>();
+builder.Services.AddSingleton<IMaintenanceMonitor, MaintenanceMonitor>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -216,41 +216,43 @@ using (IServiceScope scope = app.Services.CreateScope())
     {
         ILogger<Program> logger = services.GetRequiredService<ILogger<Program>>();
         int max_attempts = 3;
+        string failureReason = string.Empty;
         
-        for (int attempt = 0; attempt < max_attempts; attempt++)
+        try
         {
-            if (context.Database.CanConnect())
+            for (int attempt = 0; attempt < max_attempts; attempt++)
             {
-                try
+                if (context.Database.CanConnect())
                 {
+                    failureReason = "Failed to migrate database.";
                     context.Database.Migrate();
+                    break;
                 }
-                catch (InvalidOperationException ex)
+                else if (!databaseCreator.Exists())
                 {
-                    logger.LogError(ex, "Database migration failed.");
-                    logger.LogWarning("Database migration failed, marking database as unavailable.");
-
-                    services.GetRequiredService<IDatabaseAvailabilityService>().SetDatabaseAvailable(false);
+                    failureReason = "Failed to create database.";
+                    logger.LogInformation("Database does not exist, creating it...");
+                    databaseCreator.Create();
+                    failureReason = "Failed to migrate database after creating it";
+                    context.Database.Migrate();
+                    break;
                 }
-                break;
-            }
-            else if (!databaseCreator.Exists())
-            {
-                logger.LogInformation("Database does not exist, creating it...");
-                databaseCreator.Create();
-                context.Database.Migrate();
-                break;
-            }
-            else
-            {
-                logger.LogWarning("Waiting for database to be created/migrated... ({attempt}/{max_attempts})", attempt + 1, max_attempts);
-                Thread.Sleep(TimeSpan.FromSeconds(30));
-                if (attempt == max_attempts - 1)
+                else
                 {
-                    logger.LogCritical("Database is not reachable, exiting.");
-                    Environment.Exit(1);
+                    logger.LogWarning("Waiting for database to be created/migrated... ({attempt}/{max_attempts})", attempt + 1, max_attempts);
+                    Thread.Sleep(TimeSpan.FromSeconds(30));
+                    if (attempt == max_attempts - 1)
+                    {
+                        failureReason = "Failed to reach/connect to database.";
+                        throw new InvalidOperationException();
+                    }
                 }
             }
+        }
+        catch (InvalidOperationException ex)
+        {
+            logger.LogCritical(ex, failureReason);
+            services.GetRequiredService<IMaintenanceMonitor>().EnableMaintenance(failureReason);
         }
     }
 }

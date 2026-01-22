@@ -7,6 +7,7 @@ using QuestionnaireDatabaseV2.Entities;
 using QuestionnaireDatabaseV2.Enums;
 using Microsoft.EntityFrameworkCore;
 using QuestionnaireAPI.Services.Authentication;
+using QuestionnaireAPI.Exceptions;
 
 namespace API.Controllers;
 
@@ -54,6 +55,11 @@ public class AuthController : ControllerBase
         catch (UnauthorizedAccessException)
         {
             return Unauthorized("Invalid username or password");
+        }
+        catch (AuthException.MaintenanceModeException ex)
+        {
+            _logger.LogWarning("Authentication attempt during maintenance mode: {Message}", ex.Message);
+            return StatusCode(StatusCodes.Status503ServiceUnavailable, "The system is currently in maintenance mode. Please try again later.");
         }
         catch (Exception ex)
         {
