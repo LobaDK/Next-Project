@@ -26,5 +26,10 @@ public enum UserRole
     /// <summary>
     /// Manager with elevated permissions for managing assignments and viewing aggregated data.
     /// </summary>
-    Manager
+    Manager,
+
+    /// <summary>
+    /// A special built-in administrator role with full system permissions.
+    /// </summary>
+    Admin
 }
