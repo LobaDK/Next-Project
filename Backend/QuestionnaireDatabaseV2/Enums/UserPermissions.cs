@@ -81,4 +81,6 @@ public enum UserPermissions
         | ExportLogs 
         | ViewSystemStatus 
         | ManageBackgroundServices,
+    
+    Admin = Management
 }
