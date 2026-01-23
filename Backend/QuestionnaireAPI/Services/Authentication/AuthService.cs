@@ -251,12 +251,14 @@ public class AuthService(
 
     public int GetUserPermissions(string role)
     {
-        // Simple permission mapping based on role
-        return role.ToLower() switch
+        return role switch
         {
-            "manager" => 1, // Manager permissions
-            "defaultuser" => 0, // Basic user permissions
-            _ => 0 // Default to basic permissions
+            nameof(UserRole.Admin) => (int)UserPermissions.Admin,
+            nameof(UserRole.Manager) => (int)UserPermissions.Management,
+            nameof(UserRole.Student) => (int)UserPermissions.Student,
+            nameof(UserRole.Teacher) => (int)UserPermissions.Teacher,
+            nameof(UserRole.DefaultUser) => (int)UserPermissions.None,
+            _ => (int)UserPermissions.None,
         };
     }
 
