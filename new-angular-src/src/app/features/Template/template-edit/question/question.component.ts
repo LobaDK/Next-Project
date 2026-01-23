@@ -6,7 +6,7 @@ import { MatrixEditorComponent } from './matrix-editor/matrix-editor.component';
 @Component({
   selector: 'app-question',
   standalone: true,
-  imports: [RadioGroupEditorComponent, MatrixEditorComponent],
+  imports: [RadioGroupEditorComponent],
   templateUrl: './question.component.html',
   styleUrls: ['./question.component.css'],
 })
@@ -38,10 +38,6 @@ export class QuestionComponent {
     switch (this.item.type) {
       case 'radiogroup':
         return 'Radio group';
-      case 'matrix':
-        return 'Single choice matrix';
-      case 'rating':
-        return 'Rating';
       default:
         return 'Unknown';
     }

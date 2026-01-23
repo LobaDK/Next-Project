@@ -10,6 +10,7 @@
         class="input-field"
         type="text"
         placeholder="Enter template name..."
+        [(ngModel)]="editor.title"
       />
     </div>
 
@@ -21,18 +22,36 @@
           class="textarea-field"
           rows="4"
           placeholder="Enter template description..."
+          [(ngModel)]="editor.description"
         ></textarea>
       </div>
 
-      <div class="flex sm:justify-end">
+      <div class="flex sm:justify-end gap-2">
+        <button
+          type="button"
+          class="btn btn-lg w-full sm:w-auto mt-6 sm:mt-7 bg-gray-200 hover:bg-gray-300 text-gray-800"
+          (click)="togglePreview()"
+        >
+          {{ showPreview ? 'Hide Preview' : 'Preview Survey' }}
+        </button>
+
         <button
           type="button"
           class="btn btn-lg w-full sm:w-auto mt-6 sm:mt-7 bg-purple-600 hover:bg-purple-700 focus:ring-purple-500 text-white"
+          (click)="finalize()"
         >
           Finalize
         </button>
       </div>
     </div>
+
+    <!-- Preview -->
+    @if (showPreview && surveyModel) {
+      <div class="mt-8 border rounded p-4 bg-gray-50">
+        <h2 class="app-title-secondary mb-3">Survey Preview</h2>
+        <survey [model]="surveyModel"></survey>
+      </div>
+    }
 
     <!-- Questions -->
     <div class="mt-10">
@@ -42,7 +61,11 @@
           <p class="text-gray-600 text-sm">Manage your questions below.</p>
         </div>
 
-        <button type="button" class="btn-primary w-full sm:w-auto">
+        <button
+          type="button"
+          class="btn-primary w-full sm:w-auto"
+          (click)="addQuestion()"
+        >
           + Add question
         </button>
       </div>

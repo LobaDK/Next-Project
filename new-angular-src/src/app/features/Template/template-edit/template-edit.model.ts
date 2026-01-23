@@ -1,3 +1,8 @@
+export enum TemplateStatus {
+  Draft = 'Draft',
+  Finalized = 'Finalized',
+}
+
 export enum QuestionType {
   Rating = "rating",
   MatrixSingle = "matrix",
@@ -5,13 +10,52 @@ export enum QuestionType {
 }
 
 export interface EditorBaseQuestion {
-  id: string;                 // stable question id
+  id: string;
   type: QuestionType;
   prompt: string;
 
   // purely editor:
   expanded?: boolean;
 }
+export interface ChoiceOption {
+  value: number;
+  label: string;
+}
+
+
+export interface RadioGroupQuestion extends EditorBaseQuestion {
+  type: QuestionType.RadioGroup;
+  options: ChoiceOption[];              // just labels
+  allowOtherComment: boolean;
+  otherLabel?: string | null;
+}
+
+export type TemplateQuestion =
+  | RadioGroupQuestion
+
+  export interface QuestionnaireTemplateEditor {
+    title: string;
+    description?: string;
+    status: TemplateStatus;
+    questions: TemplateQuestion[];
+  }
+
+
+export interface QuestionnaireForm {
+  title: string;
+  description?: string;
+  schemaJson: string;
+}
+
+
+
+
+
+
+
+
+
+/* | SingleChoiceMatrixQuestion | RatingQuestion */;
 
 export interface RatingOption {
   value: number;              // 1..N
@@ -41,25 +85,4 @@ export interface SingleChoiceMatrixQuestion extends EditorBaseQuestion {
 export interface RadioOption {
   value: string;              // displayed text
   label: string;              // displayed text
-}
-
-
-export interface RadioGroupQuestion extends EditorBaseQuestion {
-  type: QuestionType.RadioGroup;
-  options: string[];              // just labels
-  allowOtherComment: boolean;
-  otherLabel?: string | null;
-}
-
-
-
-export type TemplateQuestion =
-  | RadioGroupQuestion
-  | SingleChoiceMatrixQuestion
-  | RatingQuestion;
-
-export interface QuestionnaireForm {
-  title: string;
-  description?: string;
-  schemaJson: string;
 }

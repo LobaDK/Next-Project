@@ -50,18 +50,6 @@
         />
       }
 
-      @case ('matrix') {
-        <app-matrix-editor
-          [question]="item"
-          (questionChange)="itemChange.emit($event)"
-        />
-      }
-
-      @case ('matrix') {
-        <!-- matrix editor later -->
-        <div>TODO matrix editor</div>
-      }
-
     }
 
   </div>
