@@ -64,6 +64,11 @@ public static class RootSettingsExtensions
         {
             return string.IsNullOrWhiteSpace((string)currentValue);
         }
+
+        if (propertyType == typeof(bool))
+        {
+            return false;
+        }
         
         // Handle collections (List, Dictionary, etc.)
         if (currentValue is ICollection collection)
