@@ -5,7 +5,7 @@ namespace QuestionnaireAPI.Services;
 public class MaintenanceMonitor(ILogger<MaintenanceMonitor> logger) : IMaintenanceMonitor
 {
     private readonly ILogger<MaintenanceMonitor> _logger = logger;
-    private bool _isMaintenanceEnabled = true;
+    private bool _isMaintenanceEnabled = false;
     private string _reason = string.Empty;
     private readonly Lock _lock = new();
 
