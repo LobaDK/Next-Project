@@ -8,6 +8,7 @@ using QuestionnaireDatabaseV2.Enums;
 using Microsoft.EntityFrameworkCore;
 using QuestionnaireAPI.Services.Authentication;
 using QuestionnaireAPI.Exceptions;
+using QuestionnaireAPI.DTO.Responses.Auth;
 
 namespace API.Controllers;
 
@@ -88,5 +89,16 @@ public class AuthController : ControllerBase
     public IActionResult Ping()
     {
         return Ok(new {message = "Works"});
+    }
+
+    [HttpGet("permissions")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(List<PermissionCode>), StatusCodes.Status200OK)]
+    public IActionResult GetPermissions()
+    {
+        List<PermissionCode> permissions = [.. Enum.GetValues<UserPermissions>().
+            Select(p => new PermissionCode{Name = p.ToString(), Value = (int)p})];
+
+        return Ok(permissions);
     }
 }
