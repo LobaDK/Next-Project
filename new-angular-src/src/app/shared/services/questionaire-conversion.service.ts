@@ -4,12 +4,13 @@ import {
   TemplateQuestion,
   QuestionType,
   RadioGroupQuestion
-} from "../../features/Template/template-edit/template-edit.model";
+} from "../models/template-edit.model";
 
 @Injectable({
   providedIn: "root",
 })
 export class QuestionaireConversionService {
+  private static readonly OTHER_COMMENT_MAX_LEN = 500;
 
   // ----------------------------
   // Editor -> SurveyJS JSON
@@ -42,21 +43,33 @@ export class QuestionaireConversionService {
       case QuestionType.RadioGroup: {
         const q = question as RadioGroupQuestion;
 
-        return {
+        const maxLen = QuestionaireConversionService.OTHER_COMMENT_MAX_LEN;
+
+        const rtnQuestion: any = {
           type: "radiogroup",
           name: q.id,
           title: q.prompt,
-
-          isRequired: true, // ✅ required answer
-
+          isRequired: true,
           choices: q.options.map(opt => ({
             value: opt.value,
             text: opt.label,
           })),
-
           hasOther: !!q.allowOtherComment,
           otherText: q.otherLabel ?? "Other",
+          maxOthersLength: maxLen,
         };
+
+        if (q.allowOtherComment) {
+          rtnQuestion.validators = [
+            {
+              type: "regex",
+              text: `Your answer must be between 1 and ${maxLen} characters.`,
+              regex: `^[\\s\\S]{1,${maxLen}}$`,
+            },
+          ];
+        }
+
+        return rtnQuestion;
       }
 
       default:
@@ -74,7 +87,6 @@ export class QuestionaireConversionService {
   ): QuestionnaireTemplateEditor {
     const pages = Array.isArray(surveyJson?.pages) ? surveyJson.pages : [];
 
-    // collect elements across all pages
     const elements = pages.flatMap((p: any) =>
       Array.isArray(p?.elements) ? p.elements : []
     );

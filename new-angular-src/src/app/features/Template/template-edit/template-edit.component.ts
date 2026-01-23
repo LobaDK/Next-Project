@@ -6,21 +6,24 @@ import {
   TemplateQuestion,
   QuestionnaireTemplateEditor,
   TemplateStatus,
-} from './template-edit.model';
+} from '../../../shared/models/template-edit.model';
 import { QuestionaireConversionService } from '../../../shared/services/questionaire-conversion.service';
 // survey.component.ts
 import "survey-core/survey-core.min.css";
 import { LayeredDarkPanelless, LayeredLight } from "survey-core/themes";
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 
 
 // SurveyJS
 import { Model } from 'survey-core';
 import { SurveyModule } from 'survey-angular-ui';
+import { QUESTIONNAIRE_LIMITS } from '../../../shared/constants/questionnaire-limits';
+import { brandSurveyTheme } from '../../../shared/constants/survey-theme';
 
 @Component({
   selector: 'app-template-edit',
   standalone: true,
-  imports: [FormsModule, QuestionComponent, SurveyModule],
+  imports: [FormsModule, QuestionComponent, SurveyModule, DragDropModule],
   templateUrl: './template-edit.component.html',
   styleUrls: ['./template-edit.component.css'],
 })
@@ -29,6 +32,8 @@ export class TemplateEditComponent {
 
   showPreview = false;
   surveyModel: Model | null = null;
+  readonly LIMITS = QUESTIONNAIRE_LIMITS;
+  
 
 editor: QuestionnaireTemplateEditor = {
   title: "Evaluering af SKP-elever",
@@ -220,7 +225,7 @@ editor: QuestionnaireTemplateEditor = {
     console.log("SurveyJS JSON:", surveyJson);
 
     this.surveyModel = new Model(surveyJson);
-    this.surveyModel.applyTheme(LayeredLight);
+    this.surveyModel.applyTheme(brandSurveyTheme);
 
     // optional: capture preview results
     this.surveyModel.onComplete.add((sender) => {
@@ -239,4 +244,19 @@ editor: QuestionnaireTemplateEditor = {
   saveQuestionnaire() {
     console.log('Saved template:', this.editor);
   }
+
+dropQuestion(event: CdkDragDrop<any[]>) {
+  if (event.previousIndex === event.currentIndex) return;
+
+  // keep track of which question was expanded BEFORE move
+  const expandedQuestion =
+    this.expandedIndex !== null ? this.questions[this.expandedIndex] : null;
+
+  moveItemInArray(this.questions, event.previousIndex, event.currentIndex);
+
+  // restore expanded index to the same question (new position)
+  if (expandedQuestion) {
+    this.expandedIndex = this.questions.findIndex(q => q.id === expandedQuestion.id);
+  }
+}
 }

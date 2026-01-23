@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { RadioGroupQuestion, TemplateQuestion } from '../template-edit.model';
+import { RadioGroupQuestion, TemplateQuestion } from '../../../../shared/models/template-edit.model';
 import { RadioGroupEditorComponent } from './radio-group-editor/radio-group-editor.component';
 import { MatrixEditorComponent } from './matrix-editor/matrix-editor.component';
 

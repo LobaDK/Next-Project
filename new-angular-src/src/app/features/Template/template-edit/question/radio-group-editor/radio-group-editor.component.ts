@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RadioGroupQuestion } from '../../template-edit.model';
+import { RadioGroupQuestion } from '../../../../../shared/models/template-edit.model';
 
 @Component({
   selector: 'app-radio-group-editor',

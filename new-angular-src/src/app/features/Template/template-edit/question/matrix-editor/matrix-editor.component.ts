@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { SingleChoiceMatrixQuestion } from '../../template-edit.model';
+import { SingleChoiceMatrixQuestion } from '../../../../../shared/models/template-edit.model';
 
 @Component({
   selector: 'app-matrix-editor',

@@ -11,6 +11,7 @@
         type="text"
         placeholder="Enter template name..."
         [(ngModel)]="editor.title"
+        [maxLength]="LIMITS.TEMPLATE_TITLE_MAX_LEN"
       />
     </div>
 
@@ -23,6 +24,7 @@
           rows="4"
           placeholder="Enter template description..."
           [(ngModel)]="editor.description"
+          [maxLength]="LIMITS.TEMPLATE_DESCRIPTION_MAX_LEN"
         ></textarea>
       </div>
 
@@ -71,17 +73,48 @@
       </div>
 
       <!-- Question List -->
-      <div class="space-y-4">
-        @for (q of questions; track q.id; let i = $index) {
-          <app-question
-            [(item)]="questions[i]"
-            [index]="i"
-            [expanded]="expandedIndex === i"
-            (toggle)="toggleExpanded(i)"
-            (delete)="deleteQuestion(i)"
-          />
-        }
+<div
+  class="space-y-4"
+  cdkDropList
+  (cdkDropListDropped)="dropQuestion($event)"
+>
+  @for (q of questions; track q.id; let i = $index) {
+
+    <div
+      cdkDrag
+      cdkDragLockAxis="y"
+      class="flex gap-2"
+      [cdkDragDisabled]="expandedIndex === i"
+    >
+      <!-- Left-side drag handle -->
+<div
+  cdkDragHandle
+  class="inline-flex items-center justify-center select-none rounded-lg p-2
+         bg-gray-100 text-gray-500 hover:bg-gray-200 cursor-move
+         disabled:opacity-50"
+  [class.opacity-40]="expandedIndex === i"
+  [class.cursor-not-allowed]="expandedIndex === i"
+  title="Drag to reorder"
+>
+  ☰
+</div>
+
+      <!-- Your actual question component stays fully clickable -->
+      <div class="flex-1">
+        <app-question
+          [(item)]="questions[i]"
+          [index]="i"
+          [expanded]="expandedIndex === i"
+          (toggle)="toggleExpanded(i)"
+          (delete)="deleteQuestion(i)"
+        />
       </div>
+    </div>
+
+  }
+</div>
+
+
     </div>
 
   </div>
