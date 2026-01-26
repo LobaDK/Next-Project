@@ -56,18 +56,6 @@ public class MaintenanceMonitor(ILogger<MaintenanceMonitor> logger) : IMaintenan
         }
     }
 
-    public void DisableMaintenance()
-    {
-        lock (_lock)
-        {
-            if (_isMaintenanceEnabled)
-            {
-                _logger.LogDebug("Disabling maintenance mode");
-                _isMaintenanceEnabled = false;
-            }
-        }
-    }
-
     public void DisableMaintenance(bool clearReason = false)
     {
         lock (_lock)
