@@ -37,57 +37,55 @@
       </p>
     }
 
-    <div class="space-y-2 mt-2">
-      @for (opt of question.options; track opt.value; let i = $index) {
-        <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center border rounded p-2">
+<div class="space-y-2 mt-2"
+     cdkDropList
+     (cdkDropListDropped)="dropOption($event)">
 
-          <!-- Reorder buttons -->
-          <div class="sm:col-span-1 flex flex-col gap-1">
-            <button
-              type="button"
-              (click)="moveOption(i, -1)"
-              [disabled]="i === 0"
-            >
-              ⬆
-            </button>
+  @for (opt of question.options; track opt.value; let i = $index) {
+    <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center border rounded p-2"
+         cdkDrag
+         cdkDragLockAxis="y">
 
-            <button
-              type="button"
-              (click)="moveOption(i, 1)"
-              [disabled]="i === question.options.length - 1"
-            >
-              ⬇
-            </button>
-
-          </div>
-
-          <!-- Label -->
-          <div class="sm:col-span-8">
-            <label class="block text-xs text-gray-500">Label</label>
-            <input
-              class="w-full border rounded px-2 py-1"
-              [ngModel]="opt.label"
-              (ngModelChange)="updateOptionLabel(i, $event)"
-              type="text"
-            />
-          </div>
-
-          <!-- Remove -->
-          <div class="sm:col-span-1 flex justify-end">
-            <button
-              type="button"
-              class="btn-danger btn-sm"
-              (click)="removeOption(i); $event.stopPropagation()"
-              [disabled]="question.options.length <= 1"
-              title="Remove option"
-            >
-              ✕
-            </button>
-          </div>
-
+      <!-- Drag handle -->
+      <div class="sm:col-span-1 flex items-center justify-center">
+        <div
+          cdkDragHandle
+          class="cursor-move select-none rounded px-2 py-1 bg-gray-100 hover:bg-gray-200 text-gray-600"
+          title="Drag to reorder"
+          (click)="$event.stopPropagation()"
+        >
+          ☰
         </div>
-      }
+      </div>
+
+      <!-- Label -->
+      <div class="sm:col-span-8">
+        <label class="block text-xs text-gray-500">Label</label>
+        <input
+          class="w-full border rounded px-2 py-1"
+          [ngModel]="opt.label"
+          (ngModelChange)="updateOptionLabel(i, $event)"
+          type="text"
+        />
+      </div>
+
+      <!-- Remove -->
+      <div class="sm:col-span-1 flex justify-end">
+        <button
+          type="button"
+          class="btn-danger btn-sm"
+          (click)="removeOption(i); $event.stopPropagation()"
+          [disabled]="question.options.length <= 1"
+          title="Remove option"
+        >
+          ✕
+        </button>
+      </div>
+
     </div>
+  }
+</div>
+
   </div>
 
   <!-- Other/comment -->

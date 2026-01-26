@@ -1,0 +1,39 @@
+<div class="app-card animate-slideIn">
+
+  <!-- Title -->
+  <h3 class="app-title-secondary mb-3 text-center">
+    {{ stage === 'confirm'
+      ? ('TEMPLATE.DELETE.CONFIRM_TITLE' | translate)
+      : ('TEMPLATE.DELETE.CONFIRM_WARN' | translate) }}
+  </h3>
+
+  <!-- Text -->
+  <p
+    class="mb-8 text-gray-700 text-center leading-relaxed"
+    [innerHTML]="stage === 'confirm'
+      ? ('TEMPLATE.DELETE.CONFIRM_MSG' | translate)
+      : ('TEMPLATE.DELETE.FINAL_WARN_MSG' | translate)">
+  </p>
+
+  <!-- Buttons -->
+  <div class="flex gap-3 justify-center">
+    <button
+      type="button"
+      class="btn-secondary"
+      (click)="cancel()"
+    >
+      {{ 'COMMON.BUTTONS.CANCEL' | translate }}
+    </button>
+
+    <button
+      type="button"
+      class="btn-danger"
+      (click)="confirm()"
+    >
+      {{ stage === 'confirm'
+        ? ('COMMON.BUTTONS.DELETE' | translate)
+        : ('COMMON.BUTTONS.DELETE_PERMANENT' | translate) }}
+    </button>
+  </div>
+
+</div>

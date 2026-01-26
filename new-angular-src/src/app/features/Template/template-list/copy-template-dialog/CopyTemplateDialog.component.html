@@ -1,0 +1,38 @@
+<div class="app-card animate-slideIn">
+
+  <!-- Title -->
+  <h3 class="app-title-secondary mb-3 text-center">
+    {{ 'TEMPLATE.MISC.COPY_TITLE' | translate }}
+  </h3>
+
+  <!-- Text -->
+  <p
+    class="mb-8 text-gray-700 text-center leading-relaxed"
+    [innerHTML]="'TEMPLATE.MISC.COPY_MSG' | translate">
+  </p>
+
+  <!-- Buttons -->
+  <div class="flex gap-3 justify-center">
+    <button
+      type="button"
+      (click)="cancel()"
+      class="btn-secondary"
+    >
+      {{ 'COMMON.BUTTONS.CANCEL' | translate }}
+    </button>
+
+    <button
+      type="button"
+      (click)="confirm()"
+      [disabled]="isLoading"
+      class="btn-primary"
+    >
+      @if (!isLoading) {
+        {{ 'COMMON.BUTTONS.COPY' | translate }}
+      } @else {
+        {{ 'COMMON.LOADING' | translate }}
+      }
+    </button>
+  </div>
+
+</div>

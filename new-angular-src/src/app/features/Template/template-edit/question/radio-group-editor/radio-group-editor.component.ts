@@ -2,10 +2,12 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RadioGroupQuestion } from '../../../../../shared/models/template-edit.model';
 
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+
 @Component({
   selector: 'app-radio-group-editor',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, DragDropModule],
   templateUrl: './radio-group-editor.component.html',
 })
 export class RadioGroupEditorComponent {
@@ -33,7 +35,7 @@ export class RadioGroupEditorComponent {
     this.patch({ options });
   }
 
-  // If you want to allow editing the numeric value too (optional)
+  // Optional: manual editing numeric value
   updateOptionValue(index: number, value: number) {
     if (!Number.isFinite(value)) return;
 
@@ -44,7 +46,6 @@ export class RadioGroupEditorComponent {
   }
 
   private getNextOptionValue(): number {
-    // safest: take max value + 1
     const maxValue = Math.max(...this.question.options.map(o => o.value), 0);
     return maxValue + 1;
   }
@@ -65,7 +66,14 @@ export class RadioGroupEditorComponent {
 
   removeOption(index: number) {
     const options = this.question.options.filter((_, i) => i !== index);
-    this.patch({ options });
+
+    // ✅ renumber after delete so values stay 1..N
+    const renumbered = options.map((opt, i) => ({
+      ...opt,
+      value: i + 1
+    }));
+
+    this.patch({ options: renumbered });
   }
 
   toggleOther(enabled: boolean) {
@@ -79,17 +87,16 @@ export class RadioGroupEditorComponent {
     this.patch({ otherLabel });
   }
 
-  moveOption(index: number, direction: -1 | 1) {
-    const newIndex = index + direction;
-
-    if (newIndex < 0 || newIndex >= this.question.options.length) return;
+  // ✅ CDK drop handler: reorder + renumber
+  dropOption(event: CdkDragDrop<any[]>) {
+    if (event.previousIndex === event.currentIndex) return;
 
     const options = [...this.question.options];
 
-    // swap positions
-    [options[index], options[newIndex]] = [options[newIndex], options[index]];
+    // reorder
+    moveItemInArray(options, event.previousIndex, event.currentIndex);
 
-    // re-number values so value = order (1..N)
+    // ✅ renumber values so value = order (1..N)
     const renumbered = options.map((opt, i) => ({
       ...opt,
       value: i + 1
@@ -97,6 +104,4 @@ export class RadioGroupEditorComponent {
 
     this.patch({ options: renumbered });
   }
-
-
 }
