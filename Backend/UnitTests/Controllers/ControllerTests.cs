@@ -4,7 +4,7 @@ namespace UnitTests.Controllers;
 public class ControllerTests
 {
     [Fact]
-    public async Task AllEndpointsShouldHaveAuthorization()
+    public void AllEndpointsShouldHaveAuthorization()
     {
         IEnumerable<Type>? controllers = Assembly.Load(nameof(API))
             .GetTypes()

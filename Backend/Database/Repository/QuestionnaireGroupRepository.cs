@@ -50,7 +50,7 @@ namespace Database.Repository
         /// <remarks>
         /// Uses <see cref="DbSet.FindAsync(object[])"/> for efficient primary key lookups.
         /// </remarks>
-        public async Task<QuestionnaireGroupModel> GetByIdAsync(Guid groupId)
+        public async Task<QuestionnaireGroupModel?> GetByIdAsync(Guid groupId)
         {
             return await _context.Set<QuestionnaireGroupModel>().FindAsync(groupId) 
                 ?? throw new KeyNotFoundException($"Questionnaire group with ID '{groupId}' not found.");

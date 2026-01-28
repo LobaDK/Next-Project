@@ -203,12 +203,16 @@ public class ActiveQuestionnaireService : IActiveQuestionnaireService
                 ActivatedAt = q.ActivatedAt,
                 Student = new UserBase
                 {
-                    UserName = q.Student is null ? throw new InvalidOperationException("Student cannot be null") : q.Student.UserName,
+                    UserName = q.Student is not null ?
+                        q.Student.UserName
+                        : throw new InvalidOperationException("Student information is missing."),
                     FullName = q.Student.FullName
                 },
                 Teacher = new UserBase
                 {
-                    UserName = q.Teacher is null ? throw new InvalidOperationException("Teacher cannot be null") : q.Teacher.UserName,
+                    UserName = q.Teacher is not null ?
+                        q.Teacher.UserName
+                        : throw new InvalidOperationException("Teacher information is missing."),
                     FullName = q.Teacher.FullName
                 },
                 StudentCompletedAt = q.StudentCompletedAt,
@@ -260,12 +264,16 @@ public class ActiveQuestionnaireService : IActiveQuestionnaireService
             ActivatedAt = q.ActivatedAt,
             Student = new UserBase
             {
-                UserName = q.Student is null ? throw new InvalidOperationException("Student cannot be null") : q.Student.UserName,
+                UserName = q.Student is not null ?
+                    q.Student.UserName
+                    : throw new InvalidOperationException("Student information is missing."),
                 FullName = q.Student.FullName
             },
             Teacher = new UserBase
             {
-                UserName = q.Teacher is null ? throw new InvalidOperationException("Teacher cannot be null") : q.Teacher.UserName,
+                UserName = q.Teacher is not null ?
+                    q.Teacher.UserName
+                    : throw new InvalidOperationException("Teacher information is missing."),
                 FullName = q.Teacher.FullName
             },
             StudentCompletedAt = q.StudentCompletedAt,
@@ -310,12 +318,16 @@ public class ActiveQuestionnaireService : IActiveQuestionnaireService
                     ActivatedAt = q.ActivatedAt,
                     Student = new UserBase
                     {
-                        UserName = q.Student is null ? throw new InvalidOperationException("Student cannot be null") : q.Student.UserName,
+                        UserName = q.Student is not null ?
+                            q.Student.UserName
+                            : throw new InvalidOperationException("Student information is missing."),
                         FullName = q.Student.FullName
                     },
                     Teacher = new UserBase
                     {
-                        UserName = q.Teacher is null ? throw new InvalidOperationException("Teacher cannot be null") : q.Teacher.UserName,
+                        UserName = q.Teacher is not null ?
+                            q.Teacher.UserName
+                            : throw new InvalidOperationException("Teacher information is missing."),
                         FullName = q.Teacher.FullName
                     },
                     StudentCompletedAt = q.StudentCompletedAt,

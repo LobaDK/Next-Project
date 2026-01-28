@@ -344,7 +344,7 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public FileResult ExportSettings()
+        public IActionResult ExportSettings()
         {
             return _SystemControllerService.ExportSettings();
         }

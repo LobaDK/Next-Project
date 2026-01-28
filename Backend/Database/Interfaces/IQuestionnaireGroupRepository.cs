@@ -39,7 +39,7 @@ namespace Database.Interfaces
         /// <remarks>
         /// Uses a primary key lookup for efficient retrieval.
         /// </remarks>
-        Task<QuestionnaireGroupModel> GetByIdAsync(Guid groupId);
+        Task<QuestionnaireGroupModel?> GetByIdAsync(Guid groupId);
         Task<List<QuestionnaireGroupModel>> GetByIdsAsync(IEnumerable<Guid> ids);
         /// <summary>
         /// Retrieves a paginated list of questionnaire groups using keyset pagination with

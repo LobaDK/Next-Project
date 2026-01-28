@@ -620,16 +620,21 @@ public class ActiveQuestionnaireRepository(Context context, ILoggerFactory logge
                     }).ToList()
                 }).ToList()
             },
-            AnswersInfo = questionnaires.Select(aq => new AnswerInfo
+            AnswersInfo = [.. questionnaires.Select(aq => new AnswerInfo
             {
                 activeQuestionnaireId = aq.Id,
                 StudentCompletedAt = aq.StudentCompletedAt!,
                 TeacherCompletedAt = aq.TeacherCompletedAt!,
 
-                Answers = aq.QuestionnaireTemplate!.Questions.Select(q =>
+                Answers = [.. aq.QuestionnaireTemplate!.Questions.Select(q =>
                 {
                     ActiveQuestionnaireStudentResponseModel studentAnswer = aq.StudentAnswers.FirstOrDefault(sa => sa.QuestionFK == q.Id) ?? throw new InvalidOperationException("Student answer not found for question.");
                     ActiveQuestionnaireTeacherResponseModel teacherAnswer = aq.TeacherAnswers.FirstOrDefault(ta => ta.QuestionFK == q.Id) ?? throw new InvalidOperationException("Teacher answer not found for question.");
+
+                    if (studentAnswer is null || teacherAnswer is null)
+                    {
+                        throw new InvalidOperationException("Answer data is incomplete.");
+                    }
 
                     return new AnswerDetails
                     {
@@ -641,8 +646,8 @@ public class ActiveQuestionnaireRepository(Context context, ILoggerFactory logge
                         IsTeacherResponseCustom = !string.IsNullOrEmpty(teacherAnswer.CustomResponse),
                         SelectedOptionIdsByTeacher = teacherAnswer.OptionFK.HasValue == true ? [teacherAnswer.OptionFK.Value] : []
                     };
-                }).ToList()
-            }).ToList()
+                })]
+            })]
         };
 
 
