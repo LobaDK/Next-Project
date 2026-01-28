@@ -27,6 +27,6 @@ namespace API.DTO.Responses.ActiveQuestionnaire
     public class QuestionnaireGroupResult : QuestionnaireGroupBasicResult
     {
         public Guid TemplateId { get; set; }
-        public List<ActiveQuestionnaireAdminBase> Questionnaires { get; set; }
+        public required List<ActiveQuestionnaireAdminBase> Questionnaires { get; set; }
     }
 }

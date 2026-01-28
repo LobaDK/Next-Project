@@ -50,9 +50,10 @@ namespace Database.Repository
         /// <remarks>
         /// Uses <see cref="DbSet.FindAsync(object[])"/> for efficient primary key lookups.
         /// </remarks>
-        public async Task<QuestionnaireGroupModel> GetByIdAsync(Guid groupId)
+        public async Task<QuestionnaireGroupModel?> GetByIdAsync(Guid groupId)
         {
-            return await _context.Set<QuestionnaireGroupModel>().FindAsync(groupId);
+            return await _context.Set<QuestionnaireGroupModel>().FindAsync(groupId) 
+                ?? throw new KeyNotFoundException($"Questionnaire group with ID '{groupId}' not found.");
         }
         public async Task<List<QuestionnaireGroupModel>> GetByIdsAsync(IEnumerable<Guid> ids)
         {
@@ -123,7 +124,7 @@ namespace Database.Repository
                     bool? pendingStudent = false,
                     bool? pendingTeacher = false,
                     int? teacherFK = null,
-                    int? pageNumber = 1)
+                    int pageNumber = 1)
         {
             IQueryable<QuestionnaireGroupModel> query = _genericRepository.GetAsQueryable();
 
@@ -154,7 +155,7 @@ namespace Database.Repository
 
 
             // Offset-based pagination
-            int skip = (pageNumber.Value - 1) * amount;
+            int skip = (pageNumber - 1) * amount;
             query = query.Skip(skip).Take(amount);
 
             List<QuestionnaireGroupModel> groupEntities = await query

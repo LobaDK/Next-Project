@@ -1,5 +1,5 @@
 
-namespace UnitTests.API;
+namespace UnitTests.Controllers;
 
 public class LDAPFieldMappingProviderTests
 {

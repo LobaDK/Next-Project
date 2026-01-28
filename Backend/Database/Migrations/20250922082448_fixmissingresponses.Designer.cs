@@ -13,7 +13,9 @@ namespace Database.Migrations
 {
     [DbContext(typeof(Context))]
     [Migration("20250922082448_fixmissingresponses")]
+#pragma warning disable CS8981 // The type name only contains lower-cased ascii characters. Such names may become reserved for the language.
     partial class fixmissingresponses
+#pragma warning restore CS8981 // The type name only contains lower-cased ascii characters. Such names may become reserved for the language.
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -35,7 +35,7 @@ namespace Database.Models
         /// <remarks>
         /// Typically used for identifying and grouping related questionnaires in the UI.
         /// </remarks>
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the date and time when the group was created.
@@ -52,7 +52,7 @@ namespace Database.Models
         /// This navigation property provides access to the template details from which
         /// the questionnaires in the group were derived.
         /// </remarks>
-        public QuestionnaireTemplateModel Template { get; set; }
+        public QuestionnaireTemplateModel? Template { get; set; }
 
         /// <summary>
         /// Gets or sets the collection of active questionnaires belonging to this group.
@@ -61,7 +61,7 @@ namespace Database.Models
         /// This navigation property represents the one-to-many relationship between
         /// the group and its questionnaires.
         /// </remarks>
-        public ICollection<ActiveQuestionnaireModel> Questionnaires { get; set; }
+        public ICollection<ActiveQuestionnaireModel> Questionnaires { get; set; } = [];
     }
 
 }

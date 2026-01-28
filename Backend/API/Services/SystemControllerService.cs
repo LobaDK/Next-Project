@@ -10,7 +10,7 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
     private readonly JsonSerializerOptions _SerializerOptions = JsonSerializerUtility.ConfigureJsonSerializerSettings();
     private readonly IHostApplicationLifetime _HostApplicationLifetime = hostApplicationLifetime;
 
-    public async Task<bool> StopServer()
+    public bool StopServer()
     {
         try
         {
@@ -24,7 +24,7 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
         }
     }
 
-    public async Task<FileResult> ExportSettings()
+    public FileResult ExportSettings()
     {
         string jsonString = JsonSerializer.Serialize(_RootSettings, _SerializerOptions);
         var fileBytes = System.Text.Encoding.UTF8.GetBytes(jsonString);
@@ -133,7 +133,7 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
     /// <returns>
     /// A <see cref="SettingsFetchResponse"/> containing all system configuration settings.
     /// </returns>
-    public async Task<SettingsFetchResponse> GetSettings()
+    public SettingsFetchResponse GetSettings()
     {
         return new SettingsFetchResponse()
         {
@@ -187,7 +187,7 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
     /// of the settings classes and their attributes. This ensures the schema remains
     /// synchronized with the actual settings model definitions.
     /// </remarks>
-    public async Task<SettingsSchema> GetSettingsSchema()
+    public SettingsSchema GetSettingsSchema()
     {
         return new SettingsSchema()
         {

@@ -145,7 +145,7 @@ namespace API.Controllers
         /// <response code="403">If the user is not authorized (not an admin)</response>
         [HttpGet("logs/file/list")]
         [Authorize(AuthenticationSchemes = "AccessToken", Policy = "AdminOnly")]
-        public async Task<ActionResult<List<string>>> GetLogFileNames()
+        public ActionResult<List<string>> GetLogFileNames()
         {
             return Ok(_SystemControllerService.GetLogFileNames());
         }
@@ -166,9 +166,9 @@ namespace API.Controllers
         /// <response code="403">If the user is not authorized (not an admin)</response>
         [HttpGet("settings")]
         [Authorize(AuthenticationSchemes = "AccessToken", Policy = "AdminOnly")]
-        public async Task<ActionResult<SettingsFetchResponse>> GetSettings()
+        public ActionResult<SettingsFetchResponse> GetSettings()
         {
-            return Ok(await _SystemControllerService.GetSettings());
+            return Ok(_SystemControllerService.GetSettings());
         }
 
         /// <summary>
@@ -197,9 +197,9 @@ namespace API.Controllers
         /// <response code="403">If the user is not authorized (not an admin)</response>
         [HttpGet("settings/schema")]
         [Authorize(AuthenticationSchemes = "AccessToken", Policy = "AdminOnly")]
-        public async Task<ActionResult<SettingsSchema>> GetSettingsSchema()
+        public ActionResult<SettingsSchema> GetSettingsSchema()
         {
-            return Ok(await _SystemControllerService.GetSettingsSchema());
+            return Ok(_SystemControllerService.GetSettingsSchema());
         }
 
         /// <summary>
@@ -227,7 +227,7 @@ namespace API.Controllers
         /// <response code="403">If the user is not authorized (not an admin)</response>
         [HttpGet("settings/default")]
         [Authorize(AuthenticationSchemes = "AccessToken", Policy = "AdminOnly")]
-        public async Task<ActionResult<RootSettings>> GetDefaultSettings()
+        public ActionResult<RootSettings> GetDefaultSettings()
         {
             return Ok(new RootSettings());
         }
@@ -270,12 +270,7 @@ namespace API.Controllers
         {
             bool result = await _SystemControllerService.UpdateSettings(settings);
 
-            if (result == false)
-            {
-                return BadRequest("Failed to update settings.");
-            }
-
-            return Ok();
+            return result == false ? BadRequest("Failed to update settings.") : Ok();
         }
 
         /// <summary>
@@ -322,12 +317,7 @@ namespace API.Controllers
         {
             bool result = await _SystemControllerService.PatchSettings(settings);
 
-            if (result == false)
-            {
-                return BadRequest("Failed to patch settings.");
-            }
-
-            return Ok();
+            return result == false ? BadRequest("Failed to patch settings.") : Ok();
         }
 
         /// <summary>
@@ -354,9 +344,9 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<FileResult> ExportSettings()
+        public IActionResult ExportSettings()
         {
-            return await _SystemControllerService.ExportSettings();
+            return _SystemControllerService.ExportSettings();
         }
 
         /// <summary>
@@ -380,26 +370,16 @@ namespace API.Controllers
         {
             bool result = await _SystemControllerService.ImportSettings(file);
 
-            if (result == false)
-            {
-                return BadRequest("Failed to import settings.");
-            }
-
-            return Ok();
+            return result == false ? BadRequest("Failed to import settings.") : Ok();
         }
 
         [HttpPut("stop")]
         [Authorize(AuthenticationSchemes = "AccessToken", Policy = "AdminOnly")]
-        public async Task<IActionResult> StopServer()
+        public IActionResult StopServer()
         {
-            bool result = await _SystemControllerService.StopServer();
+            bool result = _SystemControllerService.StopServer();
 
-            if (result == false)
-            {
-                return BadRequest("Failed to stop application.");
-            }
-
-            return Ok();
+            return result == false ? BadRequest("Failed to stop application.") : Ok();
         }
     }
 }
