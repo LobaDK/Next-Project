@@ -39,14 +39,6 @@ global using API.Services;
 global using API.Services.Authentication;
 global using API.Utils;
 global using API.Validators;
-global using static API.Exceptions.LDAPException;
-
-global using Database;
-global using API.Mock;
-global using API.Services;
-global using API.Services.Authentication;
-global using API.Utils;
-global using API.Validators;
 
 global using Database;
 global using Database.DTO.ActiveQuestionnaire;
@@ -84,3 +76,5 @@ global using Serilog;
 
 global using Settings.Interfaces;
 global using Settings.Models;
+
+global using static API.Exceptions.LDAPException;
