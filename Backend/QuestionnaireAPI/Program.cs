@@ -18,6 +18,7 @@ using Microsoft.OpenApi.Models;
 using QuestionnaireAPI.Interfaces;
 using QuestionnaireAPI.Services;
 using QuestionnaireDatabaseV2.Migrations;
+using QuestionnaireAPI.Middleware;
 
 const string settingsFile = "config.json";
 
@@ -279,5 +280,7 @@ app.UseAuthorization();
 app.UseWebSockets();
 
 app.MapControllers();
+
+app.UseMiddleware<MaintenanceModeMiddleware>();
 
 app.Run();
