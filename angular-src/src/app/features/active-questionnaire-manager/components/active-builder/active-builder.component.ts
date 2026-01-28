@@ -8,7 +8,7 @@ import { User } from '../../../../shared/models/user.model';
 import { SearchEntity } from '../../models/searchEntity.model';
 import { TemplateBase } from '../../../../shared/models/template.model';
 
-import { CommonModule } from '@angular/common';
+
 import { DebouncedInputDirective } from '../../../../shared/directives/debounced-input.directive';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -31,7 +31,7 @@ type SearchType = 'student' | 'teacher' | 'template';
 @Component({
   selector: 'app-active-questionnaire-builder',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, DebouncedInputDirective],
+  imports: [FormsModule, TranslateModule, DebouncedInputDirective],
   templateUrl: './active-builder.component.html',
   styleUrls: ['./active-builder.component.css']
 })

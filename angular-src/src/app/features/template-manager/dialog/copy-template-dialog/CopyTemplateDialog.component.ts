@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -8,7 +8,7 @@ import { Template, TemplateStatus } from '../../../../shared/models/template.mod
 
 @Component({
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatButtonModule, TranslateModule],
+  imports: [MatDialogModule, MatButtonModule, TranslateModule],
   styleUrls: ['../../../../styles/dialogs.scss'],
   templateUrl: './CopyTemplateDialog.component.html'
 })
