@@ -1,10 +1,11 @@
 
 namespace API.Services.Authentication;
 
-public class ActiveDirectoryAuthenticationBridge(
+public partial class ActiveDirectoryAuthenticationBridge(
     ILogger<ActiveDirectoryAuthenticationBridge> logger,
     IConfiguration configuration,
     CacheService sessionCacheService,
+    IWebHostEnvironment environment,
     LdapConnection? ldapConnection = null,
     string? sessionId = null) : BaseAuthenticationBridge(new LDAPFieldMappingProvider())
 {
@@ -14,6 +15,8 @@ public class ActiveDirectoryAuthenticationBridge(
     private readonly CacheService _cache = sessionCacheService;
     private LdapConnection? _Connection = ldapConnection;
     private string? _SessionId = sessionId;
+    private readonly IHostEnvironment _environment = environment;
+    private static readonly Regex LdapErrorCodeRegex = GetLdapErrorCodeRegex();
 
     public override void Authenticate(string username, string password)
     {
@@ -62,17 +65,61 @@ public class ActiveDirectoryAuthenticationBridge(
         }
         catch (LdapException ex)
         {
-            _Logger.LogError(ex, "LDAP authentication failed for user: {Username} with result code: {ResultCode}", username, ex.ResultCode);
-
             // https://ldap.com/ldap-result-code-reference/
-            throw ex.ResultCode switch
+            // Invalid credentials exception data:
+            // Incorrect username/password:             80090308: LdapErr: DSID-0C090434, comment: AcceptSecurityContext error, data 52e, v4f7c\0
+            // Account disabled:                        80090308: LdapErr: DSID-0C090434, comment: AcceptSecurityContext error, data 533, v4f7c\0
+            // User must change password at next logon: 80090308: LdapErr: DSID-0C090434, comment: AcceptSecurityContext error, data 773, v4f7c\0
+            // Expired account:                         80090308: LdapErr: DSID-0C090434, comment: AcceptSecurityContext error, data 701, v4f7c\0
+            // Account lockout:                         80090308: LdapErr: DSID-0C090434, comment: AcceptSecurityContext error, data 775, v4f7c\0
+
+            string errorMessage;
+            if (ex.ResultCode == LdapException.InvalidCredentials)
             {
-                LdapException.ConnectError => new UnauthorizedAccessException("Unable to connect to the LDAP server.", ex),
-                LdapException.InvalidCredentials => new UnauthorizedAccessException("Invalid username or password.", ex),
-                LdapException.LdapTimeout => new InvalidOperationException("The LDAP server did not respond in a timely manner.", ex),
-                LdapException.ServerDown => new InvalidOperationException("The LDAP server is currently unreachable.", ex),
-                _ => new InvalidOperationException($"LDAP authentication failed with the following result code and message: {ex.ResultCode} - {ex.Message}", ex),
-            };
+                Match dataMatch = LdapErrorCodeRegex.Match(ex.LdapErrorMessage);
+                
+                LdapAuthenticationErrorReasons reason;
+                if (_environment.IsDevelopment())
+                {
+                    (errorMessage, reason) = (
+                        dataMatch.Success ? dataMatch.Groups[1].Value switch
+                        {
+                            "52e" => ("Incorrect username or password.", LdapAuthenticationErrorReasons.InvalidCredentials),
+                            "533" => ("Account is disabled.", LdapAuthenticationErrorReasons.AccountDisabled),
+                            "701" => ("Account has expired.", LdapAuthenticationErrorReasons.AccountExpired),
+                            "773" => ("User must change password at next logon.", LdapAuthenticationErrorReasons.PasswordHasExpired),
+                            "775" => ("Account is locked out due to multiple failed login attempts.", LdapAuthenticationErrorReasons.AccountIsLockedOut),
+                            _ => ("Invalid credentials provided.", LdapAuthenticationErrorReasons.InvalidCredentials)
+                        } : ("Invalid credentials provided.", LdapAuthenticationErrorReasons.InvalidCredentials)
+                    );    
+                }
+                else
+                {
+                    (errorMessage, reason) = (
+                        dataMatch.Success ? dataMatch.Groups[1].Value switch
+                        {
+                            "52e" => ("Invalid credentials provided.", LdapAuthenticationErrorReasons.InvalidCredentials),
+                            _ => ("Authentication failed due to account issues.", LdapAuthenticationErrorReasons.AccountLoginError)
+                        } : ("Invalid credentials provided.", LdapAuthenticationErrorReasons.InvalidCredentials)
+                    );
+                }
+
+                _Logger.LogWarning("LDAP authentication failed for user: {Username} - {ErrorMessage}", username, errorMessage);
+                throw new LdapAuthenticationErrorException(reason, errorMessage, ex);   
+            }
+            else
+            {
+                errorMessage = ex.ResultCode switch
+                {
+                    LdapException.ConnectError => "Unable to connect to the authentication server.",
+                    LdapException.LdapTimeout => "The authentication server did not respond in a timely manner.",
+                    LdapException.ServerDown => "The authentication server is currently unreachable.",
+                    _ => $"An unexpected error occurred during authentication. Please try again later. (Error Code: {ex.ResultCode})"
+                };
+
+                _Logger.LogError(ex, "LDAP authentication error for user: {Username} - {ErrorMessage}", username, errorMessage);
+                throw new InvalidOperationException(errorMessage, ex);
+            }
         }
     }
 
@@ -496,4 +543,7 @@ public class ActiveDirectoryAuthenticationBridge(
         }
         return dict;
     }
+
+    [GeneratedRegex(@"data\s([0-9a-fA-F]+)", RegexOptions.Compiled)]
+    private static partial Regex GetLdapErrorCodeRegex();
 }

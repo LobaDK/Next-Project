@@ -4,11 +4,14 @@ import { Question, Template, TemplateStatus } from '../../../shared/models/templ
 
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { ModalComponent } from '../../../shared/components/modal/modal.component';
+
 import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { TemplateService } from '../services/template.service';
 import { CommonModule } from '@angular/common';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { DuplicateWarningDialog } from './dialog/duplicate-warning-dialog/DuplicateWarningDialog.component';
+import { FinalizeConfirmDialog } from './dialog/finalize-confirm-dialog/FinalizeConfirmDialog.component';
 
 
 /**
@@ -26,7 +29,7 @@ import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 @Component({
     selector: 'app-template-editor',
     standalone: true,
-    imports: [QuestionEditorComponent, FormsModule, ModalComponent, TranslateModule, DragDropModule, CommonModule],
+    imports: [QuestionEditorComponent, FormsModule, TranslateModule, DragDropModule, CommonModule],
     templateUrl: './template-editor.component.html',
     styleUrl: './template-editor.component.css'
 })
@@ -55,10 +58,7 @@ export class TemplateEditorComponent implements OnChanges {
   // Holds IDs of questions that contain options that are duplicated across the template
   duplicateOptionQuestionIds: number[] = [];
 
-  // Controls the duplicate warning modal
-  duplicateModalOpen = false;
 
-  finalizeModalOpen = false;
   /** Set to true when order changed via drag-drop; used to avoid auto-saving on drop */
   orderChanged = false;
 
@@ -67,6 +67,7 @@ export class TemplateEditorComponent implements OnChanges {
   isTitleChecking = false;
   private titleCheckSubject = new Subject<string>();
   private templateService = inject(TemplateService);
+  private dialog = inject(MatDialog);
 
   ngOnInit() {
     // Set up debounced title checking (1 second delay)
@@ -143,8 +144,8 @@ export class TemplateEditorComponent implements OnChanges {
     // Validate template for duplicates before emitting save
     const valid = this.validateTemplate();
     if (!valid) {
-      // open modal to inform user
-      this.duplicateModalOpen = true;
+      // open dialog to inform user
+      this.openDuplicateWarningDialog();
       return;
     }
 
@@ -210,9 +211,7 @@ export class TemplateEditorComponent implements OnChanges {
     return this.duplicateQuestionIds.includes(qid) || this.duplicateOptionQuestionIds.includes(qid);
   }
 
-  closeDuplicateModal() {
-    this.duplicateModalOpen = false;
-  }
+
 
   
   // Method to emit the cancelEdit event
@@ -298,12 +297,31 @@ export class TemplateEditorComponent implements OnChanges {
   }
   
   onFinalize() { this.finalizeDraft.emit(this.template); }
-  openFinalizeModal() { this.finalizeModalOpen = true; }
-  closeFinalizeModal() { this.finalizeModalOpen = false; }
-
-  confirmFinalize() {
-    this.closeFinalizeModal();
-    this.onFinalize();
+  
+  openDuplicateWarningDialog(): void {
+    this.dialog.open(DuplicateWarningDialog, {
+      panelClass: 'app-modal',
+      maxWidth: '28rem',
+      width: '100%',
+      disableClose: false,
+    });
+  }
+  
+  openFinalizeDialog(): void {
+    this.dialog
+      .open(FinalizeConfirmDialog, {
+        panelClass: 'app-modal',
+        maxWidth: '28rem',
+        width: '100%',
+        disableClose: true,
+        data: this.template,
+      })
+      .afterClosed()
+      .subscribe(confirmed => {
+        if (confirmed) {
+          this.onFinalize();
+        }
+      });
   }
 
   /**

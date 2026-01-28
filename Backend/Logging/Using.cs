@@ -6,6 +6,8 @@ global using Database.DTO.ApplicationLog;
 global using Database.Interfaces;
 
 global using Logging.DBLogger;
+
+global using Microsoft.Extensions.DependencyInjection;
 global using Logging.FileLogger;
 
 global using Microsoft.Extensions.DependencyInjection;

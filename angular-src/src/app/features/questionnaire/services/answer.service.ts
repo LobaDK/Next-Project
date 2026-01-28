@@ -3,6 +3,7 @@ import { AnswerSubmission, Questionnaire } from '../models/answer.model';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
+import { IAnswerService } from '../../../core/interfaces/service.interfaces';
 
 
 /**
@@ -18,7 +19,7 @@ import { environment } from '../../../../environments/environment';
 @Injectable({
   providedIn: 'root',
 })
-export class AnswerService {
+export class AnswerService implements IAnswerService {
   private apiUrl = environment.apiUrl; // Replace with your actual API URL
 
   constructor(private http: HttpClient) {}

@@ -8,6 +8,7 @@ import { HttpParams } from '@angular/common/http';
 import { TemplateBaseResponse } from '../models/template.model';
 import { PaginationResponse } from '../../../shared/models/Pagination.model';
 import { Template } from '../../../shared/models/template.model';
+import { ITemplateService } from '../../../core/interfaces/service.interfaces';
 
 /**
  * Template service.
@@ -21,7 +22,7 @@ import { Template } from '../../../shared/models/template.model';
 @Injectable({
   providedIn: 'root',
 })
-export class TemplateService {
+export class TemplateService implements ITemplateService {
   private apiUrl = `${environment.apiUrl}/questionnaire-template`;
   private apiService = inject(ApiService);
 

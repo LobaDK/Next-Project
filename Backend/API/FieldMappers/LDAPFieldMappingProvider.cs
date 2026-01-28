@@ -60,7 +60,7 @@ public class LDAPFieldMappingProvider : IFieldMappingProvider
         {
             if (obj is LdapAttribute memberOf)
             {
-                return memberOf.StringValue.Split(';').ToList();
+                return memberOf.StringValueArray.Select(s => s.ToString()).ToList();
             }
             throw new InvalidCastException("Expected LdapAttribute for memberOf conversion.");
         },

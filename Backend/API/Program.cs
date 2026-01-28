@@ -21,34 +21,24 @@ builder.Configuration.AddJsonFile(settingsFile, optional: false, reloadOnChange:
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
-builder.Logging.AddConsole();
 builder.Logging.AddDBLogger(configure => builder.Configuration.GetSection("Logging:DBLogger"));
-
-// TODO: Check if config version is lower than default, and if it is, "upgrade" the config with any new settings
 
 DatabaseSettings databaseSettings = ConfigurationBinderService.Bind<DatabaseSettings>(builder.Configuration);
 JWTSettings jWTSettings = ConfigurationBinderService.Bind<JWTSettings>(builder.Configuration);
 SystemSettings systemSettings = ConfigurationBinderService.Bind<SystemSettings>(builder.Configuration);
 LoggerSettings loggerSettings = ConfigurationBinderService.Bind<LoggerSettings>(builder.Configuration);
 
-Serilog.ILogger seriLogger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration)
-        .WriteTo.File(
-            path: loggerSettings.FileLogger.Path,
-            rollingInterval: loggerSettings.FileLogger.RollingInterval,
-            rollOnFileSizeLimit: loggerSettings.FileLogger.RollOnFileSizeLimit,
-            fileSizeLimitBytes: loggerSettings.FileLogger.FileSizeLimitBytes,
-            retainedFileCountLimit: loggerSettings.FileLogger.RetainedFileCountLimit,
-            shared: loggerSettings.FileLogger.Shared,
-            outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}"
-        ).CreateLogger();
+Serilog.Core.Logger seriLogger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration)
+        .CreateLogger();
 
 builder.Logging.AddSerilog(seriLogger);
 
 // Add services to the container.
 
-if (builder.Configuration.GetSection("Mock")["UseMockedAuthentication"] == "True")
+if (File.Exists("USEMOCKAUTH") || File.Exists("USEMOCKAUTH.txt"))
 {   
     builder.Services.AddScoped<IAuthenticationBridge, MockedAuthenticationBridge>();
+    seriLogger.Warning("Using MOCK authentication bridge, this should NOT be used in production!");
 }
 else
 {
@@ -57,12 +47,13 @@ else
 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddScoped<IValidator<QuestionnaireTemplateAdd>, CreateQuestionnaireTemplateSubmissionValidator>();
-builder.Services.AddScoped<SystemControllerService>();
+builder.Services.AddScoped<ISystemControllerService, SystemControllerService>();
 builder.Services.AddScoped<JsonSerializerService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IQuestionnaireTemplateService, QuestionnaireTemplateService>();
 builder.Services.AddScoped<IActiveQuestionnaireService, ActiveQuestionnaireService>();
+builder.Services.AddScoped<ISystemControllerService, SystemControllerService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSingleton<CacheService>();
 builder.Services.AddMemoryCache();

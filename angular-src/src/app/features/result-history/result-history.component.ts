@@ -24,6 +24,7 @@ import { PdfGenerationService } from '../result/services/pdf-generation.service'
 import { AgCharts } from 'ag-charts-angular';
 import type { AgCartesianChartOptions } from 'ag-charts-community';
 import { DebouncedInputDirective } from '../../shared/directives/debounced-input.directive';
+import { DataCompareComponent } from '../data-compare/data-compare.component';
 
 
 enum SearchEnum {
@@ -44,7 +45,7 @@ interface SearchState<T> {
 @Component({
   selector: 'app-result-history',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, ShowResultComponent, TranslateModule, AgCharts, DebouncedInputDirective],
+  imports: [CommonModule, FormsModule, TranslateModule, ShowResultComponent, TranslateModule, AgCharts, DebouncedInputDirective, DataCompareComponent],
   templateUrl: './result-history.component.html',
   styleUrls: ['./result-history.component.css']
 })
@@ -55,6 +56,9 @@ export class ResultHistoryComponent implements OnInit {
 
 
   public translate = inject(TranslateService)
+  
+  // View toggle state
+  public currentView: 'evaluation' | 'anonymous' = 'evaluation';
   
   public searchEnum = SearchEnum;
   public student = this.createSearchState<User>();
@@ -643,6 +647,10 @@ public TestGraf() {
       this.currentQuestionIndex--;
       this.updateChartForQuestion(this.currentQuestionIndex);
     }
+  }
+
+  public switchView(view: 'evaluation' | 'anonymous') {
+    this.currentView = view;
   }
 
   

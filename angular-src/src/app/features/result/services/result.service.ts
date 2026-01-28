@@ -4,11 +4,12 @@ import { environment } from '../../../../environments/environment';
 import { Observable, forkJoin, map } from 'rxjs';
 import { Result } from '../../../shared/models/result.model';
 import { Template } from '../../../shared/models/template.model';
+import { IResultService } from '../../../core/interfaces/service.interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ResultService {
+export class ResultService implements IResultService {
   private apiUrl = `${environment.apiUrl}/active-questionnaire`;
 
   private apiService = inject(ApiService);

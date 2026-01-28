@@ -19,7 +19,17 @@ import {jwtDecode} from 'jwt-decode';
 })
 export class TokenService {
   private decodedToken: { [key: string]: any } | null = null;
+  
+  /**
+   * LocalStorage key for the JWT access token.
+   * Change this if you need a different storage key for your application.
+   */
   private readonly tokenKey = 'token';
+  
+  /**
+   * LocalStorage key for the JWT refresh token.
+   * Change this if you need a different storage key for your application.
+   */
   private readonly refreshTokenKey = 'refresh_token';
 
   /**
@@ -75,8 +85,25 @@ export class TokenService {
   }
 
   /**
-   * Checks whether the current token is expired.
-   * Relies on the `exp` claim.
+   * Checks whether a token is expired based on its 'exp' claim.
+   * @param token - JWT token string to check
+   * @returns `true` if expired or missing, otherwise `false`.
+   */
+  private isTokenExpiredByString(token: string | null): boolean {
+    if (!token) return true;
+    
+    try {
+      const decoded = jwtDecode(token);
+      if (!decoded) return true;
+      const expiryTime = (decoded as any)['exp'];
+      return expiryTime ? 1000 * expiryTime - Date.now() < 0 : true;
+    } catch {
+      return true;
+    }
+  }
+
+  /**
+   * Checks whether the current access token is expired.
    * @returns `true` if expired or missing, otherwise `false`.
    */
   isTokenExpired(): boolean {
@@ -84,6 +111,14 @@ export class TokenService {
     if (!decoded) return true;
     const expiryTime = decoded['exp'];
     return expiryTime ? 1000 * expiryTime - Date.now() < 0 : true;
+  }
+
+  /**
+   * Checks whether the refresh token is expired.
+   * @returns `true` if expired or missing, otherwise `false`.
+   */
+  isRefreshTokenExpired(): boolean {
+    return this.isTokenExpiredByString(this.getRefreshToken());
   }
 
   /** Clears the access token and cached decoded token. */

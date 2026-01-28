@@ -85,13 +85,25 @@ namespace API.Controllers
             {
                 _authenticationBridge.Authenticate(userLogin.Username, userLogin.Password);
             }
-            catch (LDAPException.ConnectionError)
+            catch (ConnectionError)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
             catch (UnauthorizedAccessException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            catch (LdapAuthenticationErrorException e)
+            {
+                return Unauthorized(new AuthenticationError()
+                {
+                   ErrorCode = e.ErrorCode.ToString(),
+                   Message = e.Message 
+                });
             }
 
             if (_authenticationBridge.IsConnected())

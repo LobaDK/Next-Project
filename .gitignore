@@ -3,6 +3,8 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
+# File indicating mocked auth should be used
+USEMOCKAUTH*
 
 # Docfx
 /docs/_site

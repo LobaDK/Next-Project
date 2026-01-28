@@ -95,8 +95,7 @@ export class HeaderComponent {
         name: "NAV.ACTIVE_QUESTIONNAIRES",
         route: "/show-active-questionnaires",
       },
-      { name: "NAV.DATA_COMPARE", route: "/data-compare" },
-      { name: "NAV.RESULT_HISTORY", route: "/result-history" },
+      { name: "NAV.RESULTS", route: "/result-history" },
       { name: "NAV.USER_GUIDE", route: "/user-guide" }
     ],
     [Role.Admin]: [
@@ -123,6 +122,7 @@ export class HeaderComponent {
    */
   logout(): void {
     this.authService.logout();
+    this.showProfileDropdown = false;
     this.cdr.markForCheck();
     this.router.navigate(["/"]);
   }
