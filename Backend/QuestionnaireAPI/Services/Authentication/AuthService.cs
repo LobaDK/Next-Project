@@ -37,7 +37,7 @@ public class AuthService(
         // Check maintenance mode FIRST
         if (_maintenanceMonitor.IsMaintenanceEnabled)
         {
-            return await AuthenticateMaintenanceModeAsync(username, password);
+            return AuthenticateMaintenanceMode(username, password);
         }
 
         try
@@ -117,7 +117,7 @@ public class AuthService(
         }
     }
 
-    private async Task<AuthenticationResponse?> AuthenticateMaintenanceModeAsync(string username, string password)
+    private AuthenticationResponse? AuthenticateMaintenanceMode(string username, string password)
     {
         // Only allow admin user during maintenance
         if (!IsAdminUser(username))
