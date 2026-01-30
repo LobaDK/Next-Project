@@ -3,20 +3,12 @@ using QuestionnaireDatabaseV2.Enums;
 
 namespace QuestionnaireAPI.Middleware;
 
-public class MaintenanceModeMiddleware
+public class MaintenanceModeMiddleware(RequestDelegate next, IMaintenanceMonitor maintenanceMonitor, ILogger<MaintenanceModeMiddleware> logger, IConfiguration configuration)
 {
-    private readonly RequestDelegate _next;
-    private readonly IMaintenanceMonitor _maintenanceMonitor;
-    private readonly ILogger<MaintenanceModeMiddleware> _logger;
-    private readonly SystemSettings _systemSettings;
-
-    public MaintenanceModeMiddleware(RequestDelegate next, IMaintenanceMonitor maintenanceMonitor, ILogger<MaintenanceModeMiddleware> logger, IConfiguration configuration)
-    {
-        _next = next;
-        _maintenanceMonitor = maintenanceMonitor;
-        _logger = logger;
-        _systemSettings = ConfigurationBinderService.Bind<SystemSettings>(configuration);
-    }
+    private readonly RequestDelegate _next = next;
+    private readonly IMaintenanceMonitor _maintenanceMonitor = maintenanceMonitor;
+    private readonly ILogger<MaintenanceModeMiddleware> _logger = logger;
+    private readonly SystemSettings _systemSettings = ConfigurationBinderService.Bind<SystemSettings>(configuration);
 
     public async Task InvokeAsync(HttpContext context)
     {
