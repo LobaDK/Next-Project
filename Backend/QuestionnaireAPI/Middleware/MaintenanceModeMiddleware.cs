@@ -37,6 +37,12 @@ public class MaintenanceModeMiddleware(RequestDelegate next, IMaintenanceMonitor
                     return;
                 }
             }
+            else
+            {
+                context.Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
+                await context.Response.WriteAsync("The system is currently under maintenance. Please try again later.");
+                return;
+            }
         }
 
         await _next(context);
