@@ -53,6 +53,33 @@ public class ActiveQuestionnaireRepository(Context context, ILoggerFactory logge
         return activeQuestionnaire.ToDto();
     }
 
+public async Task<ActiveQuestionnaire?>
+    GetFullActiveQuestionnaireForAnsweringAsync(
+        Guid activeQuestionnaireId,
+        Guid userGuid
+    )
+{
+    var entity = await _genericRepository.GetSingleAsync(
+        q =>
+            q.Id == activeQuestionnaireId &&
+            (
+                q.Student != null && q.Student.Guid == userGuid ||
+                q.Teacher != null && q.Teacher.Guid == userGuid
+            ),
+        query => query
+            .AsNoTracking()
+            .Include(q => q.Student)
+            .Include(q => q.Teacher)
+            .Include(q => q.QuestionnaireTemplate)
+                .ThenInclude(t => t.Questions)
+                    .ThenInclude(q => q.Options)
+    );
+
+    return entity?.ToDto();
+}
+
+
+
     /// <summary>
     /// Creates a new active questionnaire instance from a template and assigns it to specific participants.
     /// </summary>

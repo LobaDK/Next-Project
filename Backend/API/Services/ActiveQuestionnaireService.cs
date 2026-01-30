@@ -386,6 +386,11 @@ public class ActiveQuestionnaireService : IActiveQuestionnaireService
         return await _unitOfWork.ActiveQuestionnaire.GetFullActiveQuestionnaireAsync(id);
     }
 
+    public async Task<ActiveQuestionnaire?> FetchForansweringActiveQuestionnaire(Guid activeQuestionnaireId, Guid userGuid)
+    {
+        return await _unitOfWork.ActiveQuestionnaire.GetFullActiveQuestionnaireForAnsweringAsync(activeQuestionnaireId, userGuid);
+    }
+
     /// <summary>
     /// Activates a questionnaire template by creating an active questionnaire instance for a specific student and teacher.
     /// Ensures that both the student and teacher exist in the database, creating them if necessary.

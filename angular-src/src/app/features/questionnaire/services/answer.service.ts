@@ -47,6 +47,8 @@ export class AnswerService implements IAnswerService {
    * @param instanceId The questionnaire instance ID.
    */
   getActiveQuestionnaireById(instanceId: string): Observable<Questionnaire> {
-    return this.http.get<Questionnaire>(`${this.apiUrl}/active-questionnaire/${instanceId}`);
+    return this.http.get<Questionnaire>( `${this.apiUrl}/active-questionnaire/${instanceId}/answering`);
   }
 }
+
+

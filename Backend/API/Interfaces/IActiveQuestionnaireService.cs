@@ -14,6 +14,11 @@
         Task<Guid?> GetOldestActiveQuestionnaireForUser(Guid id);
         Task SubmitAnswers(Guid activeQuestionnaireId, Guid userId, AnswerSubmission submission);
         Task<FullResponse> GetFullResponseAsync(Guid id);
+        Task<ActiveQuestionnaire?> FetchForansweringActiveQuestionnaire(
+            Guid activeQuestionnaireId,
+            Guid userGuid
+        );
+
         Task<bool> HasUserSubmittedAnswer(Guid userId, Guid activeQuestionnaireId);
         Task<bool> IsActiveQuestionnaireComplete(Guid activeQuestionnaireId, Guid? userId = null);
         Task<List<FullStudentRespondsDate>> GetResponsesFromStudentAndTemplateAsync(Guid studentid, Guid templateid);

@@ -117,7 +117,7 @@ handleKeyboardEvent(event: KeyboardEvent): void {
   .subscribe((pm) => {
     const questionnaireId = pm.get('id');
     if (questionnaireId) {
-      this.checkAndLoadQuestionnaire(questionnaireId);
+      this.LoadQuestionnaire(questionnaireId);
     } else {
       console.error('No questionnaire ID found in route!');
     }
@@ -127,25 +127,27 @@ handleKeyboardEvent(event: KeyboardEvent): void {
  * Verifies whether the user already submitted the questionnaire;
  * loads details if not, otherwise navigates home.
  */
-  private checkAndLoadQuestionnaire(id: string) {
+  private LoadQuestionnaire(id: string) {
     this.isLoading = true;
     // First, check if the user has already submitted the questionnaire
-    this.answerService.hasUserSubmited(id).subscribe({
-      next: (hasSubmitted: boolean) => {
-        if (hasSubmitted) {
-          // If already submitted, navigate back to the root
-          this.router.navigate(['/']);
-        } else {
-          // If not submitted, load the questionnaire details
-          this.loadQuestionnaire(id);
+    this.answerService.getActiveQuestionnaireById(id)
+      .subscribe({
+        next: (template) => {
+          this.state.template = template;
+          this.updateProgress();
+          this.isLoading = false;
+        },
+        error: (error) => {
+          if (error.status === 403) {
+            this.router.navigate(['/']);
+            return;
+          }
+
+          this.errorMessage =
+            'An error occurred while loading the questionnaire.';
+          this.isLoading = false;
         }
-      },
-      error: (error) => {
-        console.error('Error checking submission status:', error);
-        this.errorMessage = 'An error occurred while checking the questionnaire status. Please try again later.';
-        this.isLoading = false;
-      }
-    });
+      });
   }
 
   /** Loads questionnaire template data and updates progress. */

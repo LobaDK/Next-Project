@@ -23,6 +23,12 @@ public interface IActiveQuestionnaireRepository
     /// <exception cref="ArgumentException">Thrown when the questionnaire ID is not found.</exception>
     Task<ActiveQuestionnaire> GetFullActiveQuestionnaireAsync(Guid id);
 
+    Task<ActiveQuestionnaire?> GetFullActiveQuestionnaireForAnsweringAsync(
+        Guid activeQuestionnaireId,
+        Guid userGuid
+    );
+
+
     /// <summary>
     /// Creates a new active questionnaire instance from a template and assigns it to specific student and teacher.
     /// </summary>
