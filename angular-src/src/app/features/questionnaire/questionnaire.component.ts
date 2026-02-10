@@ -40,6 +40,11 @@ export class QuestionnaireComponent {
   private snackBar = inject(MatSnackBar);
   private translate = inject(TranslateService);
 
+  // guard against constant opening of submit dialog
+
+  private isSubmitDialogOpen = false;
+  private isSubmitting = false;
+
   readonly user = this.authService.user;
 
   state: QuestionnaireState = {
@@ -240,10 +245,17 @@ handleKeyboardEvent(event: KeyboardEvent): void {
       alert('Please answer all questions before submitting.');
       return;
     }
+    if (this.isSubmitDialogOpen || this.isSubmitting || this.state.isCompleted) {
+      return;
+    }
     this.openSubmitConfirmDialog();
   }
 
   openSubmitConfirmDialog(): void {
+    if (this.isSubmitDialogOpen || this.isSubmitting) {
+      return;
+    }
+    this.isSubmitDialogOpen = true;
     this.dialog
       .open(SubmitConfirmDialog, {
         panelClass: 'app-modal',
@@ -253,6 +265,7 @@ handleKeyboardEvent(event: KeyboardEvent): void {
       })
       .afterClosed()
       .subscribe(confirmed => {
+        this.isSubmitDialogOpen = false;
         if (confirmed) {
           this.performSubmit();
         }
@@ -260,6 +273,10 @@ handleKeyboardEvent(event: KeyboardEvent): void {
   }
 
   private performSubmit(): void {
+    if (this.isSubmitting || this.state.isCompleted) {
+      return;
+    }
+    this.isSubmitting = true;
     const submission: AnswerSubmission = { answers: this.state.answers };
     this.answerService.submitAnswers(this.state.template.id, submission).subscribe({
       next: () => {
@@ -278,6 +295,7 @@ handleKeyboardEvent(event: KeyboardEvent): void {
       },
       error: (error) => {
         console.error('Error submitting questionnaire:', error);
+        this.isSubmitting = false;
         this.snackBar.open(
           this.translate.instant('QUESTIONNAIRE.SUBMIT_ERROR'),
           this.translate.instant('COMMON.BUTTONS.CLOSE'),
