@@ -539,6 +539,36 @@ namespace API.Controllers
             return Ok(await _questionnaireService.GetResponsesFromTeacherAndStudentAndTemplateWithDateAsync(studentid,teacherid, templateid));
         }
 
+        [HttpGet("{id}/answering")]
+        [Authorize(AuthenticationSchemes = "AccessToken", Policy = "StudentAndTeacherOnly")]
+        public async Task<ActionResult<ActiveQuestionnaire>> GetActiveQuestionnaireForAnswering(Guid id)
+        {
+            Guid userGuid;
+            try
+            {
+                userGuid = Guid.Parse(
+                    User.Claims.First(c => c.Type == JwtRegisteredClaimNames.Sub).Value
+                );
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error parsing user ID from claims");
+                return Unauthorized();
+            }
+
+            var questionnaire =
+                await _questionnaireService.FetchForansweringActiveQuestionnaire(
+                    id,
+                    userGuid
+                );
+
+            if (questionnaire == null)
+                return Forbid("AccessToken");
+
+            return Ok(questionnaire);
+        }
+
+
 
 
         /// <summary>

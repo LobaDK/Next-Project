@@ -40,6 +40,11 @@ export class QuestionnaireComponent {
   private snackBar = inject(MatSnackBar);
   private translate = inject(TranslateService);
 
+  // guard against constant opening of submit dialog
+
+  private isSubmitDialogOpen = false;
+  private isSubmitting = false;
+
   readonly user = this.authService.user;
 
   state: QuestionnaireState = {
@@ -117,7 +122,7 @@ handleKeyboardEvent(event: KeyboardEvent): void {
   .subscribe((pm) => {
     const questionnaireId = pm.get('id');
     if (questionnaireId) {
-      this.checkAndLoadQuestionnaire(questionnaireId);
+      this.LoadQuestionnaire(questionnaireId);
     } else {
       console.error('No questionnaire ID found in route!');
     }
@@ -127,25 +132,27 @@ handleKeyboardEvent(event: KeyboardEvent): void {
  * Verifies whether the user already submitted the questionnaire;
  * loads details if not, otherwise navigates home.
  */
-  private checkAndLoadQuestionnaire(id: string) {
+  private LoadQuestionnaire(id: string) {
     this.isLoading = true;
     // First, check if the user has already submitted the questionnaire
-    this.answerService.hasUserSubmited(id).subscribe({
-      next: (hasSubmitted: boolean) => {
-        if (hasSubmitted) {
-          // If already submitted, navigate back to the root
-          this.router.navigate(['/']);
-        } else {
-          // If not submitted, load the questionnaire details
-          this.loadQuestionnaire(id);
+    this.answerService.getActiveQuestionnaireById(id)
+      .subscribe({
+        next: (template) => {
+          this.state.template = template;
+          this.updateProgress();
+          this.isLoading = false;
+        },
+        error: (error) => {
+          if (error.status === 403) {
+            this.router.navigate(['/']);
+            return;
+          }
+
+          this.errorMessage =
+            'An error occurred while loading the questionnaire.';
+          this.isLoading = false;
         }
-      },
-      error: (error) => {
-        console.error('Error checking submission status:', error);
-        this.errorMessage = 'An error occurred while checking the questionnaire status. Please try again later.';
-        this.isLoading = false;
-      }
-    });
+      });
   }
 
   /** Loads questionnaire template data and updates progress. */
@@ -238,10 +245,17 @@ handleKeyboardEvent(event: KeyboardEvent): void {
       alert('Please answer all questions before submitting.');
       return;
     }
+    if (this.isSubmitDialogOpen || this.isSubmitting || this.state.isCompleted) {
+      return;
+    }
     this.openSubmitConfirmDialog();
   }
 
   openSubmitConfirmDialog(): void {
+    if (this.isSubmitDialogOpen || this.isSubmitting) {
+      return;
+    }
+    this.isSubmitDialogOpen = true;
     this.dialog
       .open(SubmitConfirmDialog, {
         panelClass: 'app-modal',
@@ -251,6 +265,7 @@ handleKeyboardEvent(event: KeyboardEvent): void {
       })
       .afterClosed()
       .subscribe(confirmed => {
+        this.isSubmitDialogOpen = false;
         if (confirmed) {
           this.performSubmit();
         }
@@ -258,6 +273,10 @@ handleKeyboardEvent(event: KeyboardEvent): void {
   }
 
   private performSubmit(): void {
+    if (this.isSubmitting || this.state.isCompleted) {
+      return;
+    }
+    this.isSubmitting = true;
     const submission: AnswerSubmission = { answers: this.state.answers };
     this.answerService.submitAnswers(this.state.template.id, submission).subscribe({
       next: () => {
@@ -276,6 +295,7 @@ handleKeyboardEvent(event: KeyboardEvent): void {
       },
       error: (error) => {
         console.error('Error submitting questionnaire:', error);
+        this.isSubmitting = false;
         this.snackBar.open(
           this.translate.instant('QUESTIONNAIRE.SUBMIT_ERROR'),
           this.translate.instant('COMMON.BUTTONS.CLOSE'),
