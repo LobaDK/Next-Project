@@ -71,7 +71,7 @@ public async Task<ActiveQuestionnaire?>
             .Include(q => q.Student)
             .Include(q => q.Teacher)
             .Include(q => q.QuestionnaireTemplate)
-                .ThenInclude(t => t.Questions)
+                .ThenInclude(t => t!.Questions)
                     .ThenInclude(q => q.Options)
     );
 
