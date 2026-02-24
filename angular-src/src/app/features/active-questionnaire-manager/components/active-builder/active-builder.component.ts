@@ -288,8 +288,8 @@ select(entity: SearchType, item: any): void {
      /** Show confirmation dialog before creating questionnaire */
   openCreateConfirmDialog(): void {
     const dialogData = {
-      title: this.isAnonymousMode ? 'ACTIVE_BUILDER.CONFIRM_ANONYMOUS_TITLE' : 'ACTIVE_BUILDER.CONFIRM_EVALUATION_TITLE',
-      text: this.isAnonymousMode ? 'ACTIVE_BUILDER.CONFIRM_ANONYMOUS_MESSAGE' : 'ACTIVE_BUILDER.CONFIRM_EVALUATION_MESSAGE',
+      title: this.isAnonymousMode ? 'ACTIVE_BUILDER.CONFIRM_AGGREGATED_TITLE' : 'ACTIVE_BUILDER.CONFIRM_EVALUATION_TITLE',
+      text: this.isAnonymousMode ? 'ACTIVE_BUILDER.CONFIRM_AGGREGATED_MESSAGE' : 'ACTIVE_BUILDER.CONFIRM_EVALUATION_MESSAGE',
       confirmText: 'ACTIVE_BUILDER.CONFIRM_YES',
       cancelText: 'ACTIVE_BUILDER.CONFIRM_NO'
     };
@@ -314,13 +314,13 @@ select(entity: SearchType, item: any): void {
   
     createActiveQuestionnaire(): void {
     if (this.isAnonymousMode) {
-      // Anonymous mode: only participants and template
+      // Aggregated mode: only participants and template
       if (
         !Array.isArray(this.student.selected) || this.student.selected.length === 0 ||
         !Array.isArray(this.template.selected) || this.template.selected.length === 0 ||
         !this.template.selected[0].id
       ) {
-        console.error('Missing required selections for Anonymous Questionnaire.');
+        console.error('Missing required selections for Aggregated Questionnaire.');
         return;
       }
       const payload = {
@@ -329,7 +329,7 @@ select(entity: SearchType, item: any): void {
       };
       this.activeService.createAnonymousQuestionnaireGroup(payload).subscribe(() => {
         this.snackBar.open(
-          this.translate.instant('ACTIVE_BUILDER.ANONYMOUS_SUCCESS'),
+          this.translate.instant('ACTIVE_BUILDER.AGGREGATED_SUCCESS'),
           this.translate.instant('COMMON.BUTTONS.CLOSE'),
           {
             duration: 5000,
