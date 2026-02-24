@@ -126,7 +126,7 @@ public partial class ActiveDirectoryAuthenticationBridge(
     public override TUser? SearchUser<TUser>(string username) where TUser : default
     {
         _Logger.LogDebug("Starting user search for: {Username}", username);
-        
+
         string domain = _LdapSettings.FQDN.Split(".", 2).Last();
 
         // NETBIOS\\username
@@ -134,7 +134,7 @@ public partial class ActiveDirectoryAuthenticationBridge(
         // username@domain
         string userPrincipalName = $"{sAMAccountName.Split('\\').Last()}@{domain}";
 
-        string searchFilter = $"(|(userPrincipalName={userPrincipalName})(sAMAccountName={sAMAccountName}))";
+        string searchFilter = EscapeLDAPSearchFilter($"(|(userPrincipalName={userPrincipalName})(sAMAccountName={sAMAccountName}))");
         _Logger.LogDebug("Using search filter: {SearchFilter} with BaseDN: {BaseDN}", searchFilter, _LdapSettings.BaseDN);
 
         var users = SearchLDAP<TUser>(searchFilter, _LdapSettings.BaseDN, LdapConnection.ScopeSub);
