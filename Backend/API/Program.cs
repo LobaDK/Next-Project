@@ -201,42 +201,6 @@ var app = builder.Build();
 
 app.UseCors("AllowedOrigins");
 
-// Ensure the database is created and migrated
-using (IServiceScope scope = app.Services.CreateScope())
-{
-    IServiceProvider services = scope.ServiceProvider;
-    Context context = services.GetRequiredService<Context>();
-    if (context.Database.GetService<IDatabaseCreator>() is RelationalDatabaseCreator databaseCreator)
-    {
-        ILogger<Program> logger = services.GetRequiredService<ILogger<Program>>();
-        int max_attempts = 3;
-        
-        for (int attempt = 0; attempt < max_attempts; attempt++)
-        {
-            if (context.Database.CanConnect())
-            {
-                context.Database.Migrate();
-            }
-            else if (!databaseCreator.Exists())
-            {
-                logger.LogInformation("Database does not exist, creating it...");
-                databaseCreator.Create();
-                context.Database.Migrate();
-            }
-            else
-            {
-                logger.LogWarning("Waiting for database to be created/migrated... ({attempt}/{max_attempts})", attempt + 1, max_attempts);
-                Thread.Sleep(TimeSpan.FromSeconds(30));
-                if (attempt == max_attempts - 1)
-                {
-                    logger.LogCritical("Database is not reachable, exiting.");
-                    Environment.Exit(1);
-                }
-            }
-        }
-    }
-}
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -245,6 +209,42 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
         options.RoutePrefix = string.Empty;
     });
+
+    // Ensure the database is created and migrated
+    using (IServiceScope scope = app.Services.CreateScope())
+    {
+        IServiceProvider services = scope.ServiceProvider;
+        Context context = services.GetRequiredService<Context>();
+        if (context.Database.GetService<IDatabaseCreator>() is RelationalDatabaseCreator databaseCreator)
+        {
+            ILogger<Program> logger = services.GetRequiredService<ILogger<Program>>();
+            int max_attempts = 3;
+            
+            for (int attempt = 0; attempt < max_attempts; attempt++)
+            {
+                if (context.Database.CanConnect())
+                {
+                    context.Database.Migrate();
+                }
+                else if (!databaseCreator.Exists())
+                {
+                    logger.LogInformation("Database does not exist, creating it...");
+                    databaseCreator.Create();
+                    context.Database.Migrate();
+                }
+                else
+                {
+                    logger.LogWarning("Waiting for database to be created/migrated... ({attempt}/{max_attempts})", attempt + 1, max_attempts);
+                    Thread.Sleep(TimeSpan.FromSeconds(30));
+                    if (attempt == max_attempts - 1)
+                    {
+                        logger.LogCritical("Database is not reachable, exiting.");
+                        Environment.Exit(1);
+                    }
+                }
+            }
+        }
+    }
 }
 
 if (systemSettings.UseSSL)
