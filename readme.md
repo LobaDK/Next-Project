@@ -13,26 +13,22 @@ A questionnaire application for students and teachers where users are assigned t
 
 ## Running the Application
 
-### Backend Configuration
-On first run, the application generates a `config.json` file in the `Backend/API` directory with default settings. Edit this file to match your environment:
-- **ConnectionString**: Update database connection details (SQL Server location, credentials)
-- **JWT**: Set secure access and refresh token secrets (minimum 32 characters)
-- **LDAP** (optional): Configure LDAP server settings for authentication
-- **Logging**: Adjust log levels and file paths as needed
-
-For detailed configuration options, see [docs/markdown/backend/getting-started.md](docs/markdown/backend/getting-started.md).
 
 ### Backend Setup
 1. Navigate to the `Backend/API` directory
 2. Restore packages: `dotnet restore`
 3. Build the project: `dotnet build`
 4. Run the application: `dotnet run`
-5. The API will be available at:
-   - **HTTPS**: https://localhost:7135
-   - **HTTP**: http://localhost:5284
-   - **Swagger UI**: https://localhost:7135 (in Development mode)
 
 > **Note**: The database will be created and migrations applied automatically on first run. Update `config.json` as needed before running.
+
+### Backend Configuration
+On first run, the application generates a `config.json` file in the `Backend/API` directory with default settings. Edit this file to match your environment:
+- **ConnectionString**: Update database connection details (SQL Server location, credentials)
+- **JWT**: Set secure access and refresh token secrets (minimum 32 characters)
+- **LDAP**: Configure LDAP server settings for authentication
+
+For detailed configuration options, see [docs/markdown/backend/getting-started.md](docs/markdown/backend/getting-started.md).
 
 ### Frontend
 1. Navigate to the angular-src directory
