@@ -7,7 +7,7 @@ The **src/app** directory is the heart of the application. It includes core comp
 
 - **app.config.ts**: Contains application-wide settings and constants, and is imported in `main.ts` during initialization. This file also includes logic for toggling between mock data and real services.
 
-  > **Warning:** The mock service functionality is **outdated and not up to date**. It is not recommended to use mock services in the current version of the application.
+  > **Warning:** The mock service functionality is **outdated**. It is not recommended to use mock services in the current version of the application.
   
   > **Note:** When using mock services, ensure that the names and return types match those of the real services to avoid runtime errors. The switch between mock and real services is controlled via a `useClass` setting in this file, based on the flags set in either `environment.development.ts` or `environment.ts`.
 

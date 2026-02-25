@@ -12,13 +12,12 @@ A questionnaire application for students and teachers where users are assigned t
 - **Testing**: xUnit (UnitTests project)
 
 ## Running the Application
-
 ### Backend
-1. Navigate to the Backend/API directory
+1. Navigate to the `Backend/API` directory
 2. Restore dependencies: `dotnet restore`
-3. Update database: `dotnet ef database update`
+3. Update database (run EF Core migrations): `dotnet ef database update`
 4. Run the API: `dotnet run`
-5. On initial run, edit the `config.json` file to match environment
+5. The API will be available at `https://localhost:5001` or `http://localhost:5000`
 
 ### Frontend
 1. Navigate to the angular-src directory
