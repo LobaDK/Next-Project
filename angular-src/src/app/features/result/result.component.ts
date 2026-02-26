@@ -18,15 +18,6 @@ import { Subject, takeUntil } from "rxjs";
     providers: [ResultService, PdfGenerationService],
     imports: [RouterModule, FormsModule, TranslateModule, ShowResultComponent],
     templateUrl: "./result.component.html",
-    template: `
-    <button (click)="updateChart('stacked')">Stacked</button>
-    <button (click)="updateChart('donut')">Donut</button>
-    @if (chartOptions) {
-      <ag-charts-angular
-        [options]="chartOptions"
-      ></ag-charts-angular>
-    }
-    `,
     styleUrls: ["./result.component.css"]
 })
 export class ResultComponent implements OnInit, OnDestroy{
