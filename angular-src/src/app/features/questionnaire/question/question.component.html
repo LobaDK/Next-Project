@@ -18,7 +18,7 @@
           (change)="onOptionSelect(option.id)"
           >
           <span
-            class="w-6 h-6 flex items-center justify-center rounded-full border border-primary_orange_1 bg-white mr-3"
+            class="w-6 h-6 min-w-6 min-h-6 flex items-center justify-center rounded-full border border-primary_orange_1 bg-white mr-3 shrink-0"
     [ngClass]="{
       'bg-orange-100 border-orange-600': answer?.optionId === option.id
     }"
@@ -48,7 +48,7 @@
             (change)="onCustomAnswerSelect()"
             >
             <span
-              class="w-6 h-6 flex items-center justify-center rounded-full border border-primary_orange_1 bg-white mr-3"
+              class="w-6 h-6 min-w-6 min-h-6 flex items-center justify-center rounded-full border border-primary_orange_1 bg-white mr-3 shrink-0"
     [ngClass]="{
       'bg-orange-100 border-orange-600': isCustomAnswerSelected
     }"
