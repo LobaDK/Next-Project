@@ -1,23 +1,40 @@
-## angular-src/
-Angular Application source code used for the front-end.
+# Questionnaire project
 
-## front-end/
-Static build files from the Angular application that are served from a web server.
-Git is set to ignore this folder since build artifacts can easily be regenerated, and may often change while testing.
+## Project Overview
+A questionnaire application for students and teachers where users are assigned to answer questionnaires and teachers can compare results.
 
-## back-end/
-API running on the Python library FastAPI, communicating with the database.
-- `Pipfile` & `Pipfile.lock` are used to track the dependencies for Python
+## Tech Stack
+- **Frontend**: Angular 21, Angular Material, TailwindCSS
+- **Backend**: ASP.NET Core Web API (.NET 8.0)
+- **Database**: SQL Server with Entity Framework Core 9.0
+- **Logging**: Serilog with custom database logger
+- **Documentation**: DocFX
+- **Testing**: xUnit (UnitTests project)
 
-## Scripts/
-- `build-angular.bat` Batch script for building Angular app and automatically moving it to `front-end/`. Takes arg "prod" (`build-angular.bat prod`) to indicate it should build for production.
-- `build-angular.sh` Bash shell script for building Angular app and automatically moving it to `front-end/`. Takes arg "prod" (`build-angular.sh prod`) to indicate it should build for production.
+## Running the Application
 
-## root
-- `package.json` is the node project package file.
 
-## Running
-- `npm run install-dependencies` to install dependencies for both Node and Python.
-- `npm run start` to both build and serve the Angular app, and start the API.
-- `npm run start-backend` to only start the API.
-- `npm run start-frontend` to only build and serve the Angular app.
+### Backend Setup
+1. Navigate to the `Backend/API` directory
+2. Restore packages: `dotnet restore`
+3. Build the project: `dotnet build`
+4. Run the application: `dotnet run`
+
+> **Note**: The database will be created and migrations applied automatically on first run. Update `config.json` as needed before running.
+
+### Backend Configuration
+On first run, the application generates a `config.json` file in the `Backend/API` directory with default settings. Edit this file to match your environment:
+- **ConnectionString**: Update database connection details (SQL Server location, credentials)
+- **JWT**: Set secure access and refresh token secrets (minimum 32 characters)
+- **LDAP**: Configure LDAP server settings for authentication
+
+For detailed configuration options, see [docs/markdown/backend/getting-started.md](docs/markdown/backend/getting-started.md).
+
+### Frontend
+1. Navigate to the angular-src directory
+2. Install dependencies: `npm install`
+3. Start the development server: `ng serve`
+4. Open browser to `http://localhost:4200`
+
+## Documentation
+Comprehensive API documentation is available using DocFX. The documentation is located in the `docs/` directory and includes detailed information about API endpoints, controllers, DTOs, and project architecture. To view the documentation, navigate to `docs/_site/index.html` after building with DocFX.

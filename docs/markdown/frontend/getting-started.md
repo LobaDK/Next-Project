@@ -27,6 +27,9 @@ Application available at `http://localhost:4200`
 - `src/environments/environment.development.ts` - Development settings
 
 ### Mock Services
+
+> **Warning:** The mock service functionality is **outdated and not up to date**. It is strongly recommended to use the real API services instead of mock services in development.
+
 The application can use mock services for development by setting the `useMock` flag in environment files:
 
 ```typescript
