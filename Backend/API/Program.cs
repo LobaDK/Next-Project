@@ -1,3 +1,5 @@
+using API.Middleware.RateLimiter;
+
 const string settingsFile = "config.json";
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,6 +34,7 @@ Serilog.Core.Logger seriLogger = new LoggerConfiguration().ReadFrom.Configuratio
         .CreateLogger();
 
 builder.Logging.AddSerilog(seriLogger);
+bootstrapLoggerFactory.AddSerilog(seriLogger);
 
 // Add services to the container.
 
@@ -196,6 +199,10 @@ builder.Services.AddAuthorizationBuilder()
                       .AddPolicy("AdminAndTeacherOnly", policy => policy.RequireRole("admin", "teacher"))
                       .AddPolicy("StudentAndTeacherOnly", policy => policy.RequireRole("student", "teacher"));
 
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddPolicy("global", new GlobalRateLimiterPolicy(bootstrapLoggerFactory.CreateLogger<GlobalRateLimiterPolicy>(), builder.Configuration));
+});
 
 var app = builder.Build();
 
@@ -259,6 +266,8 @@ app.UseAuthorization();
 
 app.UseWebSockets();
 
-app.MapControllers();
+app.UseRateLimiter();
+
+app.MapControllers().RequireRateLimiting("global");
 
 app.Run();
