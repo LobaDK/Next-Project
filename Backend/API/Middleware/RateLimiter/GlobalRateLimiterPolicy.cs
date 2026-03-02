@@ -40,9 +40,9 @@ public class GlobalRateLimiterPolicy(ILogger<GlobalRateLimiterPolicy> logger) : 
 
             _logger.LogWarning("Rate limit exceeded for partition '{Partition}'.", partition);
 
-            context.HttpContext.Response.WriteAsync(msg, token);
-            return new ValueTask();
+            return new ValueTask(context.HttpContext.Response.WriteAsync(msg, token));
         };
+    
     
     private string GetPartitionKey(HttpContext httpContext)
     {
