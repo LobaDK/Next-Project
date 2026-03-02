@@ -58,7 +58,7 @@ export class ResultHistoryComponent implements OnInit {
   public translate = inject(TranslateService)
   
   // View toggle state
-  public currentView: 'evaluation' | 'anonymous' = 'evaluation';
+  public currentView: 'evaluation' | 'aggregated' = 'evaluation';
   
   public searchEnum = SearchEnum;
   public student = this.createSearchState<User>();
@@ -649,7 +649,7 @@ public TestGraf() {
     }
   }
 
-  public switchView(view: 'evaluation' | 'anonymous') {
+  public switchView(view: 'evaluation' | 'aggregated') {
     this.currentView = view;
   }
 

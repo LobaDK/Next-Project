@@ -421,14 +421,14 @@ getQuestionnaireGroups(): Observable<any[]> {
   return of(mockGroups).pipe(delay(300));
 }
 
-createAnonymousQuestionnaireGroup(payload: { participantIds: string[], templateId: string }): Observable<any> {
-  const anonymousGroup = {
-    groupId: `anon-group-${Date.now()}`,
+createAggregatedQuestionnaireGroup(payload: { participantIds: string[], templateId: string }): Observable<any> {
+  const aggregatedGroup = {
+    groupId: `aggregated-group-${Date.now()}`,
     templateId: payload.templateId,
     participantIds: payload.participantIds,
     createdAt: new Date()
   };
-  return of(anonymousGroup).pipe(delay(500));
+  return of(aggregatedGroup).pipe(delay(500));
 }
 
 getQuestionnaireGroupsPaginated(
