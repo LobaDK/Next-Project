@@ -2,14 +2,14 @@
   class="flex flex-col w-full bg-primary_background_white/80 shadow-xl rounded-2xl p-4 sm:p-10 border-2 border-primary_orange_1  xl:w-[1280px] lg:w-[994px] md:w-[738px] ">
   <div class="flex flex-col sm:flex-row items-center justify-between mb-6 sm:mb-8 space-y-3 sm:space-y-0">
     <h2 class="text-xl sm:text-3xl font-bold text-primary_dark_blue text-center sm:text-left m-0">
-      {{ isAnonymousMode ? ('ACTIVE_BUILDER.AGGREGATED_QUESTIONNAIRE' | translate) : ('ACTIVE_BUILDER.EVALUATION_QUESTIONNAIRE' | translate) }}
+      {{ isAggregatedMode ? ('ACTIVE_BUILDER.AGGREGATED_QUESTIONNAIRE' | translate) : ('ACTIVE_BUILDER.EVALUATION_QUESTIONNAIRE' | translate) }}
     </h2>
   </div>
 
 
 
   <!-- Normal Mode -->
-  @if (!isAnonymousMode) {
+  @if (!isAggregatedMode) {
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full items-start">
       <!-- Left Side: Search Inputs -->
       <div class="space-y-6" #leftColumn>

@@ -42,7 +42,7 @@ export class ActiveBuilderComponent implements OnInit, AfterViewChecked {
   private snackBar = inject(MatSnackBar);
   private translate = inject(TranslateService);
   public groupName: string = '';
-  public isAnonymousMode = false;
+  public isAggregatedMode = false;
   public groupNameError: string = '';
   public studentError: string = '';
   public teacherError: string = '';
@@ -154,14 +154,14 @@ private handleDocumentClick = (event: MouseEvent) => {
   }
 
   ngAfterViewChecked(): void {
-    if (this.leftColumn && !this.isAnonymousMode) {
+    if (this.leftColumn && !this.isAggregatedMode) {
       const newHeight = this.leftColumn.nativeElement.offsetHeight;
       if (this.leftColumnHeight !== newHeight) {
         this.leftColumnHeight = newHeight;
         this.cdr.detectChanges();
       }
     }
-    if (this.leftColumnAnon && this.isAnonymousMode) {
+    if (this.leftColumnAnon && this.isAggregatedMode) {
       const newHeight = this.leftColumnAnon.nativeElement.offsetHeight;
       if (this.leftColumnAnonHeight !== newHeight) {
         this.leftColumnAnonHeight = newHeight;
@@ -288,8 +288,8 @@ select(entity: SearchType, item: any): void {
      /** Show confirmation dialog before creating questionnaire */
   openCreateConfirmDialog(): void {
     const dialogData = {
-      title: this.isAnonymousMode ? 'ACTIVE_BUILDER.CONFIRM_AGGREGATED_TITLE' : 'ACTIVE_BUILDER.CONFIRM_EVALUATION_TITLE',
-      text: this.isAnonymousMode ? 'ACTIVE_BUILDER.CONFIRM_AGGREGATED_MESSAGE' : 'ACTIVE_BUILDER.CONFIRM_EVALUATION_MESSAGE',
+      title: this.isAggregatedMode ? 'ACTIVE_BUILDER.CONFIRM_AGGREGATED_TITLE' : 'ACTIVE_BUILDER.CONFIRM_EVALUATION_TITLE',
+      text: this.isAggregatedMode ? 'ACTIVE_BUILDER.CONFIRM_AGGREGATED_MESSAGE' : 'ACTIVE_BUILDER.CONFIRM_EVALUATION_MESSAGE',
       confirmText: 'ACTIVE_BUILDER.CONFIRM_YES',
       cancelText: 'ACTIVE_BUILDER.CONFIRM_NO'
     };
@@ -313,7 +313,7 @@ select(entity: SearchType, item: any): void {
 
   
     createActiveQuestionnaire(): void {
-    if (this.isAnonymousMode) {
+    if (this.isAggregatedMode) {
       // Aggregated mode: only participants and template
       if (
         !Array.isArray(this.student.selected) || this.student.selected.length === 0 ||
