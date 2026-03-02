@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.RateLimiting;
 
@@ -37,13 +39,23 @@ public class GlobalRateLimiterPolicy(ILogger<GlobalRateLimiterPolicy> logger) : 
             }
 
             string partition = GetPartitionKey(context.HttpContext);
+            string hashedPartition = HashPartitionKey(partition);
 
-            _logger.LogWarning("Rate limit exceeded for partition '{Partition}'.", partition);
+            _logger.LogWarning("Rate limit exceeded for partition '{Partition}'.", hashedPartition);
 
             return new ValueTask(context.HttpContext.Response.WriteAsync(msg, token));
         };
     
     
+    private static string HashPartitionKey(string key)
+    {
+        if (string.IsNullOrEmpty(key))
+            return "empty";
+
+        byte[] hash = SHA256.HashData(Encoding.UTF8.GetBytes(key));
+        return Convert.ToHexString(hash)[..32];
+    }
+
     private string GetPartitionKey(HttpContext httpContext)
     {
         string key;
