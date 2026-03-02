@@ -201,7 +201,7 @@ builder.Services.AddAuthorizationBuilder()
 
 builder.Services.AddRateLimiter(options =>
 {
-    options.AddPolicy<string>("global", new GlobalRateLimiterPolicy(new Logger<GlobalRateLimiterPolicy>(bootstrapLoggerFactory)));
+    options.AddPolicy<string>("global", new GlobalRateLimiterPolicy(bootstrapLoggerFactory.CreateLogger<GlobalRateLimiterPolicy>()));
 });
 
 var app = builder.Build();
