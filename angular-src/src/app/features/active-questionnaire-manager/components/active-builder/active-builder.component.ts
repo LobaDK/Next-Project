@@ -327,7 +327,7 @@ select(entity: SearchType, item: any): void {
         participantIds: this.student.selected.map(s => s.id),
         templateId: this.template.selected[0].id
       };
-      this.activeService.createAnonymousQuestionnaireGroup(payload).subscribe(() => {
+      this.activeService.createAggregatedQuestionnaireGroup(payload).subscribe(() => {
         this.snackBar.open(
           this.translate.instant('ACTIVE_BUILDER.AGGREGATED_SUCCESS'),
           this.translate.instant('COMMON.BUTTONS.CLOSE'),
