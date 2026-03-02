@@ -270,6 +270,4 @@ app.UseRateLimiter();
 
 app.MapControllers().RequireRateLimiting("global");
 
-app.UseRateLimiter();
-
 app.Run();
