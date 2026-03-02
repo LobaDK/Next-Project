@@ -5,21 +5,28 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace API.Middleware.RateLimiter;
 
-public class GlobalRateLimiterPolicy(ILogger<GlobalRateLimiterPolicy> logger) : IRateLimiterPolicy<string>
+public class GlobalRateLimiterPolicy(ILogger<GlobalRateLimiterPolicy> logger, IConfiguration configuration) : IRateLimiterPolicy<string>
 {
     private readonly ILogger<GlobalRateLimiterPolicy> _logger = logger;
+    private readonly IConfiguration _configuration = configuration;
+
     public RateLimitPartition<string> GetPartition(HttpContext httpContext)
     {
         string key = GetPartitionKey(httpContext);
+        
+        // Read configuration values with defaults
+        int permitLimit = _configuration.GetValue("RateLimiting:PermitLimit", 100);
+        int queueLimit = _configuration.GetValue("RateLimiting:QueueLimit", 10);
+        int windowMinutes = _configuration.GetValue("RateLimiting:WindowMinutes", 1);
         
         return RateLimitPartition.GetFixedWindowLimiter(key,
         partition => new FixedWindowRateLimiterOptions
         {
             AutoReplenishment = true,
-            PermitLimit = 100,
-            QueueLimit = 10,
+            PermitLimit = permitLimit,
+            QueueLimit = queueLimit,
             QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-            Window = TimeSpan.FromMinutes(1)
+            Window = TimeSpan.FromMinutes(windowMinutes)
         });
     }
 
