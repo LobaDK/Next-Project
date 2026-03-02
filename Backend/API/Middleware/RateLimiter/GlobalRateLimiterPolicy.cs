@@ -49,20 +49,21 @@ public class GlobalRateLimiterPolicy(ILogger<GlobalRateLimiterPolicy> logger) : 
         string key;
         if (httpContext.User.Identity?.IsAuthenticated == true)
         {
-            try
+            List<Claim> uniqueNameClaims = [.. httpContext.User.Claims.Where(claim => claim.Type == "unique_name")];
+
+            if (uniqueNameClaims.Count == 1)
             {
-                key = httpContext.User.Claims.Single(claim => claim.Type == "unique_name").Value;
+                key = uniqueNameClaims[0].Value;
             }
-            catch (InvalidOperationException ex)
+            else
             {
                 List<string> claimTypes = [.. httpContext.User.Claims.Select(claim => claim.Type)];
-                _logger.LogError(ex, "Error extracting unique_name claim for rate limiting. Falling back to remote IP address. Available claims: {Claims}", string.Join(", ", claimTypes));
+                _logger.LogError("Error extracting unique_name claim for rate limiting (found {Count} matching claims). Falling back to remote IP address. Available claims: {Claims}", uniqueNameClaims.Count, string.Join(", ", claimTypes));
                 key = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
             }
         }
         else
         {
-            key = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
             var ipAddress = httpContext.Connection.RemoteIpAddress?.ToString();
             key = string.IsNullOrEmpty(ipAddress) ? "anonymous" : ipAddress;
         }
