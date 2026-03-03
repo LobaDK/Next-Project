@@ -20,6 +20,9 @@ global using API.Extensions;
 global using API.FieldMappers;
 global using API.Interfaces;
 global using API.Services;
+global using API.Validators;
+
+global using FluentValidation;
 
 global using Database;
 global using Database.DTO.ActiveQuestionnaire;
