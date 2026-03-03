@@ -54,7 +54,7 @@ private deepCopyAsNewTemplate(template: Template): Template {
 
   // If it has an ID, replace with a unique negative ID
   // If it has no ID, leave it undefined
-  clone.id = clone.id ? `temp-${Date.now()}` : undefined;
+  // clone.id = clone.id ? `temp-${Date.now()}` : undefined;
 
   // Reset meta fields
   clone.createdAt = undefined;
