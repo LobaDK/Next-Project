@@ -275,6 +275,6 @@ public async Task<QuestionnaireTemplate> FinalizeTemplate(Guid id)
 
     public async Task<bool> IsTitleAvailable(string templateTitle)
     {
-        return await _unitOfWork.QuestionnaireTemplate.IsTitleAvailable(templateTitle);
+        return await _unitOfWork.QuestionnaireTemplate.DoesTitleExist(templateTitle);
     }
 }
