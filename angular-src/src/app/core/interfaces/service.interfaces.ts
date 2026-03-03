@@ -95,7 +95,7 @@ export interface IActiveService {
   createActiveQuestionnaireGroup(aq: { name: string; templateId: string; studentIds: string[]; teacherIds: string[] }): Observable<any>;
   getQuestionnaireGroup(groupId: string): Observable<any>;
   getQuestionnaireGroups(): Observable<any[]>;
-  createAnonymousQuestionnaireGroup(payload: { participantIds: string[], templateId: string }): Observable<any>;
+  createAggregatedQuestionnaireGroup(payload: { participantIds: string[], templateId: string }): Observable<any>;
 }
 
 export interface IResultService {

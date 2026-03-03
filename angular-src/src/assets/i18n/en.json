@@ -256,7 +256,7 @@
     "SUBMIT_ERROR": "There was an error submitting your questionnaire. Please try again later."
   },
   "DATA_COMPARE" : {
-    "TITLE": "Show Results for Anonymous Questionnaires",
+    "TITLE": "Show Results for Aggregated Questionnaires",
     "VIEW_EVALUATION_RESULTS": "View Evaluation Results",
     "SELECT_GROUP_LABEL": "Select Group",
     "SEARCH_GROUP_PLACEHOLDER": "Search groups...",
@@ -326,8 +326,8 @@
   "RESULT_HISTORY": {
     "TITLE": "Student Result History",
     "EVALUATION_RESULTS": "Evaluation Results",
-    "ANONYMOUS_RESULTS": "Anonymous Results",
-    "VIEW_ANONYMOUS_RESULTS": "View Anonymous Results",
+    "AGGREGATED_RESULTS": "Aggregated Results",
+    "VIEW_AGGREGATED_RESULTS": "View Aggregated Results",
     "SELECT_STUDENT": "Select Student",
     "SELECT_QUESTIONNAIRE": "Select Questionnaire",
     "SEARCH_STUDENTS": "Search students...",
@@ -360,10 +360,10 @@
   },
 
   "ACTIVE_BUILDER": {
-    "ANONYMOUS_QUESTIONNAIRE": "Anonymous Questionnaire",
+    "AGGREGATED_QUESTIONNAIRE": "Aggregated Questionnaire",
     "EVALUATION_QUESTIONNAIRE": "Evaluation Questionnaire",
     "SWITCH_TO_EVALUATION": "Switch to evaluation questionnaire",
-    "SWITCH_TO_ANONYMOUS": "Switch to anonymous questionnaire",
+    "SWITCH_TO_AGGREGATED": "Switch to aggregated questionnaire",
     "UNDER_CONSTRUCTION": "Under Construction",
     "UNDER_CONSTRUCTION_DESC": "This feature is currently being developed and will be available soon.",
     "SEARCH_PARTICIPANTS": "Search for participants (name, class, etc.)",
@@ -388,16 +388,16 @@
     "CLEAR_ALL": "Clear All",
     "CREATE_QUESTIONNAIRE_NAME": "Create questionnaire name",
     "PLACEHOLDER_EVALUATION_NAME": "e.g. 'Class123 - student evaluation'",
-    "PLACEHOLDER_ANONYMOUS_NAME": "e.g. 'Teaching Evaluation - All Students'",
+    "PLACEHOLDER_AGGREGATED_NAME": "e.g. 'Teaching Evaluation - All Students'",
     "FINISH": "Finish",
     "CANCEL": "Cancel",
-    "CONFIRM_ANONYMOUS_TITLE": "Confirm Anonymous Questionnaire Creation",
-    "CONFIRM_ANONYMOUS_MESSAGE": "Are you sure you want to create this anonymous questionnaire? This action will assign the selected template to all chosen participants.",
+    "CONFIRM_AGGREGATED_TITLE": "Confirm Aggregated Questionnaire Creation",
+    "CONFIRM_AGGREGATED_MESSAGE": "Are you sure you want to create this aggregated questionnaire? This action will assign the selected template to all chosen participants.",
     "CONFIRM_EVALUATION_TITLE": "Confirm Evaluation Questionnaire Creation",
     "CONFIRM_EVALUATION_MESSAGE": "Are you sure you want to create this evaluation questionnaire? This action will assign the selected template to all chosen students and teachers.",
     "CONFIRM_YES": "Yes, Create Questionnaire",
     "CONFIRM_NO": "No, Cancel",
-    "ANONYMOUS_SUCCESS": "Anonymous questionnaire created successfully!",
+    "AGGREGATED_SUCCESS": "Aggregated questionnaire created successfully!",
     "EVALUATION_SUCCESS": "Evaluation questionnaire created successfully!"
   }
 }

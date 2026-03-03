@@ -257,7 +257,7 @@
   },
 
   "DATA_COMPARE" : {
-    "TITLE": "Vis resultater på anonyme spørgeskemaer",
+    "TITLE": "Vis resultater på aggregerede spørgeskemaer",
     "VIEW_EVALUATION_RESULTS": "Vis Evaluerings Resultater",
     "SELECT_GROUP_LABEL": "Vælg Gruppe",
     "SEARCH_GROUP_PLACEHOLDER": "Søg grupper...",
@@ -329,8 +329,8 @@
   "RESULT_HISTORY": {
     "TITLE": "Elev Resultat Historik",
     "EVALUATION_RESULTS": "Evaluerings Resultater",
-    "ANONYMOUS_RESULTS": "Anonyme Resultater",
-    "VIEW_ANONYMOUS_RESULTS": "Vis Anonyme Resultater",
+    "AGGREGATED_RESULTS": "Aggregerede Resultater",
+    "VIEW_AGGREGATED_RESULTS": "Vis Aggregerede Resultater",
     "SELECT_STUDENT": "Vælg Elev",
     "SELECT_QUESTIONNAIRE": "Vælg Spørgeskema",
     "SEARCH_STUDENTS": "Søg elever...",
@@ -362,10 +362,10 @@
   },
 
   "ACTIVE_BUILDER": {
-    "ANONYMOUS_QUESTIONNAIRE": "Anonymt Spørgeskema",
+    "AGGREGATED_QUESTIONNAIRE": "Aggregeret Spørgeskema",
     "EVALUATION_QUESTIONNAIRE": "Evaluerings spørgeskema",
     "SWITCH_TO_EVALUATION": "Skift til evaluerings spørgeskema",
-    "SWITCH_TO_ANONYMOUS": "Skift til anonymt Spørgeskema",
+    "SWITCH_TO_AGGREGATED": "Skift til aggregeret Spørgeskema",
     "UNDER_CONSTRUCTION": "Under Konstruktion",
     "UNDER_CONSTRUCTION_DESC": "Denne funktion er i øjeblikket under udvikling og vil være tilgængelig snart.",
     "SEARCH_PARTICIPANTS": "Søg efter deltagere (navn, hold e.l.):",
@@ -390,16 +390,16 @@
     "CLEAR_ALL": "Ryd Alle",
     "CREATE_QUESTIONNAIRE_NAME": "Opret navn på spørgeskema",
     "PLACEHOLDER_EVALUATION_NAME": "f.eks. 'Hold123 - evaluering af elever'",
-    "PLACEHOLDER_ANONYMOUS_NAME": "f.eks. 'Evaluering af undervisning - Alle Elever'",
+    "PLACEHOLDER_AGGREGATED_NAME": "f.eks. 'Evaluering af undervisning - Alle Elever'",
     "FINISH": "Færdiggør",
     "CANCEL": "Annuller",
-    "CONFIRM_ANONYMOUS_TITLE": "Bekræft Oprettelse af Anonymt Spørgeskema",
-    "CONFIRM_ANONYMOUS_MESSAGE": "Er du sikker på, at du vil oprette dette anonyme spørgeskema? Denne handling vil tildele den valgte skabelon til alle udvalgte deltagere.",
+    "CONFIRM_AGGREGATED_TITLE": "Bekræft Oprettelse af Aggregeret Spørgeskema",
+    "CONFIRM_AGGREGATED_MESSAGE": "Er du sikker på, at du vil oprette dette aggregerede spørgeskema? Denne handling vil tildele den valgte skabelon til alle udvalgte deltagere.",
     "CONFIRM_EVALUATION_TITLE": "Bekræft Oprettelse af Evalueringsspørgeskema",
     "CONFIRM_EVALUATION_MESSAGE": "Er du sikker på, at du vil oprette dette evalueringsspørgeskema? Denne handling vil tildele den valgte skabelon til alle udvalgte elever og lærere.",
     "CONFIRM_YES": "Ja, Opret Spørgeskema",
     "CONFIRM_NO": "Nej, Annuller",
-    "ANONYMOUS_SUCCESS": "Anonymt spørgeskema oprettet med succes!",
+    "AGGREGATED_SUCCESS": "Aggregeret spørgeskema oprettet med succes!",
     "EVALUATION_SUCCESS": "Evalueringsspørgeskema oprettet med succes!"
   }
 }

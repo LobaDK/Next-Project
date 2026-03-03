@@ -5,9 +5,9 @@
   @if (currentView === 'evaluation') {
     <div class="flex mb-6 justify-end">
       <button
-        (click)="switchView('anonymous')"
+        (click)="switchView('aggregated')"
         class="px-6 py-3 rounded-lg font-semibold transition-all bg-primary_orange_1 text-white shadow-lg hover:bg-primary_orange_light">
-        {{ 'RESULT_HISTORY.VIEW_ANONYMOUS_RESULTS' | translate }}
+        {{ 'RESULT_HISTORY.VIEW_AGGREGATED_RESULTS' | translate }}
       </button>
     </div>
   }
@@ -320,8 +320,8 @@
       }
     }
 
-    <!-- Anonymous Results View -->
-    @if (currentView === 'anonymous') {
+    <!-- Aggregated Results View -->
+    @if (currentView === 'aggregated') {
       <app-data-compare
         [showNavigationButton]="true"
         (navigateToEvaluation)="switchView('evaluation')">
