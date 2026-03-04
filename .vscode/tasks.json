@@ -4,6 +4,7 @@
       {
         "type": "npm",
         "script": "start",
+        "path": "angular-src/",
         "isBackground": true,
         "presentation": {
           "focus": true,
