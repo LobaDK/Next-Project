@@ -361,10 +361,12 @@
     "PIE_CHART": "Pie",
     "BAR_CHART": "Bar"
   },
+
   "LANG": {
     "EN": "Engelsk",
     "DA": "Dansk"
   },
+
   "PDF": {
     "TITLE": "Matrixskema (Lærer / Elev)",
     "META_NOTE": "Spørgsmål kan have 0-10 muligheder. Valgte viser et X. Hvis der er mulighed for eget svar , vises det under tabellen.",
