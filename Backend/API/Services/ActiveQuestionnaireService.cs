@@ -1,14 +1,3 @@
-using System.Net;
-using API.DTO.User;
-using API.DTO.Requests.ActiveQuestionnaire;
-using API.DTO.Responses.ActiveQuestionnaire;
-using API.Exceptions;
-using API.Interfaces;
-using Database.DTO.ActiveQuestionnaire;
-using Database.DTO.User;
-using Database.Enums;
-using Database.Models;
-using Settings.Models;
 
 namespace API.Services;
 
@@ -22,12 +11,20 @@ namespace API.Services;
 /// systems to provide comprehensive questionnaire management functionality. It supports
 /// role-based access control and integrates with LDAP for user verification.
 /// </remarks>
-public class ActiveQuestionnaireService(IUnitOfWork unitOfWork, IAuthenticationBridge authenticationBridge, IConfiguration configuration)
+public class ActiveQuestionnaireService : IActiveQuestionnaireService
 {
-    private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly IAuthenticationBridge _authenticationBridge = authenticationBridge;
-    private readonly LDAPSettings _ldapSettings = ConfigurationBinderService.Bind<LDAPSettings>(configuration);
-    private readonly JWTSettings _JWTSettings = ConfigurationBinderService.Bind<JWTSettings>(configuration);
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IAuthenticationBridge _authenticationBridge;
+    private readonly LDAPSettings _ldapSettings;
+    private readonly JWTSettings _JWTSettings;
+
+    public ActiveQuestionnaireService(IUnitOfWork unitOfWork, IAuthenticationBridge authenticationBridge, IConfiguration configuration)
+    {
+        _unitOfWork = unitOfWork;
+        _authenticationBridge = authenticationBridge;
+        _ldapSettings = ConfigurationBinderService.Bind<LDAPSettings>(configuration);
+        _JWTSettings = ConfigurationBinderService.Bind<JWTSettings>(configuration);
+    }
 
     /// <summary>
     /// Retrieves a paginated list of active questionnaire base information for administrative purposes.
@@ -115,8 +112,9 @@ public class ActiveQuestionnaireService(IUnitOfWork unitOfWork, IAuthenticationB
         {
             GroupId = Guid.NewGuid(),
             TemplateId = request.TemplateId,
-            Name = request.Name,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            Name = request.Name
+            
         };
         await _unitOfWork.QuestionnaireGroup.AddAsync(group);
 
@@ -149,6 +147,7 @@ public class ActiveQuestionnaireService(IUnitOfWork unitOfWork, IAuthenticationB
         {
             GroupId = group.GroupId,
             Name = group.Name,
+            CreatedAt = group.CreatedAt,
             TemplateId = group.TemplateId,
             Questionnaires = questionnaireDtos
         };
@@ -194,6 +193,7 @@ public class ActiveQuestionnaireService(IUnitOfWork unitOfWork, IAuthenticationB
         {
             GroupId = group.GroupId,
             Name = group.Name,
+            CreatedAt = group.CreatedAt,
             TemplateId = group.TemplateId,
             Questionnaires = group.Questionnaires.Select(q => new ActiveQuestionnaireAdminBase
             {
@@ -203,12 +203,16 @@ public class ActiveQuestionnaireService(IUnitOfWork unitOfWork, IAuthenticationB
                 ActivatedAt = q.ActivatedAt,
                 Student = new UserBase
                 {
-                    UserName = q.Student.UserName,
+                    UserName = q.Student is not null ?
+                        q.Student.UserName
+                        : throw new InvalidOperationException("Student information is missing."),
                     FullName = q.Student.FullName
                 },
                 Teacher = new UserBase
                 {
-                    UserName = q.Teacher.UserName,
+                    UserName = q.Teacher is not null ?
+                        q.Teacher.UserName
+                        : throw new InvalidOperationException("Teacher information is missing."),
                     FullName = q.Teacher.FullName
                 },
                 StudentCompletedAt = q.StudentCompletedAt,
@@ -260,12 +264,16 @@ public class ActiveQuestionnaireService(IUnitOfWork unitOfWork, IAuthenticationB
             ActivatedAt = q.ActivatedAt,
             Student = new UserBase
             {
-                UserName = q.Student.UserName,
+                UserName = q.Student is not null ?
+                    q.Student.UserName
+                    : throw new InvalidOperationException("Student information is missing."),
                 FullName = q.Student.FullName
             },
             Teacher = new UserBase
             {
-                UserName = q.Teacher.UserName,
+                UserName = q.Teacher is not null ?
+                    q.Teacher.UserName
+                    : throw new InvalidOperationException("Teacher information is missing."),
                 FullName = q.Teacher.FullName
             },
             StudentCompletedAt = q.StudentCompletedAt,
@@ -276,6 +284,7 @@ public class ActiveQuestionnaireService(IUnitOfWork unitOfWork, IAuthenticationB
         {
             GroupId = group.GroupId,
             Name = group.Name,
+            CreatedAt = group.CreatedAt,
             TemplateId = group.TemplateId,
             Questionnaires = questionnaireDtos
         };
@@ -309,12 +318,16 @@ public class ActiveQuestionnaireService(IUnitOfWork unitOfWork, IAuthenticationB
                     ActivatedAt = q.ActivatedAt,
                     Student = new UserBase
                     {
-                        UserName = q.Student.UserName,
+                        UserName = q.Student is not null ?
+                            q.Student.UserName
+                            : throw new InvalidOperationException("Student information is missing."),
                         FullName = q.Student.FullName
                     },
                     Teacher = new UserBase
                     {
-                        UserName = q.Teacher.UserName,
+                        UserName = q.Teacher is not null ?
+                            q.Teacher.UserName
+                            : throw new InvalidOperationException("Teacher information is missing."),
                         FullName = q.Teacher.FullName
                     },
                     StudentCompletedAt = q.StudentCompletedAt,
@@ -357,6 +370,23 @@ public class ActiveQuestionnaireService(IUnitOfWork unitOfWork, IAuthenticationB
         return results;
     }
 
+    public async Task<List<QuestionnaireGroupBasicResult>> GetQuestionnaireGroupsBasicForTemplate(Guid templateId)
+    {
+        var groups = await _unitOfWork.QuestionnaireGroup.GetGroupsByTemplateIdAsync(templateId);
+        var results = new List<QuestionnaireGroupBasicResult>();
+
+        foreach (var group in groups)
+        {
+            results.Add(new QuestionnaireGroupBasicResult
+            {
+                GroupId = group.GroupId,
+                Name = group.Name
+            });
+        }
+
+        return results;
+    }
+
     /// <summary>
     /// Fetches an active questionnaire by its unique identifier.
     /// </summary>
@@ -366,6 +396,11 @@ public class ActiveQuestionnaireService(IUnitOfWork unitOfWork, IAuthenticationB
     public async Task<ActiveQuestionnaire> FetchActiveQuestionnaire(Guid id)
     {
         return await _unitOfWork.ActiveQuestionnaire.GetFullActiveQuestionnaireAsync(id);
+    }
+
+    public async Task<ActiveQuestionnaire?> FetchForansweringActiveQuestionnaire(Guid activeQuestionnaireId, Guid userGuid)
+    {
+        return await _unitOfWork.ActiveQuestionnaire.GetFullActiveQuestionnaireForAnsweringAsync(activeQuestionnaireId, userGuid);
     }
 
     /// <summary>
@@ -523,21 +558,29 @@ public class ActiveQuestionnaireService(IUnitOfWork unitOfWork, IAuthenticationB
         }
     }
 
-    internal async Task<List<FullStudentRespondsDate>> GetResponsesFromStudentAndTemplateAsync(Guid studentid, Guid templateid)
+    public async Task<List<FullStudentRespondsDate>> GetResponsesFromStudentAndTemplateAsync(Guid studentid, Guid templateid)
     {
 
         return await _unitOfWork.ActiveQuestionnaire.GetResponsesFromStudentAndTemplateAsync(studentid, templateid);
 
     }
 
-    internal async Task<List<FullStudentRespondsDate>> GetResponsesFromStudentAndTemplateWithDateAsync(Guid studentid, Guid templateid)
+    public async Task<List<FullStudentRespondsDate>> GetResponsesFromStudentAndTemplateWithDateAsync(Guid studentid, Guid templateid)
     {
 
         return await _unitOfWork.ActiveQuestionnaire.GetResponsesFromStudentAndTemplateWithDateAsync(studentid, templateid);
 
     }
 
-    internal async Task<SurveyResponseSummary> GetAnonymisedResponses(Guid templateId, List<Guid> users, List<Guid> groups)
+    public async Task<List<FullResponse>> GetResponsesFromTeacherAndStudentAndTemplateWithDateAsync(Guid studentid,Guid teacherid, Guid templateid)
+    {
+
+        return await _unitOfWork.ActiveQuestionnaire.GetResponsesFromTeacherAndStudentAndTemplateWithDateAsync(studentid, teacherid, templateid);
+
+    }
+
+
+public async Task<SurveyResponseSummary> GetAnonymisedResponses(Guid templateId, List<Guid> users, List<Guid> groups)
     {
         return await _unitOfWork.ActiveQuestionnaire.GetAnonymisedResponses(templateId, users, groups);
     }
@@ -564,7 +607,7 @@ public class ActiveQuestionnaireService(IUnitOfWork unitOfWork, IAuthenticationB
     private UserAdd GenerateStudent(Guid id)
     {
         BasicUserInfo? ldapStudent = _authenticationBridge.SearchId<BasicUserInfo>(id.ToString()) ?? throw new HttpResponseException(HttpStatusCode.NotFound, "Student not found in LDAP.");
-        string studentRole = _JWTSettings.Roles.First(x => ldapStudent.MemberOf.Any(y => y.Contains(x.Value, StringComparison.OrdinalIgnoreCase))).Key;
+        string studentRole = _ldapSettings.RoleMappingsCN.First(x => ldapStudent.MemberOf.Any(y => y.Contains(x.Value, StringComparison.OrdinalIgnoreCase))).Key;
 
         return new()
         {
@@ -597,7 +640,7 @@ public class ActiveQuestionnaireService(IUnitOfWork unitOfWork, IAuthenticationB
     private UserAdd GenerateTeacher(Guid id)
     {
         BasicUserInfo? ldapTeacher = _authenticationBridge.SearchId<BasicUserInfo>(id.ToString()) ?? throw new HttpResponseException(HttpStatusCode.NotFound, "Teacher not found in LDAP.");
-        string teacherRole = _JWTSettings.Roles.First(x => ldapTeacher.MemberOf.Any(y => y.Contains(x.Value, StringComparison.OrdinalIgnoreCase))).Key;
+        string teacherRole = _ldapSettings.RoleMappingsCN.First(x => ldapTeacher.MemberOf.Any(y => y.Contains(x.Value, StringComparison.OrdinalIgnoreCase))).Key;
 
         return new()
         {
@@ -616,16 +659,29 @@ public class ActiveQuestionnaireService(IUnitOfWork unitOfWork, IAuthenticationB
     /// <param name="teacherId">The unique identifier of the teacher making the request.</param>
     /// <param name="templateId">The unique identifier of the questionnaire template.</param>
     /// <returns>
-    /// A <see cref="StudentResultHistory"/> object containing the student's response history for the specified template,
-    /// or null if no history is found.
+    /// A <see cref="StudentResultHistory"/> object containing the student's response history for the specified template.
     /// </returns>
+    /// <exception cref="HttpResponseException">
+    /// Thrown when no completed questionnaires are found for the specified student-teacher-template combination.
+    /// This ensures that both student and teacher have submitted their responses before allowing access to the history.
+    /// </exception>
     /// <remarks>
     /// This method retrieves all historical responses from a student for a specific questionnaire template,
-    /// providing teachers with insight into student progress over time.
+    /// providing teachers with insight into student progress over time. Only returns questionnaires where both
+    /// the student and teacher have completed their responses to prevent bias in assessment.
     /// </remarks>
     public async Task<StudentResultHistory?> GetResponseHistoryAsync(Guid studentId, Guid teacherId, Guid templateId)
     {
-        return await _unitOfWork.ActiveQuestionnaire.GetResponseHistoryAsync(studentId, teacherId, templateId);
+        var history = await _unitOfWork.ActiveQuestionnaire.GetResponseHistoryAsync(studentId, teacherId, templateId);
+        
+        if (history == null)
+        {
+            throw new HttpResponseException(
+                HttpStatusCode.NotFound, 
+                "No completed questionnaires found. Both student and teacher must submit their responses before viewing results history.");
+        }
+        
+        return history;
     }
 
     public async Task<IEnumerable<CompletedStudentDto>> GetCompletedStudentsByGroup(Guid activeQuestionnaireId)

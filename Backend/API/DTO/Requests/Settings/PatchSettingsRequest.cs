@@ -1,5 +1,3 @@
-using Serilog;
-
 namespace API.DTO.Requests.Settings;
 
 public class PatchSettingsRequest
@@ -9,7 +7,6 @@ public class PatchSettingsRequest
     public DatabasePatchRequest? Database { get; set; }
     public JWTPatchRequest? JWT { get; set; }
     public LDAPPatchRequest? LDAP { get; set; }
-    public LoggerPatchRequest? Logging { get; set; }
     public SystemPatchRequest? System { get; set; }
 }
 
@@ -24,7 +21,6 @@ public class JWTPatchRequest
     public string? RefreshTokenSecret { get; set; }
     public int? TokenTTLMinutes { get; set; }
     public int? RenewTokenTTLDays { get; set; }
-    public Dictionary<string, string>? Roles { get; set; }
     public string? Issuer { get; set; }
     public string? Audience { get; set; }
 }
@@ -37,38 +33,7 @@ public class LDAPPatchRequest
     public string? BaseDN { get; set; }
     public string? SA { get; set; }
     public string? SAPassword { get; set; }
-}
-
-public class LoggerPatchRequest
-{
-    public Dictionary<string, LogLevel>? LogLevel { get; set; }
-    public ConsoleLoggerPatchRequest? Console { get; set; }
-    public FileLoggerPatchRequest? FileLogger { get; set; }
-    public DBLoggerPatchRequest? DBLogger { get; set; }
-}
-
-public class ConsoleLoggerPatchRequest
-{
-    public bool? IsEnabled { get; set; }
-    public Dictionary<string, LogLevel>? LogLevel { get; set; }
-}
-
-public class FileLoggerPatchRequest
-{
-    public bool? IsEnabled { get; set; }
-    public Dictionary<string, LogLevel>? LogLevel { get; set; }
-    public string? Path { get; set; }
-    public RollingInterval? RollingInterval { get; set; }
-    public bool? RollOnFileSizeLimit { get; set; }
-    public int? FileSizeLimitBytes { get; set; }
-    public int? RetainedFileCountLimit { get; set; }
-    public bool? Shared { get; set; }
-}
-
-public class DBLoggerPatchRequest
-{
-    public bool? IsEnabled { get; set; }
-    public Dictionary<string, LogLevel>? LogLevel { get; set; }
+    public Dictionary<string, string>? RoleMappingsCN { get; set; }
 }
 
 public class SystemPatchRequest

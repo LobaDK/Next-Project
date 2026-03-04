@@ -1,5 +1,3 @@
-using API.DTO.Responses.Settings.SettingsSchema.Bases;
-
 namespace API.DTO.Responses.Settings.SettingsSchema;
 
 public record class LDAPSettingsSchema
@@ -10,6 +8,7 @@ public record class LDAPSettingsSchema
     public required BaseDNSchema BaseDN { get; set; }
     public required SAUsernameSchema SAUsername { get; set; }
     public required SAPasswordSchema SAPassword { get; set; }
+    public required RoleMappingsCNSchema RoleMappingsCN { get; set; }
 }
 
 public record class HostSchema : SettingsSchemaBase
@@ -28,4 +27,7 @@ public record class SAUsernameSchema : SettingsSchemaBase
 { }
 
 public record class SAPasswordSchema : SettingsSchemaBase
+{ }
+
+public record class RoleMappingsCNSchema : SettingsSchemaExtended
 { }

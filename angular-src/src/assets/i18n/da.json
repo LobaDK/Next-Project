@@ -1,87 +1,149 @@
 {
-  "NO_ACTIVE_QUESTIONNAIRE": "Der er ingen aktive spørgeskemaer",
-  "TMP_NEW_TITLE": "Ny skabelon",
-  "TMP_NEW_DESC": "Beskrivelse af den nye skabelon",
-  "TMP_NEW_QUESTION": "Standard spørgsmål",
+  "PAGINATION": {
+    "NEXT": "Næste",
+    "PREVIOUS": "Forrige"
+  },
 
-  "TMP_TITLE_ADMINISTER_TEMPLATES": "Administrer Skabeloner",
-  "TMP_DATA_COMPARE_TITLE": "Sammenlign Data",
-  "TMP_BUTTON_CREATE_NEW": "Opret Ny Skabelon",
-  "TMP_SEARCH_BY_NAME": "Søg efter Navn",
-  "TMP_SEARCH_BY_ID": "Søg efter ID",
-  "TMP_SEARCH_GROUP_PLACEHOLDER": "Søg efter gruppe...",
-  "TMP_ITEMS_PER_PAGE": "Elementer pr. side:",
-  "TMP_LOADING": "Indlæser...",
-  "TMP_BUTTON_EDIT": "Rediger",
-  "TMP_BUTTON_DELETE": "Slet",
-  "TMP_DELETE": "Slet",
-  "TMP_DELETE_PERMANENT": "Slet Permanent",
-  "TMP_CANCEL": "Annuller",
-  "TMP_DELETE_CONFIRM_TITLE": "Bekræft Sletning",
-  "TMP_DELETE_CONFIRM_WARN": "Sidste Advarsel",
-  "TMP_DELETE_CONFIRM_MSG": "Er du sikker på, at du vil slette denne skabelon? Denne handling vil slette relaterede data.",
-  "TMP_DELETE_FINAL_WARN_MSG": "Advarsel: Denne handling kan ikke fortrydes. Sletning af denne skabelon vil permanent fjerne alle relaterede data. Er du helt sikker på, at du vil fortsætte?",
-  "TMP_LOCKED_TITLE": "Skabelonen er i brug",
-  "TMP_LOCKED_MSG": "Denne skabelon kan ikke redigeres, da den har været brugt.",
-  "TMP_BUTTON_CLOSE": "Luk",
-  "TMP_FAIL_LOAD_LIST": "Indlæsning af skabeloner mislykkedes. Prøv igen.",
-  "TMP_FAIL_LOAD_DETAIL": "Indlæsning af skabelondetaljer mislykkedes.",
-  "TMP_DELETE_ERROR": "Fejl ved sletning af skabelon.",
-  "TMP_UPDATE_ERROR": "Fejl ved opdatering af skabelon.",
-  "TMP_NO_ACTIVE_QUESTIONNAIRES": "Der er ingen aktive spørgeskemaer",
-
-  "TMP_EDITOR_TITLE": "Skabelonredigering",
-  "TMP_TEMPLATE_TITLE": "Skabelon Titel",
-  "TMP_TEMPLATE_DESCRIPTION": "Beskrivelse",
-  "TMP_QUESTIONS": "Spørgsmål",
-  "TMP_SAVE_TEMPLATE": "Gem Skabelon",
-  "TMP_NEWQUESTION": "Nyt spørgsmål",
-  "TMP_ADD_QUESTION": "Tilføj Nyt Spørgsmål",
-
-  "TMP_NEXT": "Næste",
-  "TMP_PREVIOUS": "Forrige",
-
-  "TMP_ACTIVE_SURVEYS": "Aktive spørgeskemaer",
-  "TMP_SETUP_AT": "Opsat den:",
-  "TMP_OVERVIEW_ACTIVE_QUESTIONNAIRES": "Oversigt over aktive spørgeskemaer",
-  "TMP_SEARCH_BY_STUDENT_NAME": "Søg efter elevnavn",
-  "TMP_SEARCH_BY_QUESTIONNAIRE_ID": "Søg efter aktivt spørgeskema-id",
-  "TMP_SEARCHPLACEHOLDER": "Søg...",
-  "TMP_STUDENT_DONE": "Elev færdig",
-  "TMP_TEACHER_DONE": "Lærer færdig",
-  "TMP_COPY_LINK": "Kopier link til besvarelse",
-  "TMP_STUDENT_NAME": "Elevnavn:",
-  "TMP_STUDENT": "Elev:",
-  "TMP_TEACHER": "Lærer:",
-  "TMP_COMPLETED": "Færdig",
-  "TMP_PENDING": "Ikke færdig",
-  "TMP_ANSWER": "Svar",
-  "TMP_VIEW_RESULTS": "Se resultater",
-  "TMP_TITLE_TEMPLATE_LIST": "Skabelonliste",
-  "FILTER_STUDENT_PENDING": "Elev mangler",
-  "FILTER_TEACHER_PENDING": "Lærer mangler",
-
-  "TEMPLATES.DELETE.TITLE": "Bekræft Sletning",
-  "TEMPLATES.DELETE.MSG": "Er du sikker på, at du vil slette denne skabelon? Denne handling vil slette relaterede data.",
-
-  "TMP_FINALIZE_TITLE": "Udgiv skabelon?",
-  "TMP_FINALIZE_TEXT": "Når en skabelon udgives, bliver den skrivebeskyttet. <br/>Er du sikker på, at du vil udgive?",
-  "TMP_FINALIZE_CONFIRM": "Udgiv",
-  "TMP_PUBLISH": "Udgiv",
-  "TMP_VIEW_MODE": "Skabelonvisning",
-  "TMP_EDIT_MODE": "Skabelonredigering",
+  "TEACHER" : {
+    "ANSWER": "Svar",
+    "OVERVIEW_ACTIVE_QUESTIONNAIRES": "Oversigt over aktive spørgeskemaer",
+    "COPY_LINK": "Kopier link til besvarelse",
+    "VIEW_RESULTS": "Se resultater",
+    "TITLE_TEMPLATE_LIST": "Skabelonliste",
+    "FILTER_STUDENT_PENDING": "Elev mangler",
+    "FILTER_TEACHER_PENDING": "Lærer mangler",
+    "SEARCH_GROUP_PLACEHOLDER": "Søg spørgeskemagrupper..."
+  },
 
   "NAV" : {
     "TOGGLE_MENU": "Åbn/luk menu",
     "LOG_OUT": "Log ud",
     "ACTIVE_QUESTIONNAIRES": "Aktive spørgeskemaer",
     "DATA_COMPARE": "Sammenlign Data",
-    "RESULT_HISTORY": "Resultat Historik",
+    "RESULTS": "Resultater",
     "OVERVIEW": "Oversigt",
     "TEMPLATES": "Skabeloner",
-    "HOME" : "Hjem"
+    "HOME" : "Hjem",
+    "USER_GUIDE": "Brugervejledning"
   },
 
+  "USER_GUIDE": {
+    "TITLE": "Brugervejledning",
+    "STUDENT": {
+      "ANSWERING_QUESTIONNAIRES": {
+        "TITLE": "Besvarelse af spørgeskemaer",
+        "CONTENT": "Gå til 'Aktive spørgeskemaer' og klik 'Besvar'. Tre spørgsmålstyper: \"Multiple Choice\", \"Custom Answer\", eller \"Mixed\". Fremgang gemmes automatisk."
+      },
+      "VIEWING_RESULTS": {
+        "TITLE": "Din rolle",
+        "CONTENT": "Du giver svar men kan ikke se dine indsendte besvarelser. Lærere kan se og analysere alle svar til undervisningsformål."
+      }
+    },
+    "TEACHER": {
+      "DASHBOARD": {
+        "TITLE": "Oversigt dashboard",
+        "CONTENT": "Se aktive spørgeskemaer og fuldførselsstatus. Overvåg dine tildelte spørgeskemaer og se resultater fra gennemførte."
+      },
+      "RESULT_HISTORY": {
+        "TITLE": "Resultathistorik",
+        "CONTENT": "Spor hvordan individuelle studenters svar ændrer sig over tid. Se progression når studenter gennemfører samme spørgeskema flere gange."
+      }
+    },
+    "ADMIN": {
+      "TEMPLATE_MANAGEMENT": {
+        "TITLE": "Skabeloner",
+        "CONTENT": "Opret spørgeskemaplaner med tre spørgsmålstyper: \"Multiple Choice\", \"Custom Answer\", eller \"Mixed\". Skabeloner skal \"finalized\" før brug og kan ikke redigeres efter. Kopier skabeloner for at lave ændringer."
+      },
+      "ACTIVE_QUESTIONNAIRES": {
+        "TITLE": "Aktive spørgeskemaer",
+        "CONTENT": "Opret grupper fra \"finalized\" skabeloner. Vælg én lærer, én skabelon, og flere studerende. Separate spørgeskemaer genereres for hver studerende-lærer kombination."
+      }
+    },
+    "GENERAL": {
+      "NAVIGATION": {
+        "TITLE": "Navigation",
+        "CONTENT": "Navigationsmuligheder afhænger af din rolle. Brug profil-dropdownen (øverst til højre) til logud eller sprogskift."
+      }
+    }
+  },
+
+  "TEMPLATE": {
+
+    "DUPLICATE_WARNING": {
+      "TITLE": "Duplikerede spørgsmål fundet",
+      "TEXT": "Din skabelon indeholder duplikerede spørgsmål. Ret venligst disse problemer før du gemmer."
+    },
+
+    "NEW": {
+      "TITLE": "Ny skabelon",
+      "DESC": "Beskrivelse af den nye skabelon",
+      "STANDARD_NEW_QUESTION": "Standard spørgsmål",
+      "NEW_QUESTION": "Nyt Spørgsmål"
+    },
+
+    "LIST": {
+      "FAIL_LOAD_LIST": "Indlæsning af skabeloner mislykkedes. Prøv igen.",
+      "NO_ACTIVE_QUESTIONNAIRES": "Der er ingen aktive spørgeskemaer",
+      "ITEMS_PER_PAGE": "Elementer pr. side:",
+      "SEARCH_TEMPLATE_PLACEHOLDER": "Søg efter skabelon...",
+      "SEARCH_BY_ID": "Søg efter ID",
+      "SEARCH_BY_NAME": "Søg efter Navn",
+      "BUTTON_CREATE_NEW": "Opret Ny Skabelon",
+      "TITLE_ADMINISTER_TEMPLATES": "Administrer Skabeloner"
+    },
+
+    "EDITOR": {
+      "TITLE": "Skabelon Editor",
+      "TEMPLATE_TITLE": "Skabelon Titel",
+      "TEMPLATE_DESCRIPTION": "Beskrivelse",
+      "QUESTIONS": "Spørgsmål",
+      "SAVE_TEMPLATE": "Gem Skabelon",
+      "ADD_QUESTION": "Tilføj Nyt Spørgsmål",
+      "CHECKING_TITLE": "Checker om titlen er tilgængelig...",
+      "TITLE_ALREADY_EXISTS": "En skabelon med denne titel findes allerede. Vælg venligst en anden titel."
+    },
+
+    "FINALIZE": {
+      "FINALIZE_TEMPLATE": "Udgiv Skabelon",
+      "CONFIRM_TITLE": "Udgiv skabelon?",
+      "CONFIRM_TEXT": "Når en skabelon udgives, bliver den skrivebeskyttet. Er du sikker på, at du vil udgive?",
+      "CONFIRM_BUTTON": "Udgiv"
+    },
+
+    "DELETE": {
+      "TITLE": "Bekræft Sletning",
+      "MSG": "Er du sikker på, at du vil slette denne skabelon? Denne handling vil slette relaterede data.",
+      "CONFIRM_TITLE": "Bekræft Sletning",
+      "CONFIRM_WARN": "Sidste Advarsel",
+      "CONFIRM_MSG": "Er du sikker på, at du vil slette denne skabelon? Denne handling vil slette relaterede data.",
+      "FINAL_WARN_MSG": "Advarsel: Denne handling kan ikke fortrydes. Sletning af denne skabelon vil permanent fjerne alle relaterede data. Er du helt sikker på, at du vil fortsætte?"
+    },
+
+    "VIEW": {
+      "VIEW_MODE": "Skabelonvisning",
+      "EDIT_MODE": "Skabelonredigering"
+    },
+
+    "ADMIN": {
+      "LOCKED_TITLE": "Skabelonen er i brug",
+      "LOCKED_MSG": "Denne skabelon kan ikke redigeres, da den har været brugt."
+    },
+
+    "ERROR": {
+      "TITLE": "Fejl"
+    },
+
+    "MISC": {
+      "COPY_TITLE": "Kopiér Skabelon",
+      "COPY_MSG": "Opret en redigerbar kopi af denne skabelon. Kopien vil blive gemt som en ny udkast skabelon.",
+      "ERROR_TITLE": "Fejl",
+      "ERROR_DUPLICATE_TITLE": "En skabelon med dette navn eksisterer allerede. Vælg venligst et andet navn.",
+      "ERROR_VALIDATION": "Valideringsfejl. Kontroller venligst dine indtastninger.",
+      "ERROR_SAVE": "Fejl ved gemning af skabelon. Prøv igen."
+
+    }
+
+  },
 
   "COMMON": {
     "BUTTONS": {
@@ -93,9 +155,11 @@
       "CLOSE": "Luk",
       "PREVIOUS" : "Forrige",
       "NEXT" : "Næste",
-      "SUBMIT" : "send"
+      "SUBMIT" : "Send",
+      "DELETE": "Slet"
     },
     "GREETING": "Hej {{username}}!",
+    "QUESTION": "Spørgsmål",
     "ROLES": {
       "STUDENT": "Elev",
       "TEACHER": "Lærer",
@@ -105,7 +169,6 @@
     "BACK": "Tilbage",
     "OF": "af"
   },
-
 
   "LOGIN": {
     "WELCOME": "Velkommen",
@@ -121,6 +184,12 @@
     "CAPS_LOCK_WARNING": "Caps Lock er aktiveret",
     "ERRORS": {
       "INVALID": "Ugyldigt brugernavn eller adgangskode.",
+      "ACCOUNT_DISABLED": "Din konto er blevet deaktiveret. Kontakt venligst din administrator.",
+      "ACCOUNT_EXPIRED": "Din konto er udløbet. Kontakt venligst din administrator.",
+      "PASSWORD_EXPIRED": "Din adgangskode er udløbet. Du skal ændre din adgangskode ved næste login.",
+      "ACCOUNT_LOGIN_ERROR": "Der opstod en loginfejl med din konto. Kontakt venligst din administrator.",
+      "ACCOUNT_LOCKED": "Din konto er blevet låst på grund af flere mislykkede loginforsøg. Kontakt venligst din administrator.",
+      "GENERIC_AD_ERROR": "Din konto er blevet låst eller deaktiveret. Kontakt venligst din administrator for hjælp.",
       "NETWORK": "Kunne ikke oprette forbindelse til serveren. Tjek din internetforbindelse.",
       "SERVER": "Der opstod en serverfejl. Prøv igen senere.",
       "GENERIC": "Der opstod en uventet fejl. Prøv igen.",
@@ -138,6 +207,12 @@
     "NO_ACTIVE_QUESTIONNAIRE": "Der er ingen aktive spørgeskemaer"
   },
 
+  "SHOW_ACTIVE" : {
+    "ACTIVE_SURVEYS": "Aktive spørgeskemaer",
+    "ANSWER": "Svar",
+    "SETUP_AT": "Opsat den:"
+  },
+
   "ACTIVE_LIST": {
     "TITLE": "Administrer Aktive Spørgeskemaer",
     "BUTTON_CREATE": "Tildel et Spørgeskema",
@@ -152,41 +227,62 @@
 
   "QUESTION_EDITOR": {
       "TITLE": "Rediger spørgsmål",
+      "VALIDATION_ERRORS": "Valideringsfejl",
       "LABEL_TITLE": "Titel:",
       "PLACEHOLDER_TITLE": "Indtast spørgsmålets titel",
+      "ERROR_DUPLICATE_QUESTION": "Dette spørgsmål har en duplikeret titel. Hvert spørgsmål skal have en unik titel.",
+      "ERROR_EMPTY_TITLE": "Spørgsmålets titel kan ikke være tom.",
+      "ERROR_NO_OPTIONS_OR_CUSTOM": "Spørgsmålet skal tillade et brugerdefineret svar eller have mindst én valgmulighed.",
+      "ERROR_TOO_MANY_OPTIONS": "Spørgsmålet kan ikke have mere end {{max}} valgmuligheder.",
+      "ERROR_EMPTY_OPTION_LABELS": "Alle valgmuligheder skal have ikke-tomme etiketter.",
+      "ERROR_DUPLICATE_OPTIONS": "Dette spørgsmål har duplikerede valgmuligheder. Hver valgmulighed skal være unik.",
       "ALLOW_CUSTOM": "Tillad at skrive dit eget svar",
       "OPTIONS": "Valgmuligheder",
+      "DUPLICATE_ANSWER": "Denne valgmulighed er duplikeret i spørgsmålet.",
       "DELETE_OPTION": "Slet valgmulighed",
       "ADD_OPTION": "Tilføj ny valgmulighed",
       "SAVE": "Gem spørgsmål"
-    },
+  },
 
   "QUESTIONAIRE": {
     "COLLABORATOR": "Samarbejdspartner",
     "CUSTOM_ANSWER_ERROR": "Indtast dit svar for at fortsætte.",
-    "CUSTOM_ANSWER_CHARACTER_COUNT": "tegn"
+    "CUSTOM_ANSWER_CHARACTER_COUNT": "tegn",
+    "CONFIRM_SUBMIT_TITLE":" Bekræft Indsendelse",
+    "CONFIRM_SUBMIT_TEXT":" Er du sikker på, at du vil indsende dine svar? Du kan ikke redigere dem efter indsendelse."
   },
+  "QUESTIONNAIRE": {
+    "SUBMIT_SUCCESS": "Spørgeskema indsendt med succes!",
+    "SUBMIT_ERROR": "Der opstod en fejl ved indsendelsen af dit spørgeskema. Prøv igen senere."
+  },
+
   "DATA_COMPARE" : {
-    "SEARCH_STUDENT_LABEL": "Søg efter elev eller gruppe:",
-    "SEARCH_STUDENT_PLACEHOLDER": "Indtast elev eller gruppe navn...",
-    "LOADING_STUDENTS": "Indlæser elever...",
-    "LOAD_MORE_STUDENTS": "Indlæs Flere Elever",
-    "SELECTED_STUDENTS": "Valgte Elever:",
+    "TITLE": "Vis resultater på aggregerede spørgeskemaer",
+    "VIEW_EVALUATION_RESULTS": "Vis Evaluerings Resultater",
+    "SELECT_GROUP_LABEL": "Vælg Gruppe",
+    "SEARCH_GROUP_PLACEHOLDER": "Søg grupper...",
+    "SELECT_TEMPLATE_FIRST_DESC": "Du skal vælge mindst én skabelon, før du kan søge efter grupper.",
+    "LOADING_GROUPS": "Indlæser grupper...",
+    "LOAD_MORE_GROUPS": "Indlæs Flere Grupper",
+    "SELECTED_GROUPS": "Valgte Grupper",
     "REMOVE": "Fjern",
     "CLEAR_ALL": "Ryd Alle",
+    "SELECT_TEMPLATE_LABEL": "Vælg Skabelon",
     "SEARCH_TEMPLATE_LABEL": "Søg efter Skabelon:",
-    "SEARCH_TEMPLATE_PLACEHOLDER": "Indtast skabelontitel...",
+    "SEARCH_TEMPLATE_PLACEHOLDER": "Søg skabeloner...",
     "LOADING_TEMPLATES": "Indlæser skabeloner...",
     "LOAD_MORE_TEMPLATES": "Indlæs Flere Skabeloner",
-    "SELECTED_TEMPLATES": "Valgte Skabeloner:",
+    "SELECTED_TEMPLATES": "Valgte Skabeloner",
     "UPDATE_CHART": "Opdater Graf",
     "PIE_CHART": "Pie",
     "BAR_CHART": "Bar"
   },
+
   "LANG": {
     "EN": "Engelsk",
     "DA": "Dansk"
   },
+
   "PDF": {
     "TITLE": "Matrixskema (Lærer / Elev)",
     "META_NOTE": "Spørgsmål kan have 0-10 muligheder. Valgte viser et X. Hvis der er mulighed for eget svar , vises det under tabellen.",
@@ -225,11 +321,16 @@
     "CUSTOM_RESPONSES": "Brugerdefinerede svar:",
     "NO_OPTIONS_AVAILABLE": "Ingen valgmuligheder tilgængelige for dette spørgsmål",
     "SCROLL_HINT": "Scroll horisontalt for at se alle valgmuligheder →",
-    "DROPDOWN_SELECT_STUDENT": "Vælg Elev"
+    "DROPDOWN_SELECT_STUDENT": "Vælg Elev",
+    "GRAPH_OVERLAY_TITLE": " ",
+    "SHOW_GRAPH_BUTTON_LABEL":"Vis Graf"
   },
 
   "RESULT_HISTORY": {
     "TITLE": "Elev Resultat Historik",
+    "EVALUATION_RESULTS": "Evaluerings Resultater",
+    "AGGREGATED_RESULTS": "Aggregerede Resultater",
+    "VIEW_AGGREGATED_RESULTS": "Vis Aggregerede Resultater",
     "SELECT_STUDENT": "Vælg Elev",
     "SELECT_QUESTIONNAIRE": "Vælg Spørgeskema",
     "SEARCH_STUDENTS": "Søg elever...",
@@ -238,7 +339,6 @@
     "NO_RESULTS_DESC": "Ingen resultater fundet for den valgte elev og spørgeskema kombination.",
     "INSTRUCTIONS": "Vælg en elev og et spørgeskema for at se resultater",
     "INSTRUCTIONS_DESC": "Brug søgefelterne ovenfor til at finde og vælge en elev og en spørgeskema skabelon for at se de historiske resultater.",
-    "SELECT_STUDENT_FIRST": "Vælg venligst en elev først",
     "SELECT_STUDENT_FIRST_DESC": "Du skal vælge en elev, før du kan vælge en spørgeskema skabelon.",
     "SHARED_QUESTIONNAIRES_AVAILABLE": "delte spørgeskema(er) tilgængelige med",
     "LOADING_SHARED_QUESTIONNAIRES": "Indlæser delte spørgeskemaer...",
@@ -251,16 +351,25 @@
     "OPEN_PDF": "Åbn PDF",
     "DOWNLOAD_PDF": "Download PDF",
     "OPEN_PDF_SHORT": "Åbn",
-    "DOWNLOAD_PDF_SHORT": "Download"
+    "DOWNLOAD_PDF_SHORT": "Download",
+    "NO_COMPLETED_SHARED_QUESTIONNAIRES": "Ingen færdige delte spørgeskemaer fundet med denne elev. Både du og eleven skal færdiggøre jeres svar før resultaterne bliver tilgængelige.",
+    "FAILED_TO_LOAD_TEMPLATES": "Fejl ved indlæsning af tilgængelige skabeloner.",
+    "NO_RESULTS_INCOMPLETE_RESPONSES": "Ingen resultater tilgængelige. Både du og eleven skal færdiggøre jeres spørgeskema-svar før historikken kan vises.",
+    "FAILED_TO_LOAD_HISTORY": "Fejl ved indlæsning af elevens resultathistorik.",
+    "FAILED_TO_LOAD_STUDENTS": "Fejl ved indlæsning af relaterede elever.",
+    "SHOW_GRAPH_BUTTON_LABEL":"Vis Graf",
+    "HIDE_GRAPH_BUTTON_LABEL":"Skjul Graf"
   },
 
   "ACTIVE_BUILDER": {
-    "ANONYMOUS_QUESTIONNAIRE": "Anonymt Spørgeskema",
+    "AGGREGATED_QUESTIONNAIRE": "Aggregeret Spørgeskema",
     "EVALUATION_QUESTIONNAIRE": "Evaluerings spørgeskema",
     "SWITCH_TO_EVALUATION": "Skift til evaluerings spørgeskema",
-    "SWITCH_TO_ANONYMOUS": "Skift til anonymt Spørgeskema",
+    "SWITCH_TO_AGGREGATED": "Skift til aggregeret Spørgeskema",
+    "UNDER_CONSTRUCTION": "Under Konstruktion",
+    "UNDER_CONSTRUCTION_DESC": "Denne funktion er i øjeblikket under udvikling og vil være tilgængelig snart.",
     "SEARCH_PARTICIPANTS": "Søg efter deltagere (navn, hold e.l.):",
-    "SEARCH_STUDENT": "Søg efter Elev:",
+    "SEARCH_STUDENT": "Find Elever",
     "SEARCH_TEACHER": "Søg efter Instruktør:",
     "SEARCH_TEMPLATE": "Søg efter Skabelon:",
     "PLACEHOLDER_STUDENTS": "Indtast navn på elever...",
@@ -272,21 +381,25 @@
     "LOAD_MORE_STUDENTS": "Indlæs Flere Elever",
     "LOAD_MORE_TEACHERS": "Indlæs Flere Instruktører",
     "LOAD_MORE_TEMPLATES": "Indlæs Flere Skabeloner",
-    "SELECTED_STUDENTS": "Valgte Elever:",
-    "SELECTED_TEACHERS": "Valgte Instruktører:",
-    "SELECTED_TEMPLATES": "Valgte Skabeloner:",
+    "SELECTED_STUDENTS": "Valgte Elever",
+    "SELECTED_PARTICIPANTS": "Valgte Deltagere",
+    "SELECT_TEACHER": "Vælg Instruktør",
+    "SELECT_TEMPLATE": "Vælg Skabelon",
+    "NOTHING_SELECTED": "Intet er valgt",
     "REMOVE": "Fjern",
     "CLEAR_ALL": "Ryd Alle",
-    "CREATE_QUESTIONNAIRE_NAME": "Opret navn på spørgeskema:",
+    "CREATE_QUESTIONNAIRE_NAME": "Opret navn på spørgeskema",
     "PLACEHOLDER_EVALUATION_NAME": "f.eks. 'Hold123 - evaluering af elever'",
-    "PLACEHOLDER_ANONYMOUS_NAME": "f.eks. 'Evaluering af undervisning - Alle Elever'",
+    "PLACEHOLDER_AGGREGATED_NAME": "f.eks. 'Evaluering af undervisning - Alle Elever'",
     "FINISH": "Færdiggør",
     "CANCEL": "Annuller",
-    "CONFIRM_ANONYMOUS_TITLE": "Bekræft Oprettelse af Anonymt Spørgeskema",
-    "CONFIRM_ANONYMOUS_MESSAGE": "Er du sikker på, at du vil oprette dette anonyme spørgeskema? Denne handling vil tildele den valgte skabelon til alle udvalgte deltagere.",
+    "CONFIRM_AGGREGATED_TITLE": "Bekræft Oprettelse af Aggregeret Spørgeskema",
+    "CONFIRM_AGGREGATED_MESSAGE": "Er du sikker på, at du vil oprette dette aggregerede spørgeskema? Denne handling vil tildele den valgte skabelon til alle udvalgte deltagere.",
     "CONFIRM_EVALUATION_TITLE": "Bekræft Oprettelse af Evalueringsspørgeskema",
     "CONFIRM_EVALUATION_MESSAGE": "Er du sikker på, at du vil oprette dette evalueringsspørgeskema? Denne handling vil tildele den valgte skabelon til alle udvalgte elever og lærere.",
     "CONFIRM_YES": "Ja, Opret Spørgeskema",
-    "CONFIRM_NO": "Nej, Annuller"
+    "CONFIRM_NO": "Nej, Annuller",
+    "AGGREGATED_SUCCESS": "Aggregeret spørgeskema oprettet med succes!",
+    "EVALUATION_SUCCESS": "Evalueringsspørgeskema oprettet med succes!"
   }
 }

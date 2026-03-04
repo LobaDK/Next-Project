@@ -1,7 +1,3 @@
-using API.DTO.User;
-using API.Interfaces;
-using Novell.Directory.Ldap;
-
 namespace API.FieldMappers;
 
 public class LDAPFieldMappingProvider : IFieldMappingProvider
@@ -64,7 +60,7 @@ public class LDAPFieldMappingProvider : IFieldMappingProvider
         {
             if (obj is LdapAttribute memberOf)
             {
-                return memberOf.StringValue.Split(';').ToList();
+                return memberOf.StringValueArray.Select(s => s.ToString()).ToList();
             }
             throw new InvalidCastException("Expected LdapAttribute for memberOf conversion.");
         },

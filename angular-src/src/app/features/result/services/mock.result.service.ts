@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Result } from '../../../shared/models/result.model';
 import { Role } from '../../../shared/models/user.model';
+import { IResultService } from '../../../core/interfaces/service.interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
-export class MockResultService {
+export class MockResultService implements IResultService {
 
   private mockResults: Result[] = [
     {
@@ -69,8 +70,39 @@ export class MockResultService {
     }
   ];
 
-  getResultById(id: string): Observable<Result | null> {
+  getResultById(id: string): Observable<Result> {
     const result = this.mockResults.find(r => r.id === id);
-    return of(result ?? null); // Returns null if result not found
+    if (!result) {
+      throw new Error(`Result with ID ${id} not found`);
+    }
+    return of(result);
+  }
+
+  canGetResult(id: string): Observable<boolean> {
+    const result = this.mockResults.find(r => r.id === id);
+    // Mock logic: result can be retrieved if both student and teacher have completed
+    const canGet = result?.student?.completedAt != null && result?.teacher?.completedAt != null;
+    return of(canGet ?? false);
+  }
+
+  getCompletedStudentsByGroup(activeQuestionnaireId: string): Observable<Array<{ id: string; student: { fullName: string; userName?: string } }>> {
+    // Mock implementation - return sample completed students
+    const mockCompletedStudents = [
+      {
+        id: 'student1',
+        student: {
+          fullName: 'John Doe',
+          userName: 'johnd123'
+        }
+      },
+      {
+        id: 'student2',
+        student: {
+          fullName: 'Jane Smith',
+          userName: 'janes456'
+        }
+      }
+    ];
+    return of(mockCompletedStudents);
   }
 }

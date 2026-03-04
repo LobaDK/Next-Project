@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Reflection;
-using Settings.Models;
 
 namespace API.Extensions;
 
@@ -62,6 +59,16 @@ public static class RootSettingsExtensions
         if (propertyType == typeof(string))
         {
             return string.IsNullOrWhiteSpace((string)currentValue);
+        }
+
+        if (propertyType == typeof(bool))
+        {
+            return false;
+        }
+
+        if (propertyType == typeof(int))
+        {
+            return false;
         }
         
         // Handle collections (List, Dictionary, etc.)

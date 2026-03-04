@@ -1,9 +1,3 @@
-using API.DTO.Requests.QuestionnaireTemplate;
-using API.Exceptions;
-using API.Interfaces;
-using Database.DTO.QuestionnaireTemplate;
-using Database.Models;
-using API.DTO.Responses.QuestionnaireTemplate;
 
 namespace API.Services;
 
@@ -22,9 +16,15 @@ namespace API.Services;
 /// </list>
 /// All operations are performed through the Unit of Work pattern to ensure transactional consistency.
 /// </remarks>
-public class QuestionnaireTemplateService(IUnitOfWork unitOfWork)
+
+public class QuestionnaireTemplateService : IQuestionnaireTemplateService
 {
-    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IUnitOfWork _unitOfWork;
+
+    public QuestionnaireTemplateService(IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork;
+    }
 
 
     /// <summary>
@@ -54,7 +54,8 @@ public class QuestionnaireTemplateService(IUnitOfWork unitOfWork)
             request.Order,
             request.Title,
             request.Id,
-            request.templateStatus
+            request.TeacherId,
+            request.TemplateStatus
         );
 
         QuestionnaireTemplateBase? lastTemplate = questionnaireTemplateBases.Count != 0 ? questionnaireTemplateBases.Last() : null;
@@ -80,11 +81,33 @@ public class QuestionnaireTemplateService(IUnitOfWork unitOfWork)
     /// <returns>
     /// A task that represents the asynchronous operation. The task result contains the added <see cref="QuestionnaireTemplateModel"/>.
     /// </returns>
+    /// <exception cref="SQLException.ItemAlreadyExists">Thrown when a template with the same title already exists.</exception>
     public async Task<QuestionnaireTemplate> AddTemplate(QuestionnaireTemplateAdd request)
     {
-        QuestionnaireTemplate template = await _unitOfWork.QuestionnaireTemplate.AddAsync(request);
-        await _unitOfWork.SaveChangesAsync();
-        return template;
+        try
+        {
+            QuestionnaireTemplate template = await _unitOfWork.QuestionnaireTemplate.AddAsync(request);
+            await _unitOfWork.SaveChangesAsync();
+            return template;
+        }
+        catch (DbUpdateException ex) when (IsUniqueConstraintViolation(ex))
+        {
+            throw new SQLException.ItemAlreadyExists($"A template with the title '{request.Title}' already exists.", ex);
+        }
+    }
+
+    /// <summary>
+    /// Determines if a DbUpdateException is caused by a unique constraint violation on the Title field.
+    /// </summary>
+    /// <param name="ex">The DbUpdateException to examine.</param>
+    /// <returns>True if the exception is caused by a Title unique constraint violation.</returns>
+    private static bool IsUniqueConstraintViolation(DbUpdateException ex)
+    {
+        // Check if the exception message contains indicators of unique constraint violation on Title
+        var message = ex.InnerException?.Message ?? ex.Message;
+        return message.Contains("IX_QuestionnaireTemplate_Title") || 
+               (message.Contains("duplicate key") && message.Contains("Title")) ||
+               (message.Contains("UNIQUE constraint failed") && message.Contains("Title"));
     }
 
     /// <summary>
@@ -137,6 +160,10 @@ public class QuestionnaireTemplateService(IUnitOfWork unitOfWork)
             var updated = await _unitOfWork.QuestionnaireTemplate.Update(id, updateRequest);
             await _unitOfWork.SaveChangesAsync();
             return updated;
+        }
+        catch (DbUpdateException ex) when (IsUniqueConstraintViolation(ex))
+        {
+            throw new SQLException.ItemAlreadyExists($"A template with the title '{updateRequest.Title}' already exists.", ex);
         }
         catch (Exception ex)
         {
@@ -244,5 +271,10 @@ public async Task<QuestionnaireTemplate> FinalizeTemplate(Guid id)
     public async Task<List<QuestionnaireTemplateBase>> GetTemplateBasesAnsweredByStudentAsync(Guid studentId, Guid teacherId)
     {
         return await _unitOfWork.QuestionnaireTemplate.GetTemplateBasesAnsweredByStudentAsync(studentId, teacherId);
+    }
+
+    public async Task<bool> IsTitleAvailable(string templateTitle)
+    {
+        return await _unitOfWork.QuestionnaireTemplate.DoesTitleExist(templateTitle);
     }
 }

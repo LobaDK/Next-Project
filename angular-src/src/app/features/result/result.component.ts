@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { ResultService } from "./services/result.service";
 import { PdfGenerationService } from "./services/pdf-generation.service";
 import { Result } from "../../shared/models/result.model";
-import { CommonModule } from "@angular/common";
+
 import { AgCharts } from "ag-charts-angular";
 import { AgBarSeriesOptions, AgChartOptions } from "ag-charts-community";
 import { RouterModule } from "@angular/router";
@@ -14,20 +14,11 @@ import { Subject, takeUntil } from "rxjs";
 
 
 @Component({
-  selector: "app-result",
-  standalone: true,
-  providers: [ResultService, PdfGenerationService],
-  imports: [CommonModule, AgCharts, RouterModule, FormsModule, TranslateModule, ShowResultComponent],
-  templateUrl: "./result.component.html",
-  template: `
-    <button (click)="updateChart('stacked')">Stacked</button>
-    <button (click)="updateChart('donut')">Donut</button>
-    <ag-charts-angular
-      *ngIf="chartOptions"
-      [options]="chartOptions"
-    ></ag-charts-angular>
-  `,
-  styleUrls: ["./result.component.css"],
+    selector: "app-result",
+    providers: [ResultService, PdfGenerationService],
+    imports: [RouterModule, FormsModule, TranslateModule, ShowResultComponent],
+    templateUrl: "./result.component.html",
+    styleUrls: ["./result.component.css"]
 })
 export class ResultComponent implements OnInit, OnDestroy{
   result: Result | null = null;
@@ -45,12 +36,14 @@ export class ResultComponent implements OnInit, OnDestroy{
   private destroy$ = new Subject<void>();
 
   // Configuration for ShowResultComponent
-  resultConfig: ShowResultConfig = {
+  readonly resultConfig: ShowResultConfig = {
     showTemplate: true,
     showStudent: true,
     showTeacher: true,
     showCompletionDates: true,
-    useCardStyling: false // We handle card styling in the parent component
+    useCardStyling: false,
+    showActions: false,
+    showTestButtons: false  // Enable test buttons in result history
   };
 
 
@@ -314,4 +307,6 @@ export class ResultComponent implements OnInit, OnDestroy{
       animation: { enabled: true, duration: 800 },
     };
   }
+
+
 }

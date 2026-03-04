@@ -2,20 +2,25 @@ import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { AuthService } from '../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 import { TranslateModule } from '@ngx-translate/core';
 import { finalize } from 'rxjs';
 import { LoginErrorCode } from '../home/models/login.model';
 import { LanguageSwitcherComponent } from '../../core/components/language-switcher/language-switcher.component';
 import { TrackCapsDirective } from '../../shared/directives/caps-lock';
+import { environment } from '../../../environments/environment';
 
 
 const ERROR_I18N: Record<LoginErrorCode, string> = {
   [LoginErrorCode.InvalidCredentials]: 'LOGIN.ERRORS.INVALID',
+  [LoginErrorCode.AccountDisabled]:    'LOGIN.ERRORS.ACCOUNT_DISABLED',
+  [LoginErrorCode.AccountExpired]:     'LOGIN.ERRORS.ACCOUNT_EXPIRED',
+  [LoginErrorCode.PasswordExpired]:    'LOGIN.ERRORS.PASSWORD_EXPIRED',
+  [LoginErrorCode.AccountLocked]:      'LOGIN.ERRORS.ACCOUNT_LOCKED',
+  [LoginErrorCode.AccountLoginError]:  'LOGIN.ERRORS.ACCOUNT_LOGIN_ERROR',
   [LoginErrorCode.Network]:            'LOGIN.ERRORS.NETWORK',
   [LoginErrorCode.Server]:             'LOGIN.ERRORS.SERVER',
   [LoginErrorCode.Unknown]:            'LOGIN.ERRORS.GENERIC',
-  // If your enum also includes these, keep them:
   [LoginErrorCode.BadRequest]:         'LOGIN.ERRORS.BAD_REQUEST',
   [LoginErrorCode.Forbidden]:          'LOGIN.ERRORS.FORBIDDEN',
   [LoginErrorCode.RateLimited]:        'LOGIN.ERRORS.RATE_LIMITED',
@@ -24,11 +29,10 @@ const ERROR_I18N: Record<LoginErrorCode, string> = {
 };
 
 @Component({
-  selector: 'app-login',
-  standalone: true,
-  imports: [FormsModule, CommonModule, TranslateModule, LanguageSwitcherComponent, TrackCapsDirective],
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
+    selector: 'app-login',
+    imports: [FormsModule, TranslateModule, LanguageSwitcherComponent, TrackCapsDirective],
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
   private authService = inject(AuthService);
@@ -45,6 +49,9 @@ export class LoginComponent {
 
   isLoading = false;
   capsLockOn = false;
+  
+  // Flag to control whether to show specific AD error messages or generic ones
+  showSpecificErrors = environment.showSpecificErrors ?? false;
 
   login() {
     if (this.isLoading) return;
@@ -58,7 +65,14 @@ export class LoginComponent {
         this.loggedIn.emit(true);
         return;
       }
-      this.errorKey = ERROR_I18N[res.code];
+      
+      // Check if we should show generic message for AD-specific errors
+      if (!this.showSpecificErrors && this.isADSpecificError(res.code)) {
+        this.errorKey = 'LOGIN.ERRORS.GENERIC_AD_ERROR';
+      } else {
+        this.errorKey = ERROR_I18N[res.code];
+      }
+      
       this.errorOccurred.emit(res.code);
     });
   }
@@ -74,5 +88,18 @@ export class LoginComponent {
 
   onCapsLockChange(capsLockOn: boolean) {
     this.capsLockOn = capsLockOn;
+  }
+  
+  /**
+   * Checks if the error code is specific to Active Directory (not invalid credentials)
+   */
+  private isADSpecificError(errorCode: LoginErrorCode): boolean {
+    return [
+      LoginErrorCode.AccountDisabled,
+      LoginErrorCode.AccountExpired,
+      LoginErrorCode.PasswordExpired,
+      LoginErrorCode.AccountLocked,
+      LoginErrorCode.AccountLoginError
+    ].includes(errorCode);
   }
 }

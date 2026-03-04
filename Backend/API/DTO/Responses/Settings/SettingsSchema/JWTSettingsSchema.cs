@@ -1,5 +1,3 @@
-using API.DTO.Responses.Settings.SettingsSchema.Bases;
-
 namespace API.DTO.Responses.Settings.SettingsSchema;
 
 public record class JWTSettingsSchema
@@ -8,7 +6,6 @@ public record class JWTSettingsSchema
     public required RefreshTokenSecretSchema RefreshTokenSecret { get; set; }
     public required TokenTTLMinutesSchema TokenTTLMinutes { get; set; }
     public required RenewTokenTTLDaysSchema RenewTokenTTLDays { get; set; }
-    public required RolesSchema Roles { get; set; }
     public required IssuerSchema Issuer { get; set; }
     public required AudienceSchema Audience { get; set; }
 }

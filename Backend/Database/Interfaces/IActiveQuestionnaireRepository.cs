@@ -1,5 +1,3 @@
-using Database.DTO.ActiveQuestionnaire;
-using Database.Enums;
 
 namespace Database.Interfaces;
 
@@ -24,6 +22,12 @@ public interface IActiveQuestionnaireRepository
     /// <returns>A complete ActiveQuestionnaire DTO with questions and answers.</returns>
     /// <exception cref="ArgumentException">Thrown when the questionnaire ID is not found.</exception>
     Task<ActiveQuestionnaire> GetFullActiveQuestionnaireAsync(Guid id);
+
+    Task<ActiveQuestionnaire?> GetFullActiveQuestionnaireForAnsweringAsync(
+        Guid activeQuestionnaireId,
+        Guid userGuid
+    );
+
 
     /// <summary>
     /// Creates a new active questionnaire instance from a template and assigns it to specific student and teacher.
@@ -146,6 +150,8 @@ public interface IActiveQuestionnaireRepository
     Task<List<FullStudentRespondsDate>> GetResponsesFromStudentAndTemplateAsync(Guid studentid, Guid templateid);
     Task<List<FullStudentRespondsDate>> GetResponsesFromStudentAndTemplateWithDateAsync(Guid studentid, Guid templateid);
 
+    Task<List<FullResponse>> GetResponsesFromTeacherAndStudentAndTemplateWithDateAsync(Guid studentid, Guid teacherid, Guid templateid);
+    
     /// <summary>
     /// Retrieves the response history for a specific student and questionnaire template.
     /// </summary>

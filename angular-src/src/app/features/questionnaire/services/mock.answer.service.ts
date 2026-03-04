@@ -2,11 +2,12 @@ import { inject, Injectable } from '@angular/core';
 import { Questionnaire } from '../models/answer.model';
 import { delay, Observable, of } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
+import { IAnswerService } from '../../../core/interfaces/service.interfaces';
 
 @Injectable({
   providedIn: 'root',
 })
-export class MockAnswerService {
+export class MockAnswerService implements IAnswerService {
   private authService = inject(AuthService);
   // Mock question templates
 private mockTemplates: Questionnaire[] = [
@@ -406,35 +407,49 @@ private mockTemplates: Questionnaire[] = [
   ];
 
 // Get active questionnaire by instance ID and check if user is allowed
-getActiveQuestionnaireById(instanceId: string): Observable<Questionnaire | undefined> {
+getActiveQuestionnaireById(instanceId: string): Observable<Questionnaire> {
   const userId = this.authService.user()?.id;
   if (!userId) {
     console.error('No user logged in.');
-    return of(undefined);
+    return of({} as Questionnaire);
   }
 
   const instance = this.activeInstances.find(inst => inst.id === instanceId);
   if (!instance) {
     console.error(`Instance ${instanceId} not found.`);
-    return of(undefined);
+    return of({} as Questionnaire);
   }
 
   if (!this.isUserAllowed(instance, userId)) {
     console.error(`User ${userId} is not allowed to access questionnaire ${instanceId}`);
-    return of(undefined);
+    return of({} as Questionnaire);
   }
 
-  return this.getTemplateById(instance.templateId);
+  const template = this.mockTemplates.find(template => template.id === instance.templateId);
+  return of(template || {} as Questionnaire).pipe(delay(2000));
+}
+
+/**
+ * Mock implementation of answer submission
+ */
+submitAnswers(id: string, answers: any): Observable<void> {
+  console.log(`Mock: Submitting answers for questionnaire ${id}`, answers);
+  // Simulate successful submission
+  return of(undefined).pipe(delay(1000));
+}
+
+/**
+ * Mock implementation to check if user has submitted answers
+ */
+hasUserSubmited(id: string): Observable<boolean> {
+  console.log(`Mock: Checking if user submitted answers for questionnaire ${id}`);
+  // For demo purposes, return false (not submitted) for most questionnaires
+  // except for specific test case
+  return of(id === 'submitted-test').pipe(delay(500));
 }
 
   // Helper function to check if a user is allowed
   private isUserAllowed(instance: { allowedUsers: string[] }, userId: string): boolean {
     return instance.allowedUsers.includes(userId);
-  }
-
-  // Get a specific template by ID
-  private getTemplateById(templateId: string): Observable<Questionnaire | undefined> {
-    const template = this.mockTemplates.find(template => template.id === templateId);
-    return of(template).pipe(delay(2000));
   }
 }

@@ -1,11 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using Database.DTO.QuestionnaireTemplate;
-using Database.Enums;
-using Database.Extensions;
-using Database.Interfaces;
-using Database.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Database.Repository;
 
@@ -293,6 +285,7 @@ public class QuestionnaireTemplateRepository(Context context, ILoggerFactory log
         TemplateOrderingOptions sortOrder,
         string? titleQuery,
         Guid? idQuery,
+        Guid? teacherId,
         TemplateStatus? templateStatus)
     {
         IQueryable<QuestionnaireTemplateModel> query = _genericRepository.GetAsQueryable();
@@ -307,6 +300,11 @@ public class QuestionnaireTemplateRepository(Context context, ILoggerFactory log
         if (idQuery is not null)
         {
             query = query.Where(q => q.Id.ToString().Contains(idQuery.ToString()!));
+        }
+
+        if (teacherId is not null)
+        {
+            query = query.Where(q => q.ActiveQuestionnaires.Any(aq => aq.Teacher!.Guid == teacherId));
         }
 
         if (templateStatus.HasValue)
@@ -389,5 +387,10 @@ public class QuestionnaireTemplateRepository(Context context, ILoggerFactory log
             .ToListAsync();
 
         return templates.Select(t => t.ToBaseDto()).ToList();
+    }
+
+    public async Task<bool> DoesTitleExist(string templateTitle)
+    {
+        return await _context.QuestionnaireTemplates.AnyAsync(t => t.Title == templateTitle);
     }
 }

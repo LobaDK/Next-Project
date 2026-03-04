@@ -1,12 +1,3 @@
-using Database.DTO.ActiveQuestionnaire;
-using Database.DTO.QuestionnaireTemplate;
-using Database.Enums;
-using Database.Extensions;
-using Database.Interfaces;
-using Database.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Database.Repository;
 
@@ -57,10 +48,37 @@ public class ActiveQuestionnaireRepository(Context context, ILoggerFactory logge
     public async Task<ActiveQuestionnaire> GetFullActiveQuestionnaireAsync(Guid id)
     {
         ActiveQuestionnaireModel activeQuestionnaire = await _genericRepository.GetSingleAsync(a => a.Id == id,
-            query => query.Include(a => a.Student).Include(a => a.Teacher).Include(a => a.QuestionnaireTemplate.Questions).ThenInclude(q => q.Options)) ?? throw new Exception("Active questionnaire not found.");
+            query => query.Include(a => a.Student).Include(a => a.Teacher).Include(a => a.QuestionnaireTemplate!.Questions).ThenInclude(q => q.Options)) ?? throw new Exception("Active questionnaire not found.");
 
         return activeQuestionnaire.ToDto();
     }
+
+public async Task<ActiveQuestionnaire?>
+    GetFullActiveQuestionnaireForAnsweringAsync(
+        Guid activeQuestionnaireId,
+        Guid userGuid
+    )
+{
+    var entity = await _genericRepository.GetSingleAsync(
+        q =>
+            q.Id == activeQuestionnaireId &&
+            (
+                q.Student != null && q.Student.Guid == userGuid ||
+                q.Teacher != null && q.Teacher.Guid == userGuid
+            ),
+        query => query
+            .AsNoTracking()
+            .Include(q => q.Student)
+            .Include(q => q.Teacher)
+            .Include(q => q.QuestionnaireTemplate)
+                .ThenInclude(t => t!.Questions)
+                    .ThenInclude(q => q.Options)
+    );
+
+    return entity?.ToDto();
+}
+
+
 
     /// <summary>
     /// Creates a new active questionnaire instance from a template and assigns it to specific participants.
@@ -103,7 +121,6 @@ public class ActiveQuestionnaireRepository(Context context, ILoggerFactory logge
         };
 
         await _genericRepository.AddAsync(activeQuestionnaire);
-
         return activeQuestionnaire.ToDto();
     }
 
@@ -157,17 +174,17 @@ public class ActiveQuestionnaireRepository(Context context, ILoggerFactory logge
 
         if (!string.IsNullOrEmpty(student))
         {
-            query = query.Where(q => q.Student.FullName.Contains(student) || q.Student.UserName.Contains(student));
+            query = query.Where(q => q.Student!.FullName.Contains(student) || q.Student.UserName.Contains(student));
         }
 
         if (!string.IsNullOrEmpty(teacher))
         {
-            query = query.Where(q => q.Teacher.FullName.Contains(teacher) || q.Teacher.UserName.Contains(teacher));
+            query = query.Where(q => q.Teacher!.FullName.Contains(teacher) || q.Teacher.UserName.Contains(teacher));
         }
 
         if (userId.HasValue)
         {
-            query = query.Where(q => q.Student.Guid == userId || q.Teacher.Guid == userId);
+            query = query.Where(q => q.Student!.Guid == userId || q.Teacher!.Guid == userId);
         }
 
         if (onlyStudentCompleted)
@@ -318,7 +335,7 @@ public class ActiveQuestionnaireRepository(Context context, ILoggerFactory logge
     /// </remarks>
     public async Task<bool> IsActiveQuestionnaireComplete(Guid activeQuestionnaireId, Guid userId)
     {
-        ActiveQuestionnaireModel activeQuestionnaire = await _context.ActiveQuestionnaires.SingleAsync(a => a.Id == activeQuestionnaireId && (a.Student.Guid == userId || a.Teacher.Guid == userId));
+        ActiveQuestionnaireModel activeQuestionnaire = await _context.ActiveQuestionnaires.SingleAsync(a => a.Id == activeQuestionnaireId && (a.Student!.Guid == userId || a.Teacher!.Guid == userId));
 
         return activeQuestionnaire.StudentCompletedAt.HasValue && activeQuestionnaire.TeacherCompletedAt.HasValue;
     }
@@ -340,12 +357,12 @@ public class ActiveQuestionnaireRepository(Context context, ILoggerFactory logge
         ActiveQuestionnaireModel activeQuestionnaire = await _context.ActiveQuestionnaires
             .Include(a => a.StudentAnswers)
             .ThenInclude(a => a.Question)
-            .ThenInclude(q => q.Options)
+            .ThenInclude(q => q!.Options)
             .Include(a => a.StudentAnswers)
             .ThenInclude(a => a.Option)
             .Include(a => a.TeacherAnswers)
             .ThenInclude(a => a.Question)
-            .ThenInclude(q => q.Options)
+            .ThenInclude(q => q!.Options)
             .Include(a => a.TeacherAnswers)
             .ThenInclude(a => a.Option)
             .Include(a => a.Student)
@@ -374,15 +391,21 @@ public class ActiveQuestionnaireRepository(Context context, ILoggerFactory logge
     /// </remarks>
     public async Task<List<ActiveQuestionnaireBase>> GetPendingActiveQuestionnaires(Guid userId)
     {
-        UserBaseModel user = await _context.Users.SingleOrDefaultAsync(u => u.Guid == userId) ?? throw new InvalidOperationException("User not found.");
+        UserBaseModel? user = await _context.Users.SingleOrDefaultAsync(u => u.Guid == userId);
+
+        if (user is null)
+        {
+            return [];
+        }
+
         List<ActiveQuestionnaireModel> activeQuestionnaireBases;
         if (user.GetType().Equals(typeof(StudentModel)))
         {
-            activeQuestionnaireBases = await _context.ActiveQuestionnaires.Include(a => a.Teacher).Where(a => a.Student.Guid == userId && !a.StudentCompletedAt.HasValue).ToListAsync();
+            activeQuestionnaireBases = await _context.ActiveQuestionnaires.Include(a => a.Teacher).Where(a => a.Student!.Guid == userId && !a.StudentCompletedAt.HasValue).ToListAsync();
         }
         else if (user.GetType().Equals(typeof(TeacherModel)))
         {
-            activeQuestionnaireBases = await _context.ActiveQuestionnaires.Include(a => a.Student).Where(a => a.Teacher.Guid == userId && !a.TeacherCompletedAt.HasValue).ToListAsync();
+            activeQuestionnaireBases = await _context.ActiveQuestionnaires.Include(a => a.Student).Where(a => a.Teacher!.Guid == userId && !a.TeacherCompletedAt.HasValue).ToListAsync();
         }
         else
         {
@@ -413,7 +436,7 @@ public class ActiveQuestionnaireRepository(Context context, ILoggerFactory logge
             .Include(a => a.StudentAnswers)
             .ThenInclude(a => a.Option)
             .Include(a => a.Student)
-            .Where(a => a.Student.Guid == studentid && a.QuestionnaireTemplate.Id == templateid && a.StudentCompletedAt.HasValue)
+            .Where(a => a.Student!.Guid == studentid && a.QuestionnaireTemplate!.Id == templateid && a.StudentCompletedAt.HasValue)
             .ToListAsync();
 
         return [.. activeQuestionnaires.Select(a => a.ToFullStudentRespondsDate())];
@@ -438,10 +461,35 @@ public class ActiveQuestionnaireRepository(Context context, ILoggerFactory logge
             .ThenInclude(a => a.Option)
             .Include(a => a.Student)
             .Include(a => a.Teacher)
-            .Where(a => a.Student.Guid == studentid && a.QuestionnaireTemplate.Id == templateid && (a.StudentCompletedAt.HasValue ||  a.TeacherCompletedAt.HasValue))
+            .Where(a => a.Student!.Guid == studentid && a.QuestionnaireTemplate!.Id == templateid && (a.StudentCompletedAt.HasValue ||  a.TeacherCompletedAt.HasValue))
             .ToListAsync();
 
         return [.. activeQuestionnaires.Select(a => a.ToFullStudentRespondsDate())];
+    }
+
+    public async Task<List<FullResponse>> GetResponsesFromTeacherAndStudentAndTemplateWithDateAsync(Guid studentid,Guid teacherid, Guid templateid)
+    {
+        QuestionnaireTemplateModel template = await _context.QuestionnaireTemplates.SingleAsync(t => t.Id == templateid);
+        if (template.Title.IsNullOrEmpty())
+        {
+            throw new Exception("The requested Template Questionnaire does not exsist.");
+        }
+
+        List<ActiveQuestionnaireModel> activeQuestionnaires = await _context.ActiveQuestionnaires
+            .Include(a => a.StudentAnswers)
+            .ThenInclude(a => a.Question)
+            .Include(a => a.StudentAnswers)
+            .ThenInclude(a => a.Option)
+            .Include(a => a.TeacherAnswers)
+            .ThenInclude(a => a.Question)
+            .Include(a => a.TeacherAnswers)
+            .ThenInclude(a => a.Option)
+            .Include(a => a.Student)
+            .Include(a => a.Teacher)
+            .Where(a => a.Student!.Guid == studentid && a.QuestionnaireTemplate!.Id == templateid && a.Teacher!.Guid == teacherid && (a.StudentCompletedAt.HasValue && a.TeacherCompletedAt.HasValue))
+            .ToListAsync();
+
+        return [.. activeQuestionnaires.Select(a => a.ToFullResponseAll())];
     }
 
     public async Task<SurveyResponseSummary> GetAnonymisedResponses(Guid templateId, List<Guid> users, List<Guid> groups)
@@ -466,14 +514,18 @@ public class ActiveQuestionnaireRepository(Context context, ILoggerFactory logge
                             .Where(sa => users.Count == 0 || (a.Student != null && users.Contains(a.Student.Guid)))
                             .Select(sa => new
                             {
+                                QuestionId = sa.Question!.Id,
                                 QuestionPrompt = sa.Question!.Prompt,
+                                AnswerId = sa.Option != null ? (int?)sa.Option.Id : null,
                                 Answer = sa.CustomResponse ?? sa.Option!.DisplayText
                             }).ToList(),
                         TeacherAnswers = a.TeacherAnswers
                             .Where(ta => users.Count == 0 || (a.Teacher != null && users.Contains(a.Teacher.Guid)))
                             .Select(ta => new
                             {
+                                QuestionId = ta.Question!.Id,
                                 QuestionPrompt = ta.Question!.Prompt,
+                                AnswerId = ta.Option != null ? (int?)ta.Option.Id : null,
                                 Answer = ta.CustomResponse ?? ta.Option!.DisplayText
                             }).ToList()
                     }).ToList()
@@ -492,15 +544,15 @@ public class ActiveQuestionnaireRepository(Context context, ILoggerFactory logge
                 DatasetTitle = questionnaire.ActivatedAt.ToString("yyyy-MM-dd"),
                 ParticipantCount = questionnaire.StudentAnswers.Count + questionnaire.TeacherAnswers.Count,
                 AnonymisedResponses = [.. allAnswers
-                    .GroupBy(response => response.QuestionPrompt)
+                    .GroupBy(response => new { response.QuestionId, response.QuestionPrompt })
                     .Select(questionGroup => new AnonymisedResponsesQuestion
                     {
-                        Question = questionGroup.Key,
+                        Question = questionGroup.Key.QuestionPrompt,
                         Answers = [.. questionGroup
-                            .GroupBy(response => response.Answer)
+                            .GroupBy(response => new { response.AnswerId, response.Answer })
                             .Select(answerGroup => new AnonymisedResponsesAnswer
                             {
-                                Answer = answerGroup.Key,
+                                Answer = answerGroup.Key.Answer,
                                 Count = answerGroup.Count()
                             })]
                     })]
@@ -551,7 +603,7 @@ public class ActiveQuestionnaireRepository(Context context, ILoggerFactory logge
             .Where(aq => aq.Student!.Guid == studentId && 
                          aq.Teacher!.Guid == teacherId && 
                          aq.QuestionnaireTemplateFK == templateId &&
-                         (aq.StudentCompletedAt != null || aq.TeacherCompletedAt != null)) // Only include questionnaires with at least one completion
+                         aq.StudentCompletedAt != null && aq.TeacherCompletedAt != null) // Only include questionnaires where both parties have completed
             .OrderBy(aq => aq.ActivatedAt)
             .ToListAsync();
 
@@ -595,29 +647,34 @@ public class ActiveQuestionnaireRepository(Context context, ILoggerFactory logge
                     }).ToList()
                 }).ToList()
             },
-            AnswersInfo = questionnaires.Select(aq => new AnswerInfo
+            AnswersInfo = [.. questionnaires.Select(aq => new AnswerInfo
             {
                 activeQuestionnaireId = aq.Id,
                 StudentCompletedAt = aq.StudentCompletedAt!,
                 TeacherCompletedAt = aq.TeacherCompletedAt!,
 
-                Answers = aq.QuestionnaireTemplate!.Questions.Select(q =>
+                Answers = [.. aq.QuestionnaireTemplate!.Questions.Select(q =>
                 {
-                    var studentAnswer = aq.StudentAnswers.FirstOrDefault(sa => sa.QuestionFK == q.Id);
-                    var teacherAnswer = aq.TeacherAnswers.FirstOrDefault(ta => ta.QuestionFK == q.Id);
+                    ActiveQuestionnaireStudentResponseModel studentAnswer = aq.StudentAnswers.FirstOrDefault(sa => sa.QuestionFK == q.Id) ?? throw new InvalidOperationException("Student answer not found for question.");
+                    ActiveQuestionnaireTeacherResponseModel teacherAnswer = aq.TeacherAnswers.FirstOrDefault(ta => ta.QuestionFK == q.Id) ?? throw new InvalidOperationException("Teacher answer not found for question.");
+
+                    if (studentAnswer is null || teacherAnswer is null)
+                    {
+                        throw new InvalidOperationException("Answer data is incomplete.");
+                    }
 
                     return new AnswerDetails
                     {
                         QuestionId = q.Id.ToString(),
-                        StudentResponse = studentAnswer?.CustomResponse,
-                        IsStudentResponseCustom = !string.IsNullOrEmpty(studentAnswer?.CustomResponse),
-                        SelectedOptionIdsByStudent = studentAnswer?.OptionFK.HasValue == true ? [studentAnswer.OptionFK.Value] : null,
-                        TeacherResponse = teacherAnswer?.CustomResponse,
-                        IsTeacherResponseCustom = !string.IsNullOrEmpty(teacherAnswer?.CustomResponse),
-                        SelectedOptionIdsByTeacher = teacherAnswer?.OptionFK.HasValue == true ? [teacherAnswer.OptionFK.Value] : null
+                        StudentResponse = studentAnswer.CustomResponse,
+                        IsStudentResponseCustom = !string.IsNullOrEmpty(studentAnswer.CustomResponse),
+                        SelectedOptionIdsByStudent = studentAnswer.OptionFK.HasValue == true ? [studentAnswer.OptionFK.Value] : [],
+                        TeacherResponse = teacherAnswer.CustomResponse,
+                        IsTeacherResponseCustom = !string.IsNullOrEmpty(teacherAnswer.CustomResponse),
+                        SelectedOptionIdsByTeacher = teacherAnswer.OptionFK.HasValue == true ? [teacherAnswer.OptionFK.Value] : []
                     };
-                }).ToList()
-            }).ToList()
+                })]
+            })]
         };
 
 

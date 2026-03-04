@@ -10,4 +10,5 @@ public interface ILDAPSettings
     public string BaseDN { get; set; }
     public string SA { get; set; }
     public string SAPassword { get; set; }
+    public Dictionary<string, string> RoleMappingsCN { get; set; }
 }

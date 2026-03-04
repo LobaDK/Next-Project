@@ -1,5 +1,3 @@
-using API.DTO.Responses.Settings.SettingsSchema.Bases;
-
 namespace API.DTO.Responses.Settings.SettingsSchema;
 
 public record class LoggerSettingsSchema

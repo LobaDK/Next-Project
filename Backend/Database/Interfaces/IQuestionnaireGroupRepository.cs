@@ -1,12 +1,4 @@
-﻿using Database.DTO.ActiveQuestionnaire;
-using Database.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Database.Enums;
-
+﻿
 namespace Database.Interfaces
 {
     public interface IQuestionnaireGroupRepository
@@ -34,6 +26,8 @@ namespace Database.Interfaces
         /// </remarks>
         Task<IEnumerable<QuestionnaireGroupModel>> GetAllAsync();
 
+        Task<IEnumerable<QuestionnaireGroupModel>> GetGroupsByTemplateIdAsync(Guid templateId);
+
         /// <summary>
         /// Retrieves a questionnaire group by its unique identifier.
         /// </summary>
@@ -45,7 +39,7 @@ namespace Database.Interfaces
         /// <remarks>
         /// Uses a primary key lookup for efficient retrieval.
         /// </remarks>
-        Task<QuestionnaireGroupModel> GetByIdAsync(Guid groupId);
+        Task<QuestionnaireGroupModel?> GetByIdAsync(Guid groupId);
         Task<List<QuestionnaireGroupModel>> GetByIdsAsync(IEnumerable<Guid> ids);
         /// <summary>
         /// Retrieves a paginated list of questionnaire groups using keyset pagination with
@@ -78,7 +72,7 @@ namespace Database.Interfaces
             bool? pendingStudent = false,
             bool? pendingTeacher = false,
             int? teacherFK = null,
-            int? pageNumber = null);
+            int pageNumber = 1);
 
 
     }

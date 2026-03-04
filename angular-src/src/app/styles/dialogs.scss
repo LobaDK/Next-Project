@@ -1,0 +1,15 @@
+/* Base dialog surface (white card) */
+.app-dialog-surface {
+  background: var(--primary-background-white, #fff);
+
+  border-radius: 1.25rem;              /* rounded-2xl feel */
+  border: 2px solid var(--primary-orange-1);
+
+  padding: 2rem;
+  padding-bottom: 2.5rem;
+
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+
+  width: 100%;
+}

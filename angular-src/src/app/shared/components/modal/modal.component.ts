@@ -1,8 +1,11 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 /**
  * ModalComponent
+ *
+ * @deprecated This component is deprecated. Use specific dialog components with Angular Material Dialog instead.
+ * Create dedicated dialog components for better maintainability and consistency.
  *
  * A reusable confirmation modal with a title, text, and configurable confirm/cancel buttons.
  *
@@ -25,11 +28,11 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
  * ```
  */
 @Component({
-  selector: 'app-modal',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './modal.component.html',
-  styleUrl: './modal.component.css'
+    selector: 'app-modal',
+    standalone: true,
+    imports: [],
+    templateUrl: './modal.component.html',
+    styleUrl: './modal.component.css'
 })
 export class ModalComponent {
   /** Modal title displayed at the top. */
@@ -46,6 +49,9 @@ export class ModalComponent {
 
   /** Label for the cancel button. */
   @Input() cancelText: string = 'No';
+
+  /** Whether to show the cancel button. */
+  @Input() showCancelButton: boolean = true;
 
   /** Emits when the user confirms the action. */
   @Output() confirm = new EventEmitter<void>();

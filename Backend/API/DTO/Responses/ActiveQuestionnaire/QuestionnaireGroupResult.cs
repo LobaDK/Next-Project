@@ -1,5 +1,4 @@
 ﻿
-
 namespace API.DTO.Responses.ActiveQuestionnaire
 {
     /// <summary>
@@ -13,6 +12,7 @@ namespace API.DTO.Responses.ActiveQuestionnaire
     {
         public Guid GroupId { get; set; }
         required public string Name { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 
     /// <summary>
@@ -27,6 +27,6 @@ namespace API.DTO.Responses.ActiveQuestionnaire
     public class QuestionnaireGroupResult : QuestionnaireGroupBasicResult
     {
         public Guid TemplateId { get; set; }
-        public List<ActiveQuestionnaireAdminBase> Questionnaires { get; set; }
+        public required List<ActiveQuestionnaireAdminBase> Questionnaires { get; set; }
     }
 }
