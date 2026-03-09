@@ -21,9 +21,112 @@
     "RESULTS": "Resultater",
     "OVERVIEW": "Oversigt",
     "TEMPLATES": "Skabeloner",
+    "SYSTEM": "System",
     "HOME": "Hjem",
     "USER_GUIDE": "Brugervejledning"
   },
+
+  "SYSTEM": {
+    "TITLE": "Systemadministration",
+    "BUTTONS": {
+      "PING": "Ping",
+      "REFRESH_META": "Opdater metadata",
+      "CLEAR_FILTERS": "Nulstil filtre",
+      "LOAD_LOGS": "Hent logs",
+      "REFRESH_FILES": "Opdater filer",
+      "DOWNLOAD": "Download",
+      "LOAD_SETTINGS": "Hent indstillinger",
+      "LOAD_SCHEMA": "Hent schema",
+      "LOAD_DEFAULTS": "Hent standardværdier",
+      "UPDATE": "Opdater indstillinger",
+      "PATCH": "Patch indstillinger",
+      "EXPORT": "Eksportér indstillinger",
+      "IMPORT": "Importér indstillinger",
+      "STOP_SERVER": "Stop server",
+      "ADVANCED_MODE": "Avanceret tilstand",
+      "BASIC_MODE": "Grundlæggende tilstand",
+      "SAVE_CHANGES": "Gem ændringer",
+      "RESET": "Nulstil"
+    },
+    "LOGS": {
+      "TITLE": "Databaselogs",
+      "LOG_LEVEL": "Logniveau",
+      "CATEGORIES": "Kategorier",
+      "EVENTS": "Events",
+      "EMPTY": "Ingen logs er hentet.",
+      "COLUMNS": {
+        "TIME": "Tid",
+        "LEVEL": "Niveau",
+        "CATEGORY": "Kategori",
+        "EVENT": "Event",
+        "MESSAGE": "Besked"
+      }
+    },
+    "LOG_FILES": {
+      "TITLE": "Logfiler",
+      "EMPTY": "Ingen logfiler fundet.",
+      "OTHER": "Øvrigt",
+      "FILES": "filer"
+    },
+    "SETTINGS": {
+      "TITLE": "Indstillinger",
+      "CURRENT": "Nuværende indstillinger",
+      "SCHEMA": "Indstillingsschema",
+      "DEFAULTS": "Standardindstillinger",
+      "UPDATE_PAYLOAD": "Update payload (PUT)",
+      "PATCH_PAYLOAD": "Patch payload (PATCH)",
+      "IMPORT_FILE": "Importér indstillingsfil",
+      "SECTION_Database": "Database",
+      "SECTION_JWT": "JWT",
+      "SECTION_LDAP": "LDAP",
+      "SECTION_Logging": "Logging",
+      "SECTION_System": "System"
+    },
+    "STOP": {
+      "TITLE": "Applikationskontrol",
+      "DESCRIPTION": "Hvis serveren stoppes, er API'et utilgængeligt indtil genstart."
+    },
+    "CONFIRM": {
+      "UPDATE_TITLE": "Bekræft opdatering af indstillinger",
+      "UPDATE_TEXT": "Dette vil erstatte hele indstillingssektioner baseret på din PUT payload. Fortsæt?",
+      "UPDATE_BUTTON": "Ja, opdater indstillinger",
+      "PATCH_TITLE": "Bekræft patch af indstillinger",
+      "PATCH_TEXT": "Dette vil anvende delvise ændringer fra din PATCH payload. Fortsæt?",
+      "PATCH_BUTTON": "Ja, patch indstillinger",
+      "IMPORT_TITLE": "Bekræft import af indstillinger",
+      "IMPORT_TEXT": "Dette importerer og overskriver indstillinger fra den valgte fil. Fortsæt?",
+      "IMPORT_BUTTON": "Ja, importér indstillinger",
+      "STOP_TITLE": "Bekræft stop af server",
+      "STOP_TEXT": "Dette stopper API-serveren og afbryder aktive brugere. Fortsæt?",
+      "STOP_BUTTON": "Ja, stop server"
+    },
+    "MESSAGES": {
+      "PING_OK": "Ping lykkedes.",
+      "PING_FAILED": "Ping mislykkedes.",
+      "LOG_METADATA_FAILED": "Kunne ikke hente log-metadata.",
+      "LOGS_LOADED": "Logs hentet.",
+      "LOGS_FAILED": "Kunne ikke hente logs.",
+      "LOG_FILES_FAILED": "Kunne ikke hente logfiler.",
+      "LOG_DOWNLOAD_OK": "Logfil downloadet.",
+      "LOG_DOWNLOAD_FAILED": "Kunne ikke downloade logfil.",
+      "SETTINGS_FAILED": "Kunne ikke hente indstillinger.",
+      "SCHEMA_FAILED": "Kunne ikke hente indstillingsschema.",
+      "DEFAULTS_FAILED": "Kunne ikke hente standardindstillinger.",
+      "INVALID_JSON": "Ugyldig JSON payload.",
+      "UPDATE_OK": "Indstillinger opdateret.",
+      "UPDATE_FAILED": "Kunne ikke opdatere indstillinger.",
+      "PATCH_OK": "Indstillinger patchet.",
+      "PATCH_FAILED": "Kunne ikke patche indstillinger.",
+      "EXPORT_OK": "Indstillinger eksporteret.",
+      "EXPORT_FAILED": "Kunne ikke eksportere indstillinger.",
+      "IMPORT_FILE_REQUIRED": "Vælg en JSON-fil før import.",
+      "IMPORT_OK": "Indstillinger importeret.",
+      "IMPORT_FAILED": "Kunne ikke importere indstillinger.",
+      "STOP_OK": "Stop-anmodning sendt.",
+      "STOP_FAILED": "Kunne ikke stoppe serveren."
+    }
+  },
+
   "USER_GUIDE": {
     "TITLE": "Brugervejledning",
     "STUDENT": {

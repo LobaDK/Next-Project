@@ -196,7 +196,7 @@ public class SystemControllerService(
     /// </remarks>
     public SettingsSchema GetSettingsSchema()
     {
-        return new SettingsSchema()
+        var schema = new SettingsSchema()
         {
             Database = new DatabaseSettingsSchema()
             {
@@ -276,7 +276,7 @@ public class SystemControllerService(
                     Type = GetSchemaType(_RootSettings.LDAP.BaseDN),
                     Description = GetPropertyDescription(typeof(LDAPSettings).GetProperty(nameof(_RootSettings.LDAP.BaseDN))!)
                 },
-                SAUsername = new SAUsernameSchema()
+                SA = new SASchema()
                 {
                     Required = IsPropertyRequired(typeof(LDAPSettings).GetProperty(nameof(_RootSettings.LDAP.SA))!),
                     Type = GetSchemaType(_RootSettings.LDAP.SA),
@@ -342,6 +342,33 @@ public class SystemControllerService(
                 }
             }
         };
+
+        ApplySecretFlags(schema);
+        return schema;
+    }
+
+    private static void ApplySecretFlags(SettingsSchema schema)
+    {
+        foreach (PropertyInfo sectionProperty in typeof(SettingsSchema).GetProperties(BindingFlags.Public | BindingFlags.Instance))
+        {
+            object? sectionValue = sectionProperty.GetValue(schema);
+            if (sectionValue == null) continue;
+
+            foreach (PropertyInfo fieldProperty in sectionValue.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            {
+                object? fieldSchemaValue = fieldProperty.GetValue(sectionValue);
+                if (fieldSchemaValue is SettingsSchemaBase fieldSchema)
+                {
+                    fieldSchema.IsSecret = IsSecretFieldName(fieldProperty.Name);
+                }
+            }
+        }
+    }
+
+    private static bool IsSecretFieldName(string fieldName)
+    {
+        string normalized = fieldName.ToLowerInvariant();
+        return normalized.Contains("secret") || normalized.Contains("password");
     }
 
     /// <summary>

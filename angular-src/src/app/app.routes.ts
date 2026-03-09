@@ -16,6 +16,7 @@ import { DataCompareComponent } from './features/data-compare/data-compare.compo
 import { ResultHistoryComponent } from './features/result-history/result-history.component';
 import { UserGuideComponent } from './features/user-guide/user-guide.component';
 import { questionnaireLeaveGuard } from './core/guards and interceptors/questionnaire-leave.guard';
+import { SystemComponent } from './features/system/system.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -73,6 +74,12 @@ export const routes: Routes = [
     path: 'user-guide',
     component: UserGuideComponent,
     canActivate: [authGuard]
+  },
+  {
+    path: 'system',
+    component: SystemComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { roles: [Role.Admin] },
   },
   { path: '**', component: PageNotFoundComponent }
 ];

@@ -1,0 +1,31 @@
+<div class="app-dialog-surface animate-slideIn">
+  <h3 class="text-2xl font-bold mb-3 text-primary_dark_blue text-center">
+    {{ data.titleKey | translate }}
+  </h3>
+
+  <p class="mb-8 text-gray-700 text-center leading-relaxed">
+    {{ data.textKey | translate }}
+  </p>
+
+  <div class="flex gap-3 justify-center">
+    <button
+      type="button"
+      (click)="cancel()"
+      class="px-6 py-3 bg-gray-500 text-white rounded-lg
+             hover:bg-gray-600 focus:outline-none focus:ring-2
+             transition-all duration-200 font-medium shadow-sm
+             active:scale-95">
+      {{ 'COMMON.BUTTONS.CANCEL' | translate }}
+    </button>
+
+    <button
+      type="button"
+      (click)="confirm()"
+      class="px-6 py-3 bg-primary_orange_1 text-white rounded-lg
+             hover:bg-primary_orange_light focus:outline-none focus:ring-2 focus:ring-primary_orange_1
+             transition-all duration-200 font-medium shadow-md
+             active:scale-95">
+      {{ data.confirmKey | translate }}
+    </button>
+  </div>
+</div>
