@@ -162,6 +162,8 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
             },
             System = new SystemSettingsFetchResponse()
             {
+                AdminUsername = _RootSettings.System.AdminUsername,
+                AdminPassword = _RootSettings.System.AdminPassword,
                 ListenIP = _RootSettings.System.ListenIP,
                 HttpPort = _RootSettings.System.HttpPort,
                 HttpsPort = _RootSettings.System.HttpsPort,
@@ -291,6 +293,18 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
             },
             System = new SystemSettingsSchema()
             {
+                AdminUsername = new AdminUsername()
+                {
+                    Required = IsPropertyRequired(typeof(SystemSettings).GetProperty(nameof(_RootSettings.System.AdminUsername))!),
+                    Type = GetSchemaType(_RootSettings.System.AdminUsername),
+                    Description = GetPropertyDescription(typeof(SystemSettings).GetProperty(nameof(_RootSettings.System.AdminUsername))!)
+                },
+                AdminPassword = new AdminPassword()
+                {
+                    Required = IsPropertyRequired(typeof(SystemSettings).GetProperty(nameof(_RootSettings.System.AdminPassword))!),
+                    Type = GetSchemaType(_RootSettings.System.AdminPassword),
+                    Description = GetPropertyDescription(typeof(SystemSettings).GetProperty(nameof(_RootSettings.System.AdminPassword))!)
+                },
                 ListenIP = new ListenIPSchema()
                 {
                     Required = IsPropertyRequired(typeof(SystemSettings).GetProperty(nameof(_RootSettings.System.ListenIP))!),
