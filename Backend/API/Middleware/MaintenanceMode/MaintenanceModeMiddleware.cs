@@ -22,7 +22,7 @@ public class MaintenanceModeMiddleware(RequestDelegate next, IMaintenanceMonitor
                     return;
                 }
             }
-            else if (context.Request.Path.Value == "/api/auth/login" && context.Request.HasFormContentType)
+            else if (context.Request.Path.Value == "/api/auth" && context.Request.HasFormContentType)
             {
                 var form = await context.Request.ReadFormAsync();
                 var username = form["username"].ToString();

@@ -14,5 +14,6 @@ public enum UserRoles
 {
     Student,
     Teacher,
-    Admin
+    Admin,
+    DefaultUser
 }

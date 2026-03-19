@@ -5,6 +5,7 @@ namespace UnitTests.Services
         private readonly Mock<IJwtService> _mockJwtService = new();
         private readonly Mock<IAuthenticationBridge> _mockAuthBridge = new();
         private readonly Mock<IUnitOfWork> _mockUnitOfWork = new();
+        private readonly Mock<IMaintenanceMonitor> _mockMaintenanceMonitor = new();
         private readonly IConfiguration _configuration;
         private readonly ILoggerFactory _loggerFactory;
         private readonly AuthService _service;
@@ -26,7 +27,8 @@ namespace UnitTests.Services
                 _mockAuthBridge.Object,
                 _configuration,
                 _mockUnitOfWork.Object,
-                _loggerFactory);
+                _loggerFactory,
+                _mockMaintenanceMonitor.Object);
         }
 
         [Fact]
