@@ -214,7 +214,7 @@ public class AuthService : IAuthService
             Guid = Guid.Empty, // Placeholder GUID for maintenance mode
             Username = username,
             Name = _systemSettings.AdminUsername ?? "Administrator",
-            Role = UserRoles.Admin.ToString(),
+            Role = UserRoles.Admin.ToString().ToLower(),
             Permissions = GetUserPermissions(UserRoles.Admin.ToString())
         };
 
