@@ -125,7 +125,7 @@ export class QuestionnaireComponent {
       .subscribe((pm) => {
         const questionnaireId = pm.get('id');
         if (questionnaireId) {
-          this.LoadQuestionnaire(questionnaireId);
+          this.loadQuestionnaire(questionnaireId);
         } else {
           console.error('No questionnaire ID found in route!');
         }
@@ -135,7 +135,7 @@ export class QuestionnaireComponent {
  * Verifies whether the user already submitted the questionnaire;
  * loads details if not, otherwise navigates home.
  */
-  private LoadQuestionnaire(id: string) {
+  private loadQuestionnaire(id: string) {
     this.isLoading = true;
     this.currentQuestionnaireId = id;
     // First, check if the user has already submitted the questionnaire
@@ -160,27 +160,6 @@ export class QuestionnaireComponent {
             'An error occurred while loading the questionnaire.';
           this.isLoading = false;
         }
-      });
-  }
-
-  /** Loads questionnaire template data and updates progress. */
-  private loadQuestionnaire(id: string) {
-    this.answerService.getActiveQuestionnaireById(id)
-      .subscribe({
-        next: (template) => {
-          if (template) {
-            this.state.template = template;
-            this.updateProgress();
-          } else {
-            this.errorMessage = 'Could not find any data with that link. Did you write it correctly?';
-          }
-          this.isLoading = false;
-        },
-        error: (error) => {
-          console.error('Error loading questionnaire:', error);
-          this.errorMessage = 'An error occurred while loading the questionnaire. Please try again later.';
-          this.isLoading = false;
-        },
       });
   }
 
