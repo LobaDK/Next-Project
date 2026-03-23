@@ -117,6 +117,26 @@ export class QuestionnaireSessionService {
             return;
         }
 
-        localStorage.setItem(this.storageKey, JSON.stringify(sessions));
+        try {
+            localStorage.setItem(this.storageKey, JSON.stringify(sessions));
+        } catch (error) {
+            if (this.isQuotaExceededError(error)) {
+                console.warn('Unable to save questionnaire session: storage quota exceeded.');
+                return;
+            }
+
+            console.warn('Unable to save questionnaire session due to storage write failure.', error);
+        }
+    }
+
+    private isQuotaExceededError(error: unknown): boolean {
+        if (!(error instanceof DOMException)) {
+            return false;
+        }
+
+        return (
+            error.name === 'QuotaExceededError' ||
+            error.name === 'NS_ERROR_DOM_QUOTA_REACHED'
+        );
     }
 }
