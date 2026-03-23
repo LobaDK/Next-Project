@@ -357,12 +357,18 @@ export class QuestionnaireComponent {
 
   private openLeaveQuestionnaireDialog(): void {
     if (!this.isLeaveDialogOpen) {
-      this.askLeaveConfirmation().subscribe(shouldLeave => {
-        if (shouldLeave) {
-          this.allowNavigationWithoutPrompt = true;
-          this.router.navigate(['/']);
-        }
-      });
+      if (!this.hasMeaningfulProgress()) {
+        this.allowNavigationWithoutPrompt = true;
+        this.router.navigate(['/']);
+      }
+      else {
+        this.askLeaveConfirmation().subscribe(shouldLeave => {
+          if (shouldLeave) {
+            this.allowNavigationWithoutPrompt = true;
+            this.router.navigate(['/']);
+          }
+        });
+      }
     }
   }
 
@@ -371,7 +377,17 @@ export class QuestionnaireComponent {
       return true;
     }
 
+    if (!this.hasMeaningfulProgress()) {
+      return true;
+    }
+
     return this.askLeaveConfirmation();
+  }
+
+  private hasMeaningfulProgress() {
+    return Array.isArray(this.state.answers) &&
+      this.state.answers.some(answer => !!answer.optionId ||
+        !!(answer.customAnswer && answer.customAnswer.trim()));
   }
 
   private askLeaveConfirmation(): Observable<boolean> {
