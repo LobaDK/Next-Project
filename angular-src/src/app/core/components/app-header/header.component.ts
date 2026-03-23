@@ -21,16 +21,16 @@ import { LanguageSwitcherComponent } from "../language-switcher/language-switche
  * - Supporting multi-language navigation labels via `@ngx-translate/core`.
  */
 @Component({
-    selector: "app-header",
-    imports: [
+  selector: "app-header",
+  imports: [
     RouterLink,
     RouterLinkActive,
     MenuSvgComponent,
     TranslateModule,
     LanguageSwitcherComponent
-],
-    templateUrl: "./header.component.html",
-    styleUrls: ["./header.component.css"]
+  ],
+  templateUrl: "./header.component.html",
+  styleUrls: ["./header.component.css"]
 })
 export class HeaderComponent {
   /**
@@ -67,7 +67,7 @@ export class HeaderComponent {
   private cdr = inject(ChangeDetectorRef);
 
   readonly isAuthenticated = this.authService.isAuthenticated; // already a computed in the service
-  readonly userRole = computed<Role | null>( () => this.authService.user()?.role ?? null );
+  readonly userRole = computed<Role | null>(() => this.authService.user()?.role ?? null);
   readonly username = computed(() => this.authService.user()?.userName ?? '');
   readonly fullName = computed(() => this.authService.user()?.fullName ?? '');
 
@@ -121,6 +121,21 @@ export class HeaderComponent {
    * - Redirects to the home route (`'/'`).
    */
   logout(): void {
+    const isAnsweringQuestionnaire = this.router.url.startsWith('/answer/');
+
+    if (isAnsweringQuestionnaire) {
+      this.router.navigate(['/']).then((didNavigate) => {
+        if (didNavigate) {
+          this.completeLogout();
+        }
+      });
+      return;
+    }
+
+    this.completeLogout();
+  }
+
+  private completeLogout(): void {
     this.authService.logout();
     this.showProfileDropdown = false;
     this.cdr.markForCheck();
