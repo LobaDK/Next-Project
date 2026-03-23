@@ -225,8 +225,8 @@
     "COLLABORATOR": "Collaborator",
     "CUSTOM_ANSWER_ERROR": "Too few characters to proceed.",
     "CUSTOM_ANSWER_CHARACTER_COUNT": "characters",
-    "CONFIRM_SUBMIT_TITLE": " Confirm Submission",
-    "CONFIRM_SUBMIT_TEXT": " Are you sure you want to submit your answers? You won't be able to change them later."
+    "CONFIRM_SUBMIT_TITLE": "Confirm Submission",
+    "CONFIRM_SUBMIT_TEXT": "Are you sure you want to submit your answers? You won't be able to change them later."
   },
   "QUESTIONNAIRE": {
     "RESUME_TITLE": "Resume questionnaire?",
