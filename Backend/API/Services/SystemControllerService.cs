@@ -1,7 +1,11 @@
 
 namespace API.Services;
 
-public class SystemControllerService(IConfiguration configuration, ILogger<SystemControllerService> logger, IHostApplicationLifetime hostApplicationLifetime) : ISystemControllerService
+public class SystemControllerService(
+    IConfiguration configuration,
+    ILogger<SystemControllerService> logger,
+    IHostApplicationLifetime hostApplicationLifetime,
+    IMaintenanceMonitor maintenanceMonitor) : ISystemControllerService
 {
     private readonly RootSettings _RootSettings = ConfigurationBinderService.Bind<RootSettings>(configuration);
     private readonly IConfiguration _Configuration = configuration;
@@ -9,6 +13,7 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
     private readonly ILogger<ISystemControllerService> _Logger = logger;
     private readonly JsonSerializerOptions _SerializerOptions = JsonSerializerUtility.ConfigureJsonSerializerSettings();
     private readonly IHostApplicationLifetime _HostApplicationLifetime = hostApplicationLifetime;
+    private readonly IMaintenanceMonitor _maintenanceMonitor = maintenanceMonitor;
 
     public bool StopServer()
     {
@@ -402,6 +407,38 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
         {
             _Logger.LogError(ex, "Failed to patch settings: {Message}", ex.Message);
             return false;
+        }
+    }
+
+    /// <summary>
+    /// Determines whether the system is currently operating in maintenance mode.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> when maintenance mode is enabled; otherwise, <c>false</c>.
+    /// </returns>
+    public bool IsSystemUnderMaintenance()
+    {
+        return _maintenanceMonitor.IsMaintenanceEnabled;
+    }
+
+    /// <summary>
+    /// Enables or disables maintenance mode for the running system.
+    /// </summary>
+    /// <param name="enabled">
+    /// <c>true</c> to enable maintenance mode; <c>false</c> to disable it.
+    /// </param>
+    /// <remarks>
+    /// Disabling maintenance mode forces an immediate shutdown of any active maintenance window.
+    /// </remarks>
+    public void SetMaintenanceMode(bool enabled)
+    {
+        if (enabled)
+        {
+            _maintenanceMonitor.EnableMaintenance();
+        }
+        else
+        {
+            _maintenanceMonitor.DisableMaintenance(true);
         }
     }
 

@@ -6,6 +6,7 @@ public class MaintenanceModeMiddleware(RequestDelegate next, IMaintenanceMonitor
     private readonly IMaintenanceMonitor _maintenanceMonitor = maintenanceMonitor;
     private readonly ILogger<MaintenanceModeMiddleware> _logger = logger;
     private readonly SystemSettings _systemSettings = ConfigurationBinderService.Bind<SystemSettings>(configuration);
+    private readonly List<string> _allowedEndpoints = ["/api/system/status"];
 
     public async Task InvokeAsync(HttpContext context)
     {
@@ -34,6 +35,11 @@ public class MaintenanceModeMiddleware(RequestDelegate next, IMaintenanceMonitor
                     return;
                 }
             }
+            else if (context.Request.Path.Value is not null && _allowedEndpoints.Any(entry => entry.Equals(context.Request.Path.Value, StringComparison.OrdinalIgnoreCase)))
+            {
+                // Allow access to specific endpoints even during maintenance
+                await _next(context);
+            }
             else
             {
                 context.Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
@@ -48,7 +54,7 @@ public class MaintenanceModeMiddleware(RequestDelegate next, IMaintenanceMonitor
     private UserRoles? ExtractUserRoleFromClaims(ClaimsPrincipal claimsPrincipal)
     {
         var userRoleClaim = claimsPrincipal.FindFirst("role");
-        
+
         if (userRoleClaim == null || Enum.TryParse<UserRoles>(userRoleClaim.Value, out var role) == false)
         {
             _logger.LogWarning("User role claim not found or invalid in token");

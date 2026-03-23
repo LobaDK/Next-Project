@@ -11,4 +11,6 @@ public interface ISystemControllerService
     SettingsSchema GetSettingsSchema();
     Task<bool> UpdateSettings(UpdateSettingsRequest rootSettings);
     Task<bool> PatchSettings(PatchSettingsRequest rootSettings);
+    bool IsSystemUnderMaintenance();
+    void SetMaintenanceMode(bool enabled);
 }
