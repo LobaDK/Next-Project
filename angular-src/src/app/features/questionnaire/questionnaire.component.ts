@@ -12,7 +12,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SubmitConfirmDialog } from './submit-confirm-modal/SubmitConfirmDialog.component';
-import { map, Observable } from 'rxjs';
+import { finalize, map, Observable } from 'rxjs';
 import { QuestionnaireSessionService } from '../../core/services/questionnaire-session.service';
 import { QuestionnaireConfirmDialog } from './confirm-dialog/QuestionnaireConfirmDialog.component';
 
@@ -49,6 +49,7 @@ export class QuestionnaireComponent {
   private isSubmitting = false;
   private currentQuestionnaireId: string | null = null;
   private allowNavigationWithoutPrompt = false;
+  private isLeaveDialogOpen = false;
 
   readonly user = this.authService.user;
 
@@ -355,12 +356,14 @@ export class QuestionnaireComponent {
   }
 
   private openLeaveQuestionnaireDialog(): void {
-    this.askLeaveConfirmation().subscribe(shouldLeave => {
-      if (shouldLeave) {
-        this.allowNavigationWithoutPrompt = true;
-        this.router.navigate(['/']);
-      }
-    });
+    if (!this.isLeaveDialogOpen) {
+      this.askLeaveConfirmation().subscribe(shouldLeave => {
+        if (shouldLeave) {
+          this.allowNavigationWithoutPrompt = true;
+          this.router.navigate(['/']);
+        }
+      });
+    }
   }
 
   canDeactivate(): boolean | Observable<boolean> {
@@ -372,6 +375,7 @@ export class QuestionnaireComponent {
   }
 
   private askLeaveConfirmation(): Observable<boolean> {
+    this.isLeaveDialogOpen = true;
     return this.dialog
       .open(QuestionnaireConfirmDialog, {
         panelClass: 'app-modal',
@@ -386,7 +390,7 @@ export class QuestionnaireComponent {
         }
       })
       .afterClosed()
-      .pipe(map(result => !!result));
+      .pipe(map(result => !!result), finalize(() => this.isLeaveDialogOpen = false));
   }
 
   private persistSession(): void {
