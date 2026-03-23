@@ -1,0 +1,122 @@
+import { Injectable } from '@angular/core';
+import { Answer } from '../../features/questionnaire/models/answer.model';
+
+interface QuestionnaireSessionState {
+    questionnaireId: string;
+    userId: string;
+    currentQuestionIndex: number;
+    answers: Answer[];
+    updatedAt: string;
+}
+
+type QuestionnaireSessionMap = Record<string, QuestionnaireSessionState>;
+
+@Injectable({
+    providedIn: 'root',
+})
+export class QuestionnaireSessionService {
+    private readonly storageKey = 'questionnaire-sessions-v1';
+
+    saveSession(
+        questionnaireId: string,
+        userId: string,
+        currentQuestionIndex: number,
+        answers: Answer[]
+    ): void {
+        if (!questionnaireId || !userId || !this.hasMeaningfulAnswers(answers)) {
+            return;
+        }
+
+        const sessions = this.readSessions();
+        const key = this.buildSessionKey(questionnaireId, userId);
+
+        sessions[key] = {
+            questionnaireId,
+            userId,
+            currentQuestionIndex,
+            answers,
+            updatedAt: new Date().toISOString(),
+        };
+
+        this.writeSessions(sessions);
+    }
+
+    getSession(questionnaireId: string, userId: string): QuestionnaireSessionState | null {
+        const sessions = this.readSessions();
+        const key = this.buildSessionKey(questionnaireId, userId);
+        return sessions[key] ?? null;
+    }
+
+    removeSession(questionnaireId: string, userId: string): void {
+        const sessions = this.readSessions();
+        const key = this.buildSessionKey(questionnaireId, userId);
+
+        if (!(key in sessions)) {
+            return;
+        }
+
+        delete sessions[key];
+        this.writeSessions(sessions);
+    }
+
+    clearAllSessions(): void {
+        if (typeof localStorage === 'undefined') {
+            return;
+        }
+
+        localStorage.removeItem(this.storageKey);
+    }
+
+    clearSessionsForOtherUsers(currentUserId: string): void {
+        const sessions = this.readSessions();
+        const filtered: QuestionnaireSessionMap = {};
+
+        for (const [key, value] of Object.entries(sessions)) {
+            if (value.userId === currentUserId) {
+                filtered[key] = value;
+            }
+        }
+
+        this.writeSessions(filtered);
+    }
+
+    private buildSessionKey(questionnaireId: string, userId: string): string {
+        return `${userId}::${questionnaireId}`;
+    }
+
+    private hasMeaningfulAnswers(answers: Answer[]): boolean {
+        return answers.some(answer =>
+            !!answer.optionId || !!answer.customAnswer?.trim()
+        );
+    }
+
+    private readSessions(): QuestionnaireSessionMap {
+        if (typeof localStorage === 'undefined') {
+            return {};
+        }
+
+        const raw = localStorage.getItem(this.storageKey);
+        if (!raw) {
+            return {};
+        }
+
+        try {
+            const parsed = JSON.parse(raw) as QuestionnaireSessionMap;
+            if (!parsed || typeof parsed !== 'object') {
+                return {};
+            }
+
+            return parsed;
+        } catch {
+            return {};
+        }
+    }
+
+    private writeSessions(sessions: QuestionnaireSessionMap): void {
+        if (typeof localStorage === 'undefined') {
+            return;
+        }
+
+        localStorage.setItem(this.storageKey, JSON.stringify(sessions));
+    }
+}

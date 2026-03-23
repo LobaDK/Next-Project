@@ -15,6 +15,7 @@ import { ShowActiveQuestionnaireComponent } from './features/show-active-questio
 import { DataCompareComponent } from './features/data-compare/data-compare.component';
 import { ResultHistoryComponent } from './features/result-history/result-history.component';
 import { UserGuideComponent } from './features/user-guide/user-guide.component';
+import { questionnaireLeaveGuard } from './core/guards and interceptors/questionnaire-leave.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -35,6 +36,7 @@ export const routes: Routes = [
     path: 'answer/:id',
     component: QuestionnaireComponent,
     canActivate: [authGuard, roleGuard],
+    canDeactivate: [questionnaireLeaveGuard],
     data: { roles: [Role.Teacher, Role.Student] },
   },
   {
@@ -43,7 +45,7 @@ export const routes: Routes = [
     canActivate: [authGuard, roleGuard],
     data: { roles: [Role.Admin] },
   },
-  { 
+  {
     path: 'templates',
     component: TemplateManagerComponent,
     canActivate: [authGuard, roleGuard],
@@ -55,7 +57,7 @@ export const routes: Routes = [
     canActivate: [authGuard, roleGuard],
     data: { roles: [Role.Teacher] },
   },
-    {
+  {
     path: 'data-compare',
     component: DataCompareComponent,
     canActivate: [authGuard, roleGuard],
