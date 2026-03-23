@@ -69,7 +69,11 @@ export class QuestionnaireSessionService {
             return;
         }
 
-        localStorage.removeItem(this.storageKey);
+        try {
+            localStorage.removeItem(this.storageKey);
+        } catch (error) {
+            console.warn('Unable to clear questionnaire sessions from storage.', error);
+        }
     }
 
     clearSessionsForOtherUsers(currentUserId: string): void {
@@ -100,7 +104,12 @@ export class QuestionnaireSessionService {
             return {};
         }
 
-        const raw = localStorage.getItem(this.storageKey);
+        let raw: string | null;
+        try {
+            raw = localStorage.getItem(this.storageKey);
+        } catch {
+            return {};
+        }
         if (!raw) {
             return {};
         }
