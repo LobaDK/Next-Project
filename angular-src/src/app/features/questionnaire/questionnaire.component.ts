@@ -143,6 +143,10 @@ export class QuestionnaireComponent {
       .subscribe({
         next: (template) => {
           this.state.template = template;
+          this.state.answers = [];
+          this.state.currentQuestionIndex = 0;
+          this.state.progress = 0;
+          this.state.isCompleted = false;
           this.tryRestoreSavedSession(id);
           this.isLoading = false;
         },
