@@ -1,6 +1,6 @@
 import { CanDeactivateFn } from '@angular/router';
 import { Observable } from 'rxjs';
-import { QuestionnaireComponent } from '../../features/questionnaire/questionnaire.component';
+import type { QuestionnaireComponent } from '../../features/questionnaire/questionnaire.component';
 
 export const questionnaireLeaveGuard: CanDeactivateFn<QuestionnaireComponent> = (
     component
