@@ -23,7 +23,12 @@ export class QuestionnaireSessionService {
         currentQuestionIndex: number,
         answers: Answer[]
     ): void {
-        if (!questionnaireId || !userId || !this.hasMeaningfulAnswers(answers)) {
+        if (!questionnaireId || !userId) {
+            return;
+        }
+
+        if (!this.hasMeaningfulAnswers(answers)) {
+            this.removeSession(questionnaireId, userId)
             return;
         }
 
