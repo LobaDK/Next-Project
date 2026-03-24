@@ -7,6 +7,7 @@ import { ApiService } from './api.service';
 import { Role, User } from '../../shared/models/user.model';
 import { LoginErrorCode, LoginResult, ADErrorCode, ADErrorResponse } from '../../features/home/models/login.model';
 import { IAuthService } from '../interfaces/service.interfaces';
+import { QuestionnaireSessionService } from './questionnaire-session.service';
 
 interface AuthTokens {
   authToken: string;
@@ -34,14 +35,14 @@ export class AuthService implements IAuthService {
    * Default: 5000ms = 5 seconds
    */
   private retryInterval = 5000;
-  
+
   /**
    * How often (in ms) to check if token needs proactive refresh.
    * Default: 60000ms = 1 minute
    * Recommended: 1-2 minutes for good responsiveness
    */
   private autoRefreshCheckInterval = 60000;
-  
+
   /**
    * How long before token expiry (in ms) to trigger proactive refresh.
    * Default: 120000ms = 2 minutes
@@ -53,6 +54,7 @@ export class AuthService implements IAuthService {
 
   private tokenService = inject(TokenService);
   private apiService = inject(ApiService);
+  private questionnaireSessionService = inject(QuestionnaireSessionService);
 
   // Private writable signals
   private _user = signal<User | null>(null);
@@ -87,6 +89,10 @@ export class AuthService implements IAuthService {
         this.tokenService.setToken(authToken);
         this.tokenService.setRefreshToken(refreshToken);
         this._user.set(this.buildUserFromToken());
+        const loggedInUser = this._user();
+        if (loggedInUser?.id) {
+          this.questionnaireSessionService.clearSessionsForOtherUsers(loggedInUser.id);
+        }
         this._isOnline.set(true);
         // Start automatic token refresh
         this.startAutoRefresh();
@@ -111,45 +117,46 @@ export class AuthService implements IAuthService {
    *
    * @returns Observable emitting refreshed tokens or error.
    */
-public refreshToken() {
-  const refreshToken = this.tokenService.getRefreshToken();
-  const expiredToken = this.tokenService.getToken();
-  
-  if (!refreshToken || !expiredToken) {
-    this.logout();
-    return throwError(() => new Error('No tokens to refresh'));
+  public refreshToken() {
+    const refreshToken = this.tokenService.getRefreshToken();
+    const expiredToken = this.tokenService.getToken();
+
+    if (!refreshToken || !expiredToken) {
+      this.logout();
+      return throwError(() => new Error('No tokens to refresh'));
+    }
+
+    // Check if refresh token is expired
+    if (this.tokenService.isRefreshTokenExpired()) {
+      this.logout();
+      return throwError(() => new Error('Refresh token expired'));
+    }
+
+    const url = `${this.baseUrl}/auth/refresh`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${refreshToken}`,
+      'Content-Type': 'application/json'
+    });
+
+    return this.apiService
+      .post<{ authToken: string; refreshToken: string }>(url, { expiredToken }, undefined, headers)
+      .pipe(
+        tap((res) => {
+          this.tokenService.setToken(res.authToken);
+          this.tokenService.setRefreshToken(res.refreshToken);
+        }),
+        catchError((err) => {
+          this.logout();
+          return throwError(() => err);
+        })
+      );
   }
-
-  // Check if refresh token is expired
-  if (this.tokenService.isRefreshTokenExpired()) {
-    this.logout();
-    return throwError(() => new Error('Refresh token expired'));
-  }
-
-  const url = `${this.baseUrl}/auth/refresh`;
-  const headers = new HttpHeaders({
-    'Authorization': `Bearer ${refreshToken}`,
-    'Content-Type': 'application/json'
-  });
-
-  return this.apiService
-    .post<{ authToken: string; refreshToken: string }>(url,   { expiredToken } , undefined, headers)
-    .pipe(
-      tap((res) => {
-        this.tokenService.setToken(res.authToken);
-        this.tokenService.setRefreshToken(res.refreshToken);
-      }),
-      catchError((err) => {
-        this.logout();
-        return throwError(() => err);
-      })
-    );
-}
 
   /**
    * Logs the user out: clears tokens/state and stops offline retry loop.
    */
   public logout(): void {
+    this.questionnaireSessionService.clearAllSessions();
     this.stopAutoRefresh();
     this.tokenService.clearToken();
     this.tokenService.clearRefreshToken();
@@ -238,7 +245,7 @@ public refreshToken() {
    */
   private startAutoRefresh(): void {
     this.stopAutoRefresh();
-    
+
     this.autoRefreshSubscription = interval(this.autoRefreshCheckInterval)
       .pipe(
         filter(() => this.hasValidTokens() && this.shouldRefreshToken())
@@ -266,10 +273,10 @@ public refreshToken() {
   private shouldRefreshToken(): boolean {
     const decoded = this.tokenService.getDecodedToken();
     if (!decoded?.['exp']) return false;
-    
+
     const expiryTime = decoded['exp'] * 1000;
     const timeUntilExpiry = expiryTime - Date.now();
-    
+
     return timeUntilExpiry <= this.refreshBufferMs;
   }
 
@@ -288,116 +295,116 @@ public refreshToken() {
     const decodedToken = this.tokenService.getDecodedToken();
     return decodedToken && key in decodedToken ? (decodedToken[key] as T) : null;
   }
-  
+
   /** Resets auth/role/online subjects to defaults. */
   private clearAuthState(): void {
     this._user.set(null);
     this._isOnline.set(true);
   }
 
-/**
- * Constructs a User object from JWT token claims.
- * Extracts user information from the decoded token and validates that all required fields are present.
- * @returns A complete User object if all required claims are found and valid, otherwise null
- */
-private buildUserFromToken(): User | null {
-  const id = this.getTokenInfo<string>('sub');
-  const userName = this.getTokenInfo<string>('unique_name');
-  const fullName = this.getTokenInfo<string>('name');
-  const roleStr = this.getTokenInfo<string>('role');
+  /**
+   * Constructs a User object from JWT token claims.
+   * Extracts user information from the decoded token and validates that all required fields are present.
+   * @returns A complete User object if all required claims are found and valid, otherwise null
+   */
+  private buildUserFromToken(): User | null {
+    const id = this.getTokenInfo<string>('sub');
+    const userName = this.getTokenInfo<string>('unique_name');
+    const fullName = this.getTokenInfo<string>('name');
+    const roleStr = this.getTokenInfo<string>('role');
 
-  const role = this.mapToRoleEnum(roleStr);
-  if (id && userName && fullName && role) {
-    return { id, userName, fullName, role };
+    const role = this.mapToRoleEnum(roleStr);
+    if (id && userName && fullName && role) {
+      return { id, userName, fullName, role };
+    }
+
+    return null;
   }
 
-  return null;
-}
+  /**
+   * Maps a string value to a Role enum.
+   * Compares against Role enum values (which are string enums) in a case-insensitive manner.
+   * @param value - The string value from the token to map to a Role enum
+   * @returns The corresponding Role enum value, or null if no match found
+   */
+  private mapToRoleEnum(value: string | null): Role | null {
+    if (!value) return null;
 
-/**
- * Maps a string value to a Role enum.
- * Compares against Role enum values (which are string enums) in a case-insensitive manner.
- * @param value - The string value from the token to map to a Role enum
- * @returns The corresponding Role enum value, or null if no match found
- */
-private mapToRoleEnum(value: string | null): Role | null {
-  if (!value) return null;
-
-  switch (value.toLowerCase()) {
-    case Role.Student:
-      return Role.Student;
-    case Role.Teacher:
-      return Role.Teacher;
-    case Role.Admin:
-      return Role.Admin;
-    default:
-      return null;
-  }
-}
-
-/**
- * Maps HTTP error response to login error code.
- */
-private mapHttpErrorToLoginErrorCode(httpError: HttpErrorResponse): LoginErrorCode {
-  // Handle 401 errors with potential AD error codes
-  if (httpError.status === 401 && httpError.error) {
-    try {
-      const adError = this.parseADError(httpError.error);
-      return this.mapADErrorCode(adError?.errorCode);
-    } catch {
-      return LoginErrorCode.InvalidCredentials;
+    switch (value.toLowerCase()) {
+      case Role.Student:
+        return Role.Student;
+      case Role.Teacher:
+        return Role.Teacher;
+      case Role.Admin:
+        return Role.Admin;
+      default:
+        return null;
     }
   }
 
-  // HTTP status code mapping
-  const statusMap: Record<number, LoginErrorCode> = {
-    0: LoginErrorCode.Network,
-    400: LoginErrorCode.BadRequest,
-    401: LoginErrorCode.InvalidCredentials,
-    403: LoginErrorCode.Forbidden,
-    429: LoginErrorCode.RateLimited,
-    503: LoginErrorCode.Unavailable
-  };
+  /**
+   * Maps HTTP error response to login error code.
+   */
+  private mapHttpErrorToLoginErrorCode(httpError: HttpErrorResponse): LoginErrorCode {
+    // Handle 401 errors with potential AD error codes
+    if (httpError.status === 401 && httpError.error) {
+      try {
+        const adError = this.parseADError(httpError.error);
+        return this.mapADErrorCode(adError?.errorCode);
+      } catch {
+        return LoginErrorCode.InvalidCredentials;
+      }
+    }
 
-  if (statusMap[httpError.status]) {
-    return statusMap[httpError.status];
+    // HTTP status code mapping
+    const statusMap: Record<number, LoginErrorCode> = {
+      0: LoginErrorCode.Network,
+      400: LoginErrorCode.BadRequest,
+      401: LoginErrorCode.InvalidCredentials,
+      403: LoginErrorCode.Forbidden,
+      429: LoginErrorCode.RateLimited,
+      503: LoginErrorCode.Unavailable
+    };
+
+    if (statusMap[httpError.status]) {
+      return statusMap[httpError.status];
+    }
+
+    return httpError.status >= 500 && httpError.status < 600
+      ? LoginErrorCode.Server
+      : LoginErrorCode.Unknown;
   }
 
-  return httpError.status >= 500 && httpError.status < 600 
-    ? LoginErrorCode.Server 
-    : LoginErrorCode.Unknown;
-}
+  private parseADError(error: any): ADErrorResponse | null {
+    if (typeof error === 'string') {
+      return JSON.parse(error);
+    }
+    if (error.errorCode) {
+      return error;
+    }
+    const errorMessage = error.message;
+    return errorMessage ? JSON.parse(errorMessage) : null;
+  }
 
-private parseADError(error: any): ADErrorResponse | null {
-  if (typeof error === 'string') {
-    return JSON.parse(error);
-  }
-  if (error.errorCode) {
-    return error;
-  }
-  const errorMessage = error.message;
-  return errorMessage ? JSON.parse(errorMessage) : null;
-}
+  private mapADErrorCode(errorCode?: string): LoginErrorCode {
+    if (!errorCode) return LoginErrorCode.InvalidCredentials;
 
-private mapADErrorCode(errorCode?: string): LoginErrorCode {
-  if (!errorCode) return LoginErrorCode.InvalidCredentials;
-  
-  switch (errorCode) {
-    case ADErrorCode.InvalidCredentials:
-      return LoginErrorCode.InvalidCredentials;
-    case ADErrorCode.AccountDisabled:
-      return LoginErrorCode.AccountDisabled;
-    case ADErrorCode.AccountExpired:
-      return LoginErrorCode.AccountExpired;
-    case ADErrorCode.PasswordExpired: // Maps to 'PasswordHasExpired'
-      return LoginErrorCode.PasswordExpired;
-    case ADErrorCode.AccountLocked: // Maps to 'AccountIsLockedOut'
-      return LoginErrorCode.AccountLocked;
-    case ADErrorCode.AccountLoginError:
-      return LoginErrorCode.AccountLoginError;
-    default:
-      return LoginErrorCode.InvalidCredentials;
+    switch (errorCode) {
+      case ADErrorCode.InvalidCredentials:
+        return LoginErrorCode.InvalidCredentials;
+      case ADErrorCode.AccountDisabled:
+        return LoginErrorCode.AccountDisabled;
+      case ADErrorCode.AccountExpired:
+        return LoginErrorCode.AccountExpired;
+      case ADErrorCode.PasswordExpired: // Maps to 'PasswordHasExpired'
+        return LoginErrorCode.PasswordExpired;
+      case ADErrorCode.AccountLocked: // Maps to 'AccountIsLockedOut'
+        return LoginErrorCode.AccountLocked;
+      case ADErrorCode.AccountLoginError:
+        return LoginErrorCode.AccountLoginError;
+      default:
+        return LoginErrorCode.InvalidCredentials;
+    }
   }
-}
 
 }
