@@ -52,7 +52,6 @@ builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddScoped<IValidator<QuestionnaireTemplateAdd>, CreateQuestionnaireTemplateSubmissionValidator>();
 builder.Services.AddScoped<JsonSerializerService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
-builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IQuestionnaireTemplateService, QuestionnaireTemplateService>();
 builder.Services.AddScoped<IActiveQuestionnaireService, ActiveQuestionnaireService>();
