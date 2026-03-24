@@ -137,6 +137,8 @@ export class QuestionnaireComponent {
  * loads details if not, otherwise navigates home.
  */
   private loadQuestionnaire(id: string) {
+    this.isLoading = true;
+    this.currentQuestionnaireId = id;
     this.answerService.getActiveQuestionnaireById(id)
       .subscribe({
         next: (template) => {
