@@ -35,14 +35,12 @@ export class AuthService implements IAuthService {
    * Default: 5000ms = 5 seconds
    */
   private retryInterval = 5000;
-
   /**
    * How often (in ms) to check if token needs proactive refresh.
    * Default: 60000ms = 1 minute
    * Recommended: 1-2 minutes for good responsiveness
    */
   private autoRefreshCheckInterval = 60000;
-
   /**
    * How long before token expiry (in ms) to trigger proactive refresh.
    * Default: 120000ms = 2 minutes
@@ -245,7 +243,6 @@ export class AuthService implements IAuthService {
    */
   private startAutoRefresh(): void {
     this.stopAutoRefresh();
-
     this.autoRefreshSubscription = interval(this.autoRefreshCheckInterval)
       .pipe(
         filter(() => this.hasValidTokens() && this.shouldRefreshToken())

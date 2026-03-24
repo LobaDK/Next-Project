@@ -67,7 +67,7 @@ export class MockAuthService implements IAuthService {
       // Create a fake token that includes the userId & role as the JWT payload
       const fakeToken = this.createFakeToken(foundUser.id, foundUser.role, 3600);
       this.tokenService.setToken(fakeToken);
-
+      
       // Create fake refresh token
       const fakeRefreshToken = this.createFakeToken(foundUser.id, foundUser.role, 7200);
       this.tokenService.setRefreshToken(fakeRefreshToken);
@@ -101,7 +101,6 @@ export class MockAuthService implements IAuthService {
   public refreshToken(): Observable<any> {
     const refreshToken = this.tokenService.getRefreshToken();
     const expiredToken = this.tokenService.getToken();
-
     if (!refreshToken || !expiredToken) {
       this.logout();
       return throwError(() => new Error('No tokens to refresh'));

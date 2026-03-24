@@ -31,7 +31,7 @@ On first run, the application generates a `config.json` file in the `Backend/API
 For detailed configuration options, see [docs/markdown/backend/getting-started.md](docs/markdown/backend/getting-started.md).
 
 ### Frontend
-#### dev
+#### Development
 1. Navigate to the angular-src directory
 2. Install dependencies: `npm install`
 3. Start the development server: `ng serve`
