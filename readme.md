@@ -31,10 +31,18 @@ On first run, the application generates a `config.json` file in the `Backend/API
 For detailed configuration options, see [docs/markdown/backend/getting-started.md](docs/markdown/backend/getting-started.md).
 
 ### Frontend
+#### Development
 1. Navigate to the angular-src directory
 2. Install dependencies: `npm install`
 3. Start the development server: `ng serve`
 4. Open browser to `http://localhost:4200`
+
+#### Production
+1. Navigate to the `angular-src` directory  
+2. Install dependencies: `npm install`  
+3. Build the project: `ng build --configuration production`
+4. Copy the contents of dist/browser/ into relevant server folder
+- **Note**: Update src/environments/environment.prod.ts with the correct API URL before building.
 
 ## Documentation
 Comprehensive API documentation is available using DocFX. The documentation is located in the `docs/` directory and includes detailed information about API endpoints, controllers, DTOs, and project architecture. To view the documentation, navigate to `docs/_site/index.html` after building with DocFX.

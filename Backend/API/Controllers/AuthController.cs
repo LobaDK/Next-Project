@@ -1,3 +1,5 @@
+using ILogger = Microsoft.Extensions.Logging.ILogger;
+
 namespace API.Controllers
 {
     /// <summary>

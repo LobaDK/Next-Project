@@ -22,12 +22,16 @@ jobs:
         with:
           node-version: 22
           cache: 'npm'
+          cache-dependency-path: angular-src/package-lock.json
 
       - name: Install dependencies
+        working-directory: angular-src
         run: npm ci
 
       - name: Build
+        working-directory: angular-src
         run: npm run build
 
       - name: Run tests
+        working-directory: angular-src
         run: npm test -- --watch=false --browsers=ChromeHeadless
