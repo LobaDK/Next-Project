@@ -500,6 +500,7 @@ public class SystemControllerService(
             {
                 Host = updates.LDAP?.Host ?? current.LDAP.Host,
                 Port = updates.LDAP?.Port ?? current.LDAP.Port,
+                SSLPort = updates.LDAP?.SSLPort ?? current.LDAP.SSLPort,
                 FQDN = updates.LDAP?.FQDN ?? current.LDAP.FQDN,
                 BaseDN = updates.LDAP?.BaseDN ?? current.LDAP.BaseDN,
                 SA = updates.LDAP?.SA ?? current.LDAP.SA,
