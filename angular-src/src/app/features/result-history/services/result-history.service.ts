@@ -159,41 +159,5 @@ export class ResultHistoryService {
     let url = `${environment.apiUrl}/active-questionnaire/${studentId},${teacherId},${templateId}/getresponsesfromteacherandstudentandtemplatewithdate`;
     return this.apiService.get<any>(url);
   }
-
- /**
-   * Get questionnaire data by active questionnaire ID
-   * @param activeQuestionnaireId Active questionnaire GUID
-   * @returns Observable with questionnaire data
-   */
-  getQuestionnaireDataByID(activeQuestionnaireId: string) {
-    let url = `${environment.apiUrl}/active-questionnaire/${activeQuestionnaireId}`;
-    return this.apiService.get<any>(url);
-  }
-
-    /**
-   * Get questionnaire template options by template ID
-   * @param templateId Template GUID
-   * @returns Observable with template options
-   */
-  getQuestionnaireOptionsByID(templateId: string) {
-    let apiUrlTemplate = `${environment.apiUrl}/questionnaire-template/${templateId}`;
-    return this.apiService.get<any>(apiUrlTemplate);
-  }
-
-    /**
-   * Get responses by student, teacher, and template IDs with dates
-   * @param studentId Student GUID
-   * @param teacherId Teacher GUID
-   * @param templateId Template GUID
-   * @returns Observable with responses
-   */
-  getResponsesByID(studentId: string, teacherId: string, templateId: string) {
-    let url = `${environment.apiUrl}/active-questionnaire/${studentId},${teacherId},${templateId}/getresponsesfromteacherandstudentandtemplatewithdate`;
-    return this.apiService.get<any>(url);
-  }
-
-
-
-
 }
 
