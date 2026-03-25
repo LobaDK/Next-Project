@@ -326,10 +326,17 @@
     "COLLABORATOR": "Collaborator",
     "CUSTOM_ANSWER_ERROR": "Too few characters to proceed.",
     "CUSTOM_ANSWER_CHARACTER_COUNT": "characters",
-    "CONFIRM_SUBMIT_TITLE": " Confirm Submission",
-    "CONFIRM_SUBMIT_TEXT": " Are you sure you want to submit your answers? You won't be able to change them later."
+    "CONFIRM_SUBMIT_TITLE": "Confirm Submission",
+    "CONFIRM_SUBMIT_TEXT": "Are you sure you want to submit your answers? You won't be able to change them later."
   },
   "QUESTIONNAIRE": {
+    "RESUME_TITLE": "Resume questionnaire?",
+    "RESUME_TEXT": "A saved session was found for this questionnaire. Do you want to continue where you left off?",
+    "RESUME_CONFIRM": "Resume",
+    "RESUME_CANCEL": "Start over",
+    "LEAVE_TITLE": "Leave questionnaire?",
+    "LEAVE_TEXT": "Your current progress is saved locally. You can resume this questionnaire later.",
+    "LEAVE_CONFIRM": "Leave",
     "SUBMIT_SUCCESS": "Questionnaire submitted successfully!",
     "SUBMIT_ERROR": "There was an error submitting your questionnaire. Please try again later."
   },

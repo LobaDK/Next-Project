@@ -4,15 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
-
 import { User } from '../../shared/models/user.model';
 import { TemplateBase } from '../active-questionnaire-manager/models/active.models';
-
 import {
   ShowResultComponent,
   ShowResultConfig
 } from '../../shared/show-result/show-result.component';
-
 import {
   Answer,
   QuestionOption,
@@ -56,10 +53,10 @@ export class ResultHistoryComponent implements OnInit {
 
 
   public translate = inject(TranslateService)
-  
+
   // View toggle state
   public currentView: 'evaluation' | 'aggregated' = 'evaluation';
-  
+
   public searchEnum = SearchEnum;
   public student = this.createSearchState<User>();
   public template = this.createSearchState<TemplateBase>();
@@ -99,7 +96,7 @@ export class ResultHistoryComponent implements OnInit {
     showActions: false,
     showTestButtons: true
   };
-  
+
   public isFullView = true;
 
   private createSearchState<T>(): SearchState<T> {
@@ -149,34 +146,34 @@ export class ResultHistoryComponent implements OnInit {
       .subscribe((term) => this.fetch(type, term));
   }
 
-private fetch(type: SearchEnum, term: string): void {
-  const state = this.getState(type);
-  if (!term.trim()) return;
+  private fetch(type: SearchEnum, term: string): void {
+    const state = this.getState(type);
+    if (!term.trim()) return;
 
-  state.loading = true;
-  state.error = null;
-  state.results = [];
+    state.loading = true;
+    state.error = null;
+    state.results = [];
 
-  const handleError = (msg: string) => {
-    state.error = msg;
-    state.loading = false;
-  };
+    const handleError = (msg: string) => {
+      state.error = msg;
+      state.loading = false;
+    };
 
-  if (type === SearchEnum.Student) {
-    this.resultHistoryService.searchStudentsRelatedToTeacher(term).subscribe({
-      next: (users: User[]) => {
-        state.results = users.map(user => ({
-          id: user.id,
-          userName: user.userName,
-          fullName: user.fullName,
-          role: 'student' as const
-        }));
-        state.loading = false;
-      },
-      error: () => handleError(this.translate.instant('RESULT_HISTORY.FAILED_TO_LOAD_STUDENTS'))
-    });
+    if (type === SearchEnum.Student) {
+      this.resultHistoryService.searchStudentsRelatedToTeacher(term).subscribe({
+        next: (users: User[]) => {
+          state.results = users.map(user => ({
+            id: user.id,
+            userName: user.userName,
+            fullName: user.fullName,
+            role: 'student' as const
+          }));
+          state.loading = false;
+        },
+        error: () => handleError(this.translate.instant('RESULT_HISTORY.FAILED_TO_LOAD_STUDENTS'))
+      });
+    }
   }
-}
 
 
   select(type: SearchEnum, item: any): void {
@@ -223,7 +220,7 @@ private fetch(type: SearchEnum, term: string): void {
       next: (res: any) => {
         this.template.results = res.templateBases || [];
         this.template.loading = false;
-        
+
         if (this.template.results.length === 0) {
           this.template.error = this.translate.instant('RESULT_HISTORY.NO_COMPLETED_SHARED_QUESTIONNAIRES');
         }
@@ -267,7 +264,7 @@ private fetch(type: SearchEnum, term: string): void {
           this.history = data;
           this.currentAttemptIndex = 0;
           this.isLoading = false;
-          
+
           console.log('History loaded:', this.history);
           if (this.shouldLoadGraphAfterHistory) {
             this.shouldLoadGraphAfterHistory = false;
@@ -385,19 +382,19 @@ private fetch(type: SearchEnum, term: string): void {
       // 2. build options[] to match Result.Answer.options
       const options: QuestionOption[] | undefined = qMeta
         ? qMeta.options.map((opt) => {
-            const isSelectedByStudent =
-              answerDetail.selectedOptionIdsByStudent?.includes(opt.id) ?? false;
-            const isSelectedByTeacher =
-              answerDetail.selectedOptionIdsByTeacher?.includes(opt.id) ?? false;
+          const isSelectedByStudent =
+            answerDetail.selectedOptionIdsByStudent?.includes(opt.id) ?? false;
+          const isSelectedByTeacher =
+            answerDetail.selectedOptionIdsByTeacher?.includes(opt.id) ?? false;
 
-            return {
-              displayText: opt.displayText,
-              optionValue: String(opt.optionValue ?? opt.id), // legacy safe
-              isSelectedByStudent,
-              isSelectedByTeacher,
-              sortOrder: opt.sortOrder
-            };
-          })
+          return {
+            displayText: opt.displayText,
+            optionValue: String(opt.optionValue ?? opt.id), // legacy safe
+            isSelectedByStudent,
+            isSelectedByTeacher,
+            sortOrder: opt.sortOrder
+          };
+        })
         : undefined;
 
       // 3. Determine the actual response text for student and teacher
@@ -443,7 +440,7 @@ private fetch(type: SearchEnum, term: string): void {
 
   private getSelectedOptionText(selectedOptionIds: number[] | null | undefined, options: any[] | undefined): string | null {
     if (!selectedOptionIds?.length || !options?.length) return null;
-    
+
     const selectedOption = options.find(opt => selectedOptionIds.includes(opt.id));
     return selectedOption?.displayText ?? null;
   }
@@ -452,9 +449,9 @@ private fetch(type: SearchEnum, term: string): void {
     return !!this.getCurrentResultLikeResult();
   }
 
-public TestGraf() {
+  public TestGraf() {
     console.log("TestGraf");
-    
+
     if (!this.student.selected || !this.template.selected) {
       console.warn('Missing student or template selection');
       return;
@@ -463,15 +460,15 @@ public TestGraf() {
     // Get IDs from selected items and history
     const templateId = this.template.selected.id;
     const studentId = this.student.selected.id;
-    
-  // Get teacher ID from the authenticated user
-    const currentUser = this.authService.user();
-    
 
-      if (!currentUser) {
+    // Get teacher ID from the authenticated user
+    const currentUser = this.authService.user();
+
+
+    if (!currentUser) {
       console.error('No authenticated user found!');
       return;
-      };
+    };
 
     const teacherId = currentUser.id;
 
@@ -488,7 +485,7 @@ public TestGraf() {
 
   }
 
-    private shouldLoadGraphAfterHistory = false;
+  private shouldLoadGraphAfterHistory = false;
 
 
   private loadGraphData(templateId: string, studentId: string, teacherId: string) {
@@ -653,7 +650,7 @@ public TestGraf() {
     this.currentView = view;
   }
 
-  
+
 
 }
 

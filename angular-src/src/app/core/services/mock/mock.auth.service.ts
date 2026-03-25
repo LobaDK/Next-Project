@@ -4,6 +4,7 @@ import { TokenService } from '../token.service';
 import { User, Role } from '../../../shared/models/user.model';
 import { LoginResult, LoginErrorCode } from '../../../features/home/models/login.model';
 import { IAuthService } from '../../interfaces/service.interfaces';
+import { QuestionnaireSessionService } from '../questionnaire-session.service';
 
 /**
  * A mock AuthService to use in tests or dev without hitting real endpoints.
@@ -14,6 +15,7 @@ import { IAuthService } from '../../interfaces/service.interfaces';
 })
 export class MockAuthService implements IAuthService {
   private tokenService = inject(TokenService);
+  private questionnaireSessionService = inject(QuestionnaireSessionService);
 
   // Private writable signals
   private _user = signal<User | null>(null);
@@ -77,8 +79,9 @@ export class MockAuthService implements IAuthService {
         fullName: foundUser.fullName,
         role: foundUser.role
       };
-      
+
       this._user.set(user);
+      this.questionnaireSessionService.clearSessionsForOtherUsers(user.id);
       this._isOnline.set(true);
 
       return of({ success: true } as const);
@@ -89,6 +92,7 @@ export class MockAuthService implements IAuthService {
   }
 
   public logout(): void {
+    this.questionnaireSessionService.clearAllSessions();
     this.tokenService.clearToken();
     this.tokenService.clearRefreshToken();
     this.clearAuthState();
@@ -97,7 +101,6 @@ export class MockAuthService implements IAuthService {
   public refreshToken(): Observable<any> {
     const refreshToken = this.tokenService.getRefreshToken();
     const expiredToken = this.tokenService.getToken();
-    
     if (!refreshToken || !expiredToken) {
       this.logout();
       return throwError(() => new Error('No tokens to refresh'));
@@ -108,13 +111,13 @@ export class MockAuthService implements IAuthService {
     if (user) {
       const newToken = this.createFakeToken(user.id, user.role, 3600);
       const newRefreshToken = this.createFakeToken(user.id, user.role, 7200);
-      
+
       this.tokenService.setToken(newToken);
       this.tokenService.setRefreshToken(newRefreshToken);
-      
+
       return of({ authToken: newToken, refreshToken: newRefreshToken });
     }
-    
+
     return throwError(() => new Error('No user found for refresh'));
   }
 

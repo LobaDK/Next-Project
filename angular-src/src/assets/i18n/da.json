@@ -326,10 +326,17 @@
     "COLLABORATOR": "Samarbejdspartner",
     "CUSTOM_ANSWER_ERROR": "Indtast dit svar for at fortsætte.",
     "CUSTOM_ANSWER_CHARACTER_COUNT": "tegn",
-    "CONFIRM_SUBMIT_TITLE": " Bekræft Indsendelse",
-    "CONFIRM_SUBMIT_TEXT": " Er du sikker på, at du vil indsende dine svar? Du kan ikke redigere dem efter indsendelse."
+    "CONFIRM_SUBMIT_TITLE": "Bekræft Indsendelse",
+    "CONFIRM_SUBMIT_TEXT": "Er du sikker på, at du vil indsende dine svar? Du kan ikke redigere dem efter indsendelse."
   },
   "QUESTIONNAIRE": {
+    "RESUME_TITLE": "Fortsæt spørgeskema?",
+    "RESUME_TEXT": "Der blev fundet en gemt session for dette spørgeskema. Vil du fortsætte, hvor du slap?",
+    "RESUME_CONFIRM": "Fortsæt",
+    "RESUME_CANCEL": "Start forfra",
+    "LEAVE_TITLE": "Forlad spørgeskema?",
+    "LEAVE_TEXT": "Din aktuelle fremgang gemmes lokalt. Du kan fortsætte dette spørgeskema senere.",
+    "LEAVE_CONFIRM": "Forlad",
     "SUBMIT_SUCCESS": "Spørgeskema indsendt med succes!",
     "SUBMIT_ERROR": "Der opstod en fejl ved indsendelsen af dit spørgeskema. Prøv igen senere."
   },

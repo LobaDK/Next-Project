@@ -77,7 +77,7 @@ public partial class ActiveDirectoryAuthenticationBridge(
             if (ex.ResultCode == LdapException.InvalidCredentials)
             {
                 Match dataMatch = LdapErrorCodeRegex.Match(ex.LdapErrorMessage);
-                
+
                 LdapAuthenticationErrorReasons reason;
                 if (_environment.IsDevelopment())
                 {
@@ -91,7 +91,7 @@ public partial class ActiveDirectoryAuthenticationBridge(
                             "775" => ("Account is locked out due to multiple failed login attempts.", LdapAuthenticationErrorReasons.AccountIsLockedOut),
                             _ => ("Invalid credentials provided.", LdapAuthenticationErrorReasons.InvalidCredentials)
                         } : ("Invalid credentials provided.", LdapAuthenticationErrorReasons.InvalidCredentials)
-                    );    
+                    );
                 }
                 else
                 {
@@ -105,7 +105,7 @@ public partial class ActiveDirectoryAuthenticationBridge(
                 }
 
                 _Logger.LogWarning("LDAP authentication failed for user: {Username} - {ErrorMessage}", username, errorMessage);
-                throw new LdapAuthenticationErrorException(reason, errorMessage, ex);   
+                throw new LdapAuthenticationErrorException(reason, errorMessage, ex);
             }
             else
             {
@@ -134,7 +134,7 @@ public partial class ActiveDirectoryAuthenticationBridge(
         // username@domain
         string userPrincipalName = $"{sAMAccountName.Split('\\').Last()}@{domain}";
 
-        string searchFilter = EscapeLDAPSearchFilter($"(|(userPrincipalName={userPrincipalName})(sAMAccountName={sAMAccountName}))");
+        string searchFilter = $"(|(userPrincipalName={userPrincipalName})(sAMAccountName={sAMAccountName}))";
         _Logger.LogDebug("Using search filter: {SearchFilter} with BaseDN: {BaseDN}", searchFilter, _LdapSettings.BaseDN);
 
         var users = SearchLDAP<TUser>(searchFilter, _LdapSettings.BaseDN, LdapConnection.ScopeSub);
@@ -143,7 +143,7 @@ public partial class ActiveDirectoryAuthenticationBridge(
             _Logger.LogWarning("No users found for username: {Username}", username);
             return default;
         }
-        
+
         _Logger.LogDebug("Found {UserCount} user(s) for username: {Username}", users.Count, username);
         TUser userSearch = users.First();
 
@@ -153,7 +153,7 @@ public partial class ActiveDirectoryAuthenticationBridge(
     public override TGroup? SearchGroup<TGroup>(string groupName) where TGroup : default
     {
         _Logger.LogDebug("Starting group search for: {GroupName}", groupName);
-        
+
         string escapedGroupName = EscapeLDAPSearchFilter(groupName);
         TGroup? cachedLdapGroup = _cache.Get<TGroup>(escapedGroupName);
 
@@ -188,7 +188,7 @@ public partial class ActiveDirectoryAuthenticationBridge(
         EnsureBoundConnection();
 
         _Logger.LogDebug("Starting entity search by ID: {Id}", Id);
-        
+
         if (string.IsNullOrEmpty(Id))
         {
             _Logger.LogWarning("Provided ID is null or empty");
@@ -203,14 +203,14 @@ public partial class ActiveDirectoryAuthenticationBridge(
 
         string searchFilter = $"(objectGUID={EscapeGUID(guid)})";
         _Logger.LogDebug("Using ID search filter: {SearchFilter}", searchFilter);
-        
+
         var results = SearchLDAP<TEntity>(searchFilter, _LdapSettings.BaseDN);
         if (results.Count == 0)
         {
             _Logger.LogWarning("No entities found for ID: {Id}", Id);
             return default;
         }
-        
+
         _Logger.LogDebug("Found {ResultCount} entity(ies) for ID: {Id}", results.Count, Id);
         TEntity ldapObject = results.First();
 
@@ -219,9 +219,9 @@ public partial class ActiveDirectoryAuthenticationBridge(
 
     public override (List<TLdapUser>, string, bool) SearchUserPagination<TLdapUser>(string username, string? userRole, int pageSize, string? sessionId) where TLdapUser : default
     {
-        _Logger.LogInformation("Starting paginated user search - Username: {Username}, UserRole: {UserRole}, PageSize: {PageSize}, SessionId: {SessionId}", 
+        _Logger.LogInformation("Starting paginated user search - Username: {Username}, UserRole: {UserRole}, PageSize: {PageSize}, SessionId: {SessionId}",
             username, userRole, pageSize, sessionId);
-            
+
         byte[]? cookie;
         SessionData? sessionData = null;
         if (sessionId is not null)
@@ -276,7 +276,7 @@ public partial class ActiveDirectoryAuthenticationBridge(
             }
             userRole = matchedRole.Value.Value;
             _Logger.LogDebug("Mapped internal role to LDAP role: {LdapRole}", userRole);
-            
+
             BasicGroupInfo? group = SearchGroup<BasicGroupInfo>(userRole) ?? throw new HttpResponseException(HttpStatusCode.NotFound, $"Group '{userRole}' not found.");
             searchFilter = $"(&{searchFilter}(memberOf={group.GroupName}))";
             _Logger.LogDebug("Final search filter with role: {SearchFilter}", searchFilter);
@@ -308,10 +308,10 @@ public partial class ActiveDirectoryAuthenticationBridge(
         }
 
         _Logger.LogDebug("Found {UserCount} users in pagination search", ldapUsers.Count);
-        _cache.Set(sessionId, new SessionData{ Connection = _Connection, Cookie = cookie });
-        
+        _cache.Set(sessionId, new SessionData { Connection = _Connection, Cookie = cookie });
+
         bool hasMoreResults = cookie is not null && cookie.Length > 0;
-        _Logger.LogInformation("Completed paginated user search - Returned {UserCount} users, HasMore: {HasMore}, SessionId: {SessionId}", 
+        _Logger.LogInformation("Completed paginated user search - Returned {UserCount} users, HasMore: {HasMore}, SessionId: {SessionId}",
             ldapUsers.Count, hasMoreResults, sessionId);
 
         return (ldapUsers, sessionId, hasMoreResults);
@@ -348,7 +348,7 @@ public partial class ActiveDirectoryAuthenticationBridge(
     private List<TLdapResult> SearchLDAP<TLdapResult>(string searchQuery, string baseDN, int scope = LdapConnection.ScopeSub) where TLdapResult : new()
     {
         _Logger.LogDebug("Executing LDAP search - Query: {SearchQuery}, BaseDN: {BaseDN}, Scope: {Scope}", searchQuery, baseDN, scope);
-        
+
         EnsureBoundConnection();
 
         string[] attributes = GetEntriesToQuery<TLdapResult>();
@@ -463,7 +463,7 @@ public partial class ActiveDirectoryAuthenticationBridge(
     private void BindWithSimple(string username, string password)
     {
         _Logger.LogDebug("Attempting simple bind for user: {Username}", username);
-        
+
         string[] fqdnParts = _LdapSettings.FQDN.Split('.');
         if (fqdnParts.Length < 2)
         {
@@ -478,7 +478,7 @@ public partial class ActiveDirectoryAuthenticationBridge(
         // UPN (User Principal Name) (username@domain),
         // and sAMAccountName (NETBIOS\\username) also works.
         _Connection = GetConnection();
-        
+
         try
         {
             _Connection.Bind(username, password);
