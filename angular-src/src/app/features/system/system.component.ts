@@ -50,7 +50,7 @@ export class SystemComponent {
 
   readonly logLevels: LogLevel[] = ['Trace', 'Debug', 'Information', 'Warning', 'Error', 'Critical', 'None'];
 
-  isLoading = false;
+  requestCounter = 0;
   message = '';
   isErrorMessage = false;
 
@@ -89,16 +89,16 @@ export class SystemComponent {
   }
 
   ping(): void {
-    this.startBusy();
-    this.systemService.ping().pipe(finalize(() => this.stopBusy())).subscribe({
+    this.incrementRequestCounter();
+    this.systemService.ping().pipe(finalize(() => this.decrementRequestCounter())).subscribe({
       next: () => this.setMessage('SYSTEM.MESSAGES.PING_OK'),
       error: () => this.setMessage('SYSTEM.MESSAGES.PING_FAILED', true)
     });
   }
 
   loadLogMetadata(): void {
-    this.startBusy();
-    this.systemService.getDatabaseLogCategories().pipe(finalize(() => this.stopBusy())).subscribe({
+    this.incrementRequestCounter();
+    this.systemService.getDatabaseLogCategories().pipe(finalize(() => this.decrementRequestCounter())).subscribe({
       next: categories => {
         this.categories = categories;
       },
@@ -130,12 +130,12 @@ export class SystemComponent {
   }
 
   loadLogs(): void {
-    this.startBusy();
+    this.incrementRequestCounter();
     this.systemService.getDatabaseLogs({
       logLevel: this.selectedLogLevel,
       categories: [...this.selectedCategories],
       events: [...this.selectedEvents]
-    }).pipe(finalize(() => this.stopBusy())).subscribe({
+    }).pipe(finalize(() => this.decrementRequestCounter())).subscribe({
       next: logs => {
         this.logs = logs;
         this.setMessage('SYSTEM.MESSAGES.LOGS_LOADED');
@@ -151,8 +151,8 @@ export class SystemComponent {
   }
 
   loadLogFiles(): void {
-    this.startBusy();
-    this.systemService.getLogFileNames().pipe(finalize(() => this.stopBusy())).subscribe({
+    this.incrementRequestCounter();
+    this.systemService.getLogFileNames().pipe(finalize(() => this.decrementRequestCounter())).subscribe({
       next: files => {
         this.logFiles = files;
         this.aggregatedLogFiles = this.aggregizeLogFiles(files);
@@ -209,8 +209,8 @@ export class SystemComponent {
   }
 
   downloadLogFile(fileName: string): void {
-    this.startBusy();
-    this.systemService.downloadLogFile(fileName).pipe(finalize(() => this.stopBusy())).subscribe({
+    this.incrementRequestCounter();
+    this.systemService.downloadLogFile(fileName).pipe(finalize(() => this.decrementRequestCounter())).subscribe({
       next: blob => {
         this.downloadBlob(blob, fileName);
         this.setMessage('SYSTEM.MESSAGES.LOG_DOWNLOAD_OK');
@@ -220,8 +220,8 @@ export class SystemComponent {
   }
 
   loadSettings(): void {
-    this.startBusy();
-    this.systemService.getSettings().pipe(finalize(() => this.stopBusy())).subscribe({
+    this.incrementRequestCounter();
+    this.systemService.getSettings().pipe(finalize(() => this.decrementRequestCounter())).subscribe({
       next: settings => {
         this.settingsJson = JSON.stringify(settings, null, 2);
         this.currentSettings = settings as Record<string, unknown>;
@@ -233,8 +233,8 @@ export class SystemComponent {
   }
 
   loadSettingsSchema(): void {
-    this.startBusy();
-    this.systemService.getSettingsSchema().pipe(finalize(() => this.stopBusy())).subscribe({
+    this.incrementRequestCounter();
+    this.systemService.getSettingsSchema().pipe(finalize(() => this.decrementRequestCounter())).subscribe({
       next: schema => {
         this.settingsSchemaJson = JSON.stringify(schema, null, 2);
         this.settingsSchema = schema;
@@ -422,8 +422,8 @@ export class SystemComponent {
   }
 
   loadDefaultSettings(): void {
-    this.startBusy();
-    this.systemService.getDefaultSettings().pipe(finalize(() => this.stopBusy())).subscribe({
+    this.incrementRequestCounter();
+    this.systemService.getDefaultSettings().pipe(finalize(() => this.decrementRequestCounter())).subscribe({
       next: defaults => {
         this.defaultSettingsJson = JSON.stringify(defaults, null, 2);
       },
@@ -446,8 +446,8 @@ export class SystemComponent {
       textKey: 'SYSTEM.CONFIRM.UPDATE_TEXT',
       confirmKey: 'SYSTEM.CONFIRM.UPDATE_BUTTON'
     }, () => {
-      this.startBusy();
-      this.systemService.updateSettings(payload).pipe(finalize(() => this.stopBusy())).subscribe({
+      this.incrementRequestCounter();
+      this.systemService.updateSettings(payload).pipe(finalize(() => this.decrementRequestCounter())).subscribe({
         next: () => {
           this.setMessage('SYSTEM.MESSAGES.UPDATE_OK');
           this.loadSettings();
@@ -537,8 +537,8 @@ export class SystemComponent {
       textKey: 'SYSTEM.CONFIRM.PATCH_TEXT',
       confirmKey: 'SYSTEM.CONFIRM.PATCH_BUTTON'
     }, () => {
-      this.startBusy();
-      this.systemService.patchSettings(payload).pipe(finalize(() => this.stopBusy())).subscribe({
+      this.incrementRequestCounter();
+      this.systemService.patchSettings(payload).pipe(finalize(() => this.decrementRequestCounter())).subscribe({
         next: () => {
           this.setMessage('SYSTEM.MESSAGES.PATCH_OK');
           this.loadSettings();
@@ -549,8 +549,8 @@ export class SystemComponent {
   }
 
   exportSettings(): void {
-    this.startBusy();
-    this.systemService.exportSettings().pipe(finalize(() => this.stopBusy())).subscribe({
+    this.incrementRequestCounter();
+    this.systemService.exportSettings().pipe(finalize(() => this.decrementRequestCounter())).subscribe({
       next: blob => {
         this.downloadBlob(blob, 'settings-export.json');
         this.setMessage('SYSTEM.MESSAGES.EXPORT_OK');
@@ -575,8 +575,8 @@ export class SystemComponent {
       textKey: 'SYSTEM.CONFIRM.IMPORT_TEXT',
       confirmKey: 'SYSTEM.CONFIRM.IMPORT_BUTTON'
     }, () => {
-      this.startBusy();
-      this.systemService.importSettings(this.selectedImportFile!).pipe(finalize(() => this.stopBusy())).subscribe({
+      this.incrementRequestCounter();
+      this.systemService.importSettings(this.selectedImportFile!).pipe(finalize(() => this.decrementRequestCounter())).subscribe({
         next: () => {
           this.setMessage('SYSTEM.MESSAGES.IMPORT_OK');
           this.selectedImportFile = null;
@@ -593,8 +593,8 @@ export class SystemComponent {
       textKey: 'SYSTEM.CONFIRM.STOP_TEXT',
       confirmKey: 'SYSTEM.CONFIRM.STOP_BUTTON'
     }, () => {
-      this.startBusy();
-      this.systemService.stopServer().pipe(finalize(() => this.stopBusy())).subscribe({
+      this.incrementRequestCounter();
+      this.systemService.stopServer().pipe(finalize(() => this.decrementRequestCounter())).subscribe({
         next: () => this.setMessage('SYSTEM.MESSAGES.STOP_OK'),
         error: () => this.setMessage('SYSTEM.MESSAGES.STOP_FAILED', true)
       });
@@ -632,12 +632,12 @@ export class SystemComponent {
     URL.revokeObjectURL(url);
   }
 
-  private startBusy(): void {
-    this.isLoading = true;
+  private incrementRequestCounter(): void {
+    this.requestCounter++;
   }
 
-  private stopBusy(): void {
-    this.isLoading = false;
+  private decrementRequestCounter(): void {
+    this.requestCounter = Math.max(0, this.requestCounter - 1);
   }
 
   private setMessage(key: string, isError = false): void {
