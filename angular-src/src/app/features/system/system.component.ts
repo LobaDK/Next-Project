@@ -69,6 +69,7 @@ export class SystemComponent {
   defaultSettingsJson = '';
   settingsSchema: unknown = null;
   currentSettings: Record<string, unknown> = {};
+  currentSettingsIndex = new Map<string, unknown>();
 
   updateSettingsJson = '';
   patchSettingsJson = '';
@@ -227,7 +228,8 @@ export class SystemComponent {
     this.systemService.getSettings().pipe(finalize(() => this.stopBusy())).subscribe({
       next: settings => {
         this.settingsJson = JSON.stringify(settings, null, 2);
-        this.currentSettings = this.flattenSettings(settings as Record<string, unknown>);
+        this.currentSettings = settings as Record<string, unknown>;
+        this.currentSettingsIndex = this.createSettingsIndex(this.currentSettings);
         this.buildSettingsFields();
       },
       error: () => this.setMessage('SYSTEM.MESSAGES.SETTINGS_FAILED', true)
@@ -246,17 +248,24 @@ export class SystemComponent {
     });
   }
 
-  private flattenSettings(obj: Record<string, unknown>, prefix = ''): Record<string, unknown> {
-    const result: Record<string, unknown> = {};
-    Object.entries(obj).forEach(([key, value]) => {
-      const fullKey = prefix ? `${prefix}.${key}` : key;
-      if (value && typeof value === 'object' && !Array.isArray(value)) {
-        Object.assign(result, this.flattenSettings(value as Record<string, unknown>, fullKey));
-      } else {
-        result[fullKey] = value;
+  private createSettingsIndex(obj: Record<string, unknown>, prefix = ''): Map<string, unknown> {
+    const index = new Map<string, unknown>();
+
+    const walk = (value: unknown, currentPath: string): void => {
+      if (currentPath) {
+        index.set(currentPath, value);
       }
-    });
-    return result;
+
+      if (value && typeof value === 'object' && !Array.isArray(value)) {
+        Object.entries(value as Record<string, unknown>).forEach(([key, child]) => {
+          const childPath = currentPath ? `${currentPath}.${key}` : key;
+          walk(child, childPath);
+        });
+      }
+    };
+
+    walk(obj, prefix);
+    return index;
   }
 
   private normalizeSettingsPath(path: string): string {
@@ -264,12 +273,12 @@ export class SystemComponent {
   }
 
   private getSettingValueByPath(path: string): unknown {
-    if (path in this.currentSettings) {
-      return this.currentSettings[path];
+    if (this.currentSettingsIndex.has(path)) {
+      return this.currentSettingsIndex.get(path);
     }
 
     const normalizedTarget = this.normalizeSettingsPath(path);
-    const matchedEntry = Object.entries(this.currentSettings).find(([existingPath]) =>
+    const matchedEntry = Array.from(this.currentSettingsIndex.entries()).find(([existingPath]) =>
       this.normalizeSettingsPath(existingPath) === normalizedTarget
     );
 
