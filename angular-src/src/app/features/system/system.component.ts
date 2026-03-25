@@ -629,7 +629,10 @@ export class SystemComponent {
     anchor.href = url;
     anchor.download = fileName;
     anchor.click();
-    URL.revokeObjectURL(url);
+    // Defer revoking the object URL until after the browser has processed the click
+    // and initiated the download; revoking it synchronously can cancel the download
+    // in some browsers.
+    setTimeout(() => URL.revokeObjectURL(url), 0);
   }
 
   private incrementRequestCounter(): void {
