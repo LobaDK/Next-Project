@@ -275,7 +275,7 @@
           </ng-template>
 
           <div class="pt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-            @for (field of settingsFields; track field.section + field.key) {
+            @for (field of settingsFields; track field.section + '.' + field.key) {
             @if (field.section === tabName) {
             <div>
               <div class="flex items-center justify-between mb-1">
