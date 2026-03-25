@@ -3,7 +3,7 @@ namespace API.DTO.Requests.Settings;
 public class PatchSettingsRequest
 {
     public int Version { get; set; }
-    
+
     public DatabasePatchRequest? Database { get; set; }
     public JWTPatchRequest? JWT { get; set; }
     public LDAPPatchRequest? LDAP { get; set; }
@@ -29,6 +29,7 @@ public class LDAPPatchRequest
 {
     public string? Host { get; set; }
     public int? Port { get; set; }
+    public int? SSLPort { get; set; }
     public string? FQDN { get; set; }
     public string? BaseDN { get; set; }
     public string? SA { get; set; }
