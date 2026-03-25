@@ -208,10 +208,6 @@ export class SystemComponent {
       }));
   }
 
-  toggleAggregateFolder(year: number, month?: number): void {
-    // Simple UI toggle - details implemented in template
-  }
-
   downloadLogFile(fileName: string): void {
     this.startBusy();
     this.systemService.downloadLogFile(fileName).pipe(finalize(() => this.stopBusy())).subscribe({
