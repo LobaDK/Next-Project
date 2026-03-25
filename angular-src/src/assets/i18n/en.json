@@ -200,6 +200,8 @@
       "UPDATE_PAYLOAD": "Update payload (PUT)",
       "PATCH_PAYLOAD": "Patch payload (PATCH)",
       "IMPORT_FILE": "Import Settings File",
+      "SHOW_SECRET": "Show hidden value for {{field}}",
+      "HIDE_SECRET": "Hide value for {{field}}",
       "SECTION_Database": "Database",
       "SECTION_JWT": "JWT",
       "SECTION_LDAP": "LDAP",

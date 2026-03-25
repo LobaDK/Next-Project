@@ -287,8 +287,12 @@
                 </label>
                 @if (field.isSecret) {
                 <button type="button" (click)="toggleSecretVisibility(field)"
+                  [attr.aria-label]="getSecretToggleLabel(field)" [attr.aria-pressed]="!field.hidden"
+                  [attr.title]="getSecretToggleLabel(field)"
                   class="text-xs px-2 py-1 rounded border border-primary_orange_1 text-primary_dark_blue hover:bg-secondary_background_hover">
-                  {{ field.hidden ? '👁️' : '🙈' }}
+                  <mat-icon aria-hidden="true" class="!text-base leading-none">{{ field.hidden ? 'visibility' :
+                    'visibility_off' }}</mat-icon>
+                  <span class="sr-only">{{ getSecretToggleLabel(field) }}</span>
                 </button>
                 }
               </div>

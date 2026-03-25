@@ -75,6 +75,8 @@
       "UPDATE_PAYLOAD": "Update payload (PUT)",
       "PATCH_PAYLOAD": "Patch payload (PATCH)",
       "IMPORT_FILE": "Importér indstillingsfil",
+      "SHOW_SECRET": "Vis skjult værdi for {{field}}",
+      "HIDE_SECRET": "Skjul værdi for {{field}}",
       "SECTION_Database": "Database",
       "SECTION_JWT": "JWT",
       "SECTION_LDAP": "LDAP",

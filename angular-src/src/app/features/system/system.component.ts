@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs';
@@ -39,7 +40,7 @@ interface SettingsField {
 @Component({
   selector: 'app-system',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatTabsModule, TranslateModule, LoadingComponent],
+  imports: [CommonModule, FormsModule, MatTabsModule, MatIconModule, TranslateModule, LoadingComponent],
   templateUrl: './system.component.html',
   styleUrl: './system.component.css'
 })
@@ -372,6 +373,13 @@ export class SystemComponent {
 
   toggleSecretVisibility(field: SettingsField): void {
     field.hidden = !field.hidden;
+  }
+
+  getSecretToggleLabel(field: SettingsField): string {
+    const key = field.hidden
+      ? 'SYSTEM.SETTINGS.SHOW_SECRET'
+      : 'SYSTEM.SETTINGS.HIDE_SECRET';
+    return this.translate.instant(key, { field: field.key });
   }
 
   toggleAdvancedMode(): void {
