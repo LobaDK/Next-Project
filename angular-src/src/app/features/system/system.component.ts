@@ -106,7 +106,7 @@ export class SystemComponent {
       error: () => this.setMessage('SYSTEM.MESSAGES.LOG_METADATA_FAILED', true)
     });
 
-    this.systemService.getDatabaseLogEvents().subscribe({
+    this.systemService.getDatabaseLogEvents().pipe(finalize(() => this.decrementRequestCounter())).subscribe({
       next: events => {
         this.events = events;
       },
