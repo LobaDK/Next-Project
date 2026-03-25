@@ -436,7 +436,10 @@ export class SystemComponent {
   }
 
   updateSettings(): void {
-    const payload = this.parseJson(this.updateSettingsJson);
+    const payload = this.useAdvancedMode
+      ? this.parseJson(this.updateSettingsJson)
+      : this.buildUpdatePayloadFromFields();
+
     if (payload == null) {
       this.setMessage('SYSTEM.MESSAGES.INVALID_JSON', true);
       return;
@@ -456,6 +459,74 @@ export class SystemComponent {
         error: () => this.setMessage('SYSTEM.MESSAGES.UPDATE_FAILED', true)
       });
     });
+  }
+
+  private buildUpdatePayloadFromFields(): Record<string, unknown> | null {
+    const payload: Record<string, unknown> = {};
+
+    for (const field of this.settingsFields) {
+      let parsedValue: unknown = field.value;
+
+      if (field.inputKind === 'integer') {
+        if (typeof parsedValue === 'string') {
+          const trimmed = parsedValue.trim();
+          if (trimmed.length === 0) {
+            parsedValue = 0;
+          } else {
+            const n = Number(trimmed);
+            if (Number.isNaN(n)) {
+              return null;
+            }
+            parsedValue = n;
+          }
+        }
+      }
+
+      if (field.inputKind === 'boolean') {
+        parsedValue = Boolean(parsedValue);
+      }
+
+      if (field.inputKind === 'json') {
+        if (typeof parsedValue === 'string') {
+          const trimmed = parsedValue.trim();
+          if (trimmed.length === 0) {
+            parsedValue = {};
+          } else {
+            try {
+              parsedValue = JSON.parse(trimmed);
+            } catch {
+              return null;
+            }
+          }
+        }
+      }
+
+      this.setNestedValue(payload, `${field.section}.${field.key}`, parsedValue);
+    }
+
+    return payload;
+  }
+
+  private setNestedValue(target: Record<string, unknown>, path: string, value: unknown): void {
+    const segments = path.split('.');
+    let cursor: Record<string, unknown> = target;
+
+    for (let i = 0; i < segments.length; i++) {
+      const segment = segments[i];
+      const isLeaf = i === segments.length - 1;
+
+      if (isLeaf) {
+        cursor[segment] = value;
+        return;
+      }
+
+      const existing = cursor[segment];
+      if (!existing || typeof existing !== 'object' || Array.isArray(existing)) {
+        cursor[segment] = {};
+      }
+
+      cursor = cursor[segment] as Record<string, unknown>;
+    }
   }
 
   patchSettings(): void {
