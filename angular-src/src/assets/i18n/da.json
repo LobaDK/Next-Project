@@ -25,7 +25,6 @@
     "HOME": "Hjem",
     "USER_GUIDE": "Brugervejledning"
   },
-
   "SYSTEM": {
     "TITLE": "Systemadministration",
     "BUTTONS": {
@@ -45,7 +44,7 @@
       "STOP_SERVER": "Stop server",
       "ADVANCED_MODE": "Avanceret tilstand",
       "BASIC_MODE": "Grundlæggende tilstand",
-      "SAVE_CHANGES": "Gem ændringer",
+      "SAVE_CHANGES": "Gem indstillinger",
       "RESET": "Nulstil"
     },
     "LOGS": {
@@ -87,9 +86,9 @@
       "DESCRIPTION": "Hvis serveren stoppes, er API'et utilgængeligt indtil genstart."
     },
     "CONFIRM": {
-      "UPDATE_TITLE": "Bekræft opdatering af indstillinger",
-      "UPDATE_TEXT": "Dette vil erstatte hele indstillingssektioner baseret på din PUT payload. Fortsæt?",
-      "UPDATE_BUTTON": "Ja, opdater indstillinger",
+      "UPDATE_TITLE": "Gem opdaterede indstillinger?",
+      "UPDATE_TEXT": "Dine ændringer bliver anvendt på systemindstillingerne. Vil du fortsætte?",
+      "UPDATE_BUTTON": "Ja, gem indstillinger",
       "PATCH_TITLE": "Bekræft patch af indstillinger",
       "PATCH_TEXT": "Dette vil anvende delvise ændringer fra din PATCH payload. Fortsæt?",
       "PATCH_BUTTON": "Ja, patch indstillinger",
@@ -113,8 +112,8 @@
       "SCHEMA_FAILED": "Kunne ikke hente indstillingsschema.",
       "DEFAULTS_FAILED": "Kunne ikke hente standardindstillinger.",
       "INVALID_JSON": "Ugyldig JSON payload.",
-      "UPDATE_OK": "Indstillinger opdateret.",
-      "UPDATE_FAILED": "Kunne ikke opdatere indstillinger.",
+      "UPDATE_OK": "Indstillinger blev gemt.",
+      "UPDATE_FAILED": "Kunne ikke gemme indstillinger. Prøv igen.",
       "PATCH_OK": "Indstillinger patchet.",
       "PATCH_FAILED": "Kunne ikke patche indstillinger.",
       "EXPORT_OK": "Indstillinger eksporteret.",
@@ -126,7 +125,6 @@
       "STOP_FAILED": "Kunne ikke stoppe serveren."
     }
   },
-
   "USER_GUIDE": {
     "TITLE": "Brugervejledning",
     "STUDENT": {

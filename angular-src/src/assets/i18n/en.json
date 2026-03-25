@@ -150,7 +150,6 @@
     "HOME": "Home",
     "USER_GUIDE": "User Guide"
   },
-
   "SYSTEM": {
     "TITLE": "System Administration",
     "BUTTONS": {
@@ -170,7 +169,7 @@
       "STOP_SERVER": "Stop Server",
       "ADVANCED_MODE": "Advanced Mode",
       "BASIC_MODE": "Basic Mode",
-      "SAVE_CHANGES": "Save Changes",
+      "SAVE_CHANGES": "Save Settings",
       "RESET": "Reset"
     },
     "LOGS": {
@@ -212,9 +211,9 @@
       "DESCRIPTION": "Stopping the server will make the API unavailable until restarted."
     },
     "CONFIRM": {
-      "UPDATE_TITLE": "Confirm settings update",
-      "UPDATE_TEXT": "This will replace full settings sections based on your PUT payload. Continue?",
-      "UPDATE_BUTTON": "Yes, update settings",
+      "UPDATE_TITLE": "Save updated settings?",
+      "UPDATE_TEXT": "Your changes will be applied to the system settings. Do you want to continue?",
+      "UPDATE_BUTTON": "Yes, save settings",
       "PATCH_TITLE": "Confirm settings patch",
       "PATCH_TEXT": "This will apply partial settings changes from your PATCH payload. Continue?",
       "PATCH_BUTTON": "Yes, patch settings",
@@ -238,8 +237,8 @@
       "SCHEMA_FAILED": "Failed to load settings schema.",
       "DEFAULTS_FAILED": "Failed to load default settings.",
       "INVALID_JSON": "Invalid JSON payload.",
-      "UPDATE_OK": "Settings updated.",
-      "UPDATE_FAILED": "Failed to update settings.",
+      "UPDATE_OK": "Settings saved successfully.",
+      "UPDATE_FAILED": "Could not save settings. Please try again.",
       "PATCH_OK": "Settings patched.",
       "PATCH_FAILED": "Failed to patch settings.",
       "EXPORT_OK": "Settings exported.",
@@ -251,7 +250,6 @@
       "STOP_FAILED": "Failed to stop server."
     }
   },
-
   "USER_GUIDE": {
     "TITLE": "User Guide",
     "STUDENT": {
