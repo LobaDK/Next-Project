@@ -159,6 +159,7 @@ public class SystemControllerService(
             {
                 Host = _RootSettings.LDAP.Host,
                 Port = _RootSettings.LDAP.Port,
+                SSLPort = _RootSettings.LDAP.SSLPort,
                 FQDN = _RootSettings.LDAP.FQDN,
                 BaseDN = _RootSettings.LDAP.BaseDN,
                 SA = _RootSettings.LDAP.SA,
@@ -263,6 +264,13 @@ public class SystemControllerService(
                     Type = GetSchemaType(_RootSettings.LDAP.Port),
                     Description = GetPropertyDescription(typeof(LDAPSettings).GetProperty(nameof(_RootSettings.LDAP.Port))!),
                     DefaultValue = GetDefaultValue(typeof(LDAPSettings).GetProperty(nameof(_RootSettings.LDAP.Port))!, _DefaultSettings.LDAP)
+                },
+                SSLPort = new SSLPortSchema()
+                {
+                    Required = IsPropertyRequired(typeof(LDAPSettings).GetProperty(nameof(_RootSettings.LDAP.SSLPort))!),
+                    Type = GetSchemaType(_RootSettings.LDAP.SSLPort),
+                    Description = GetPropertyDescription(typeof(LDAPSettings).GetProperty(nameof(_RootSettings.LDAP.SSLPort))!),
+                    DefaultValue = GetDefaultValue(typeof(LDAPSettings).GetProperty(nameof(_RootSettings.LDAP.SSLPort))!, _DefaultSettings.LDAP)
                 },
                 FQDN = new FQDNSchema()
                 {
