@@ -6,7 +6,7 @@ public class MaintenanceModeMiddleware(RequestDelegate next, IMaintenanceMonitor
     private readonly IMaintenanceMonitor _maintenanceMonitor = maintenanceMonitor;
     private readonly ILogger<MaintenanceModeMiddleware> _logger = logger;
     private readonly SystemSettings _systemSettings = ConfigurationBinderService.Bind<SystemSettings>(configuration);
-    private readonly List<string> _allowedEndpoints = ["/api/system/status", "/api/system/ping"];
+    private readonly List<string> _allowedEndpoints = ["/api/system/*"];
 
     public async Task InvokeAsync(HttpContext context)
     {
@@ -35,10 +35,37 @@ public class MaintenanceModeMiddleware(RequestDelegate next, IMaintenanceMonitor
                     return;
                 }
             }
-            else if (context.Request.Path.Value is not null && _allowedEndpoints.Any(entry => entry.Equals(context.Request.Path.Value, StringComparison.OrdinalIgnoreCase)))
+            else if (context.Request.Path.Value is not null)
             {
                 // Allow access to specific endpoints even during maintenance
-                await _next(context);
+                var path = context.Request.Path.Value;
+                foreach (string allowedEndpoint in _allowedEndpoints)
+                {
+                    if (allowedEndpoint.Equals(path, StringComparison.OrdinalIgnoreCase))
+                    {
+                        await _next(context);
+                        return;
+                    }
+                    else if (allowedEndpoint.EndsWith("*", StringComparison.Ordinal))
+                    {
+                        var wildcardBase = allowedEndpoint.TrimEnd('*').TrimEnd('/');
+
+                        if (path.Equals(wildcardBase, StringComparison.OrdinalIgnoreCase) ||
+                            path.StartsWith(wildcardBase + "/", StringComparison.OrdinalIgnoreCase))
+                        {
+                            await _next(context);
+                            return;
+                        }
+                        {
+                            await _next(context);
+                            return;
+                        }
+                    }
+                }
+
+                context.Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
+                await context.Response.WriteAsync("The system is currently under maintenance. Please try again later.");
+                return;
             }
             else
             {
@@ -55,9 +82,15 @@ public class MaintenanceModeMiddleware(RequestDelegate next, IMaintenanceMonitor
     {
         var userRoleClaim = claimsPrincipal.FindFirst("role");
 
-        if (userRoleClaim == null || Enum.TryParse<UserRoles>(userRoleClaim.Value, out var role) == false)
+        if (userRoleClaim == null)
         {
             _logger.LogWarning("User role claim not found or invalid in token");
+            return null;
+        }
+
+        if (Enum.TryParse<UserRoles>(userRoleClaim.Value, true, out var role) == false)
+        {
+            _logger.LogWarning("User role claim value '{claimValue}' could not be parsed to a valid UserRoles enum.", userRoleClaim.Value);
             return null;
         }
 
