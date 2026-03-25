@@ -205,7 +205,8 @@ public class SystemControllerService(
                 {
                     Required = IsPropertyRequired(typeof(DatabaseSettings).GetProperty(nameof(_RootSettings.Database.ConnectionString))!),
                     Type = GetSchemaType(_RootSettings.Database.ConnectionString),
-                    Description = GetPropertyDescription(typeof(DatabaseSettings).GetProperty(nameof(_RootSettings.Database.ConnectionString))!)
+                    Description = GetPropertyDescription(typeof(DatabaseSettings).GetProperty(nameof(_RootSettings.Database.ConnectionString))!),
+                    IsSecret = true
                 }
             },
             JWT = new JWTSettingsSchema()
@@ -367,7 +368,7 @@ public class SystemControllerService(
                 object? fieldSchemaValue = fieldProperty.GetValue(sectionValue);
                 if (fieldSchemaValue is SettingsSchemaBase fieldSchema)
                 {
-                    fieldSchema.IsSecret = IsSecretFieldName(fieldProperty.Name);
+                    fieldSchema.IsSecret = fieldSchema.IsSecret || IsSecretFieldName(fieldProperty.Name);
                 }
             }
         }
