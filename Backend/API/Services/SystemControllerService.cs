@@ -155,6 +155,7 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
                 Host = _RootSettings.LDAP.Host,
                 Port = _RootSettings.LDAP.Port,
                 SSLPort = _RootSettings.LDAP.SSLPort,
+                UseSSL = _RootSettings.LDAP.UseSSL,
                 FQDN = _RootSettings.LDAP.FQDN,
                 BaseDN = _RootSettings.LDAP.BaseDN,
                 SA = _RootSettings.LDAP.SA,
