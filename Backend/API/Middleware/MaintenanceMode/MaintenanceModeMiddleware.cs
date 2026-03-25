@@ -6,7 +6,7 @@ public class MaintenanceModeMiddleware(RequestDelegate next, IMaintenanceMonitor
     private readonly IMaintenanceMonitor _maintenanceMonitor = maintenanceMonitor;
     private readonly ILogger<MaintenanceModeMiddleware> _logger = logger;
     private readonly SystemSettings _systemSettings = ConfigurationBinderService.Bind<SystemSettings>(configuration);
-    private readonly List<string> _allowedEndpoints = ["/api/system/status"];
+    private readonly List<string> _allowedEndpoints = ["/api/system/status", "/api/system/ping"];
 
     public async Task InvokeAsync(HttpContext context)
     {
