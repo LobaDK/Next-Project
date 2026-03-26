@@ -291,10 +291,16 @@
       "BAD_REQUEST": "Ugyldig anmodning. Tjek din indtastning.",
       "FORBIDDEN": "Adgang nægtet.",
       "RATE_LIMITED": "For mange forsøg. Vent venligst før du prøver igen.",
+      "MAINTENANCE": "Systemet er i vedligeholdelsestilstand. Prøv igen om lidt.",
       "UNAVAILABLE": "Tjenesten er midlertidigt utilgængelig.",
       "TIMEOUT": "Anmodningen fik timeout. Prøv igen.",
       "REQUIRED_FIELDS": "Udfyld venligst alle påkrævede felter."
     }
+  },
+  "MAINTENANCE_NOTICE": {
+    "TITLE": "Vedligeholdelsestilstand er aktiveret",
+    "MESSAGE": "Nogle funktioner kan være midlertidigt utilgængelige, mens vedligeholdelse er aktiv.",
+    "DISMISS": "Skjul"
   },
   "HOME": {
     "ANSWER_QUESTIONNAIRE": "Et spørgeskema kan besvares",

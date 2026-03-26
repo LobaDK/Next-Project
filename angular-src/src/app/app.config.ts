@@ -4,6 +4,7 @@ import { routes } from './app.routes';
 import {  provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { jwtInterceptor } from './core/guards and interceptors/jwt.interceptor';
+import { maintenanceInterceptor } from './core/guards and interceptors/maintenance.interceptor';
 import { AuthService } from './core/services/auth.service';
 import { environment } from '../environments/environment';
 import { MockAuthService } from './core/services/mock/mock.auth.service';
@@ -30,7 +31,7 @@ import { IAuthService, IHomeService, IAnswerService, ITemplateService, IActiveSe
 export const appConfig: ApplicationConfig = {
   providers: [provideRouter(routes),
     provideHttpClient(
-    withInterceptors([jwtInterceptor]),
+    withInterceptors([jwtInterceptor, maintenanceInterceptor]),
   ), provideAnimationsAsync(),
     // Type-safe mock service providers
     mockService<IAuthService>(AuthService, MockAuthService),

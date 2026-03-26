@@ -24,6 +24,7 @@ const ERROR_I18N: Record<LoginErrorCode, string> = {
   [LoginErrorCode.BadRequest]:         'LOGIN.ERRORS.BAD_REQUEST',
   [LoginErrorCode.Forbidden]:          'LOGIN.ERRORS.FORBIDDEN',
   [LoginErrorCode.RateLimited]:        'LOGIN.ERRORS.RATE_LIMITED',
+  [LoginErrorCode.Maintenance]:        'LOGIN.ERRORS.MAINTENANCE',
   [LoginErrorCode.Unavailable]:        'LOGIN.ERRORS.UNAVAILABLE',
   [LoginErrorCode.Timeout]:            'LOGIN.ERRORS.TIMEOUT',
 };

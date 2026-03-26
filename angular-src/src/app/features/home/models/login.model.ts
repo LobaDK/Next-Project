@@ -9,6 +9,7 @@ export enum LoginErrorCode {
   Forbidden          = 'FORBIDDEN',
   RateLimited        = 'RATE_LIMITED',
   BadRequest         = 'BAD_REQUEST',
+  Maintenance        = 'MAINTENANCE',
   Server             = 'SERVER',
   Unavailable        = 'UNAVAILABLE',
   Timeout            = 'TIMEOUT',

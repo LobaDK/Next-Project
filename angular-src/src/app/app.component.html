@@ -4,6 +4,23 @@
   <!-- Page content -->
   <app-header></app-header>
   <main class="flex-grow pt-20 print:pt-0">
+    @if (showMaintenanceBanner()) {
+      <div class="maintenance-banner border border-amber-300 bg-amber-50/95 text-amber-900 rounded-xl px-4 py-3 mb-4 shadow-sm">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <p class="font-semibold">{{ 'MAINTENANCE_NOTICE.TITLE' | translate }}</p>
+            <p class="text-sm">{{ 'MAINTENANCE_NOTICE.MESSAGE' | translate }}</p>
+          </div>
+          <button
+            type="button"
+            (click)="dismissMaintenanceBanner()"
+            class="maintenance-dismiss-btn px-3 py-1 rounded-md text-sm font-medium border border-amber-400 hover:bg-amber-100 whitespace-nowrap">
+            {{ 'MAINTENANCE_NOTICE.DISMISS' | translate }}
+          </button>
+        </div>
+      </div>
+    }
+
     <router-outlet></router-outlet>
   </main>
 </div>

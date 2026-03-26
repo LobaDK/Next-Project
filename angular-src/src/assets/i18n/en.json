@@ -133,10 +133,16 @@
       "BAD_REQUEST": "Invalid request. Please check your input.",
       "FORBIDDEN": "Access denied.",
       "RATE_LIMITED": "Too many attempts. Please wait before trying again.",
+      "MAINTENANCE": "The system is currently in maintenance mode. Please try again shortly.",
       "UNAVAILABLE": "Service temporarily unavailable.",
       "TIMEOUT": "Request timed out. Please try again.",
       "REQUIRED_FIELDS": "Please fill in all required fields."
     }
+  },
+  "MAINTENANCE_NOTICE": {
+    "TITLE": "Maintenance Mode Enabled",
+    "MESSAGE": "Some features may be temporarily unavailable while maintenance is active.",
+    "DISMISS": "Dismiss"
   },
   "NAV": {
     "TOGGLE_MENU": "Toggle menu",

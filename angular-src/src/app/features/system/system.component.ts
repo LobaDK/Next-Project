@@ -7,6 +7,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs';
 import { LoadingComponent } from '../../shared/loading/loading.component';
+import { MaintenanceService } from '../../core/services/maintenance.service';
 import { SystemConfirmDialogComponent, SystemConfirmDialogData } from './dialog/system-confirm-dialog/system-confirm-dialog.component';
 import { ApplicationLog, EventIdDto, SystemService, SystemStatus } from './services/system.service';
 
@@ -48,6 +49,7 @@ export class SystemComponent {
   private systemService = inject(SystemService);
   private dialog = inject(MatDialog);
   private translate = inject(TranslateService);
+  private maintenanceService = inject(MaintenanceService);
 
   readonly logLevels: LogLevel[] = ['Trace', 'Debug', 'Information', 'Warning', 'Error', 'Critical', 'None'];
 
@@ -609,6 +611,7 @@ export class SystemComponent {
         }
 
         this.maintenanceEnabled = parsedStatus;
+        this.maintenanceService.setMaintenanceEnabled(parsedStatus);
       },
       error: () => this.setMessage('SYSTEM.MESSAGES.MAINTENANCE_STATUS_FAILED', true)
     });
@@ -643,6 +646,7 @@ export class SystemComponent {
         .subscribe({
           next: () => {
             this.maintenanceEnabled = targetEnabled;
+            this.maintenanceService.setMaintenanceEnabled(targetEnabled);
             this.setMessage(targetEnabled
               ? 'SYSTEM.MESSAGES.MAINTENANCE_ENABLE_OK'
               : 'SYSTEM.MESSAGES.MAINTENANCE_DISABLE_OK');
