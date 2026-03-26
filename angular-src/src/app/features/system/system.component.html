@@ -1,0 +1,381 @@
+<div class="flex flex-col items-center w-full min-h-full">
+  <div
+    class="flex flex-col w-full max-w-7xl bg-primary_background_white/80 shadow-lg rounded-xl border-2 border-primary_orange_1 p-4 sm:p-10 gap-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <h2 class="text-3xl font-bold text-primary_dark_blue">
+        {{ 'SYSTEM.TITLE' | translate }}
+      </h2>
+      <button (click)="ping()"
+        class="bg-primary_orange_1 hover:bg-primary_orange_light text-white font-bold py-2 px-5 rounded-xl transition-colors">
+        {{ 'SYSTEM.BUTTONS.PING' | translate }}
+      </button>
+    </div>
+
+    @if (message) {
+    <div class="rounded-lg px-4 py-3 text-sm font-medium"
+      [ngClass]="isErrorMessage ? 'bg-red-100 text-red-700 border border-red-300' : 'bg-green-100 text-green-700 border border-green-300'">
+      {{ message | translate }}
+    </div>
+    }
+
+    <!-- DATABASE LOGS SECTION -->
+    <section class="bg-white/80 rounded-xl border border-primary_orange_1 p-4 sm:p-6">
+      <div class="flex items-center justify-between gap-3 flex-wrap mb-4">
+        <h3 class="text-xl font-semibold text-primary_dark_blue">{{ 'SYSTEM.LOGS.TITLE' | translate }}</h3>
+        <div class="flex gap-2 flex-wrap">
+          <button (click)="loadLogMetadata()"
+            class="px-4 py-2 rounded-lg bg-primary_dark_blue text-white hover:bg-primary_dark_blue/90">
+            {{ 'SYSTEM.BUTTONS.REFRESH_META' | translate }}
+          </button>
+          <button (click)="clearLogFilters()"
+            class="px-4 py-2 rounded-lg border border-primary_orange_1 text-primary_dark_blue hover:bg-secondary_background_hover">
+            {{ 'SYSTEM.BUTTONS.CLEAR_FILTERS' | translate }}
+          </button>
+          <button (click)="loadLogs()"
+            class="px-4 py-2 rounded-lg bg-primary_orange_1 text-white hover:bg-primary_orange_light">
+            {{ 'SYSTEM.BUTTONS.LOAD_LOGS' | translate }}
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+        <div>
+          <label class="block text-sm font-semibold text-primary_dark_blue mb-1">{{ 'SYSTEM.LOGS.LOG_LEVEL' | translate
+            }}</label>
+          <select [(ngModel)]="selectedLogLevel"
+            class="w-full border border-primary_orange_1 rounded-lg px-3 py-2 bg-primary_background_white/80">
+            @for (level of logLevels; track level) {
+            <option [value]="level">{{ level }}</option>
+            }
+          </select>
+        </div>
+
+        <div>
+          <p class="text-sm font-semibold text-primary_dark_blue mb-1">{{ 'SYSTEM.LOGS.CATEGORIES' | translate }}</p>
+          <div
+            class="max-h-40 overflow-auto border border-primary_orange_1 rounded-lg p-2 bg-primary_background_white/80">
+            @for (category of categories; track category) {
+            <label class="flex items-center gap-2 py-1 text-sm text-gray-700">
+              <input type="checkbox" (change)="toggleCategory(category, $any($event.target).checked)"
+                [checked]="selectedCategories.has(category)">
+              <span>{{ category }}</span>
+            </label>
+            }
+          </div>
+        </div>
+
+        <div>
+          <p class="text-sm font-semibold text-primary_dark_blue mb-1">{{ 'SYSTEM.LOGS.EVENTS' | translate }}</p>
+          <div
+            class="max-h-40 overflow-auto border border-primary_orange_1 rounded-lg p-2 bg-primary_background_white/80">
+            @for (event of events; track event.id) {
+            <label class="flex items-center gap-2 py-1 text-sm text-gray-700">
+              <input type="checkbox" (change)="toggleEvent(event.id, $any($event.target).checked)"
+                [checked]="selectedEvents.has(event.id)">
+              <span>{{ event.id }} @if (event.name) { - {{ event.name }} }</span>
+            </label>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Fixed height scrollable logs table -->
+      <div class="rounded-lg border border-primary_orange_1 overflow-auto max-h-[600px]">
+        <table class="w-full text-left text-sm table-auto min-w-max">
+          <thead class="bg-secondary_background_gray text-primary_dark_blue sticky top-0 z-10">
+            <tr>
+              <th class="px-3 py-2 whitespace-nowrap">{{ 'SYSTEM.LOGS.COLUMNS.TIME' | translate }}</th>
+              <th class="px-3 py-2 whitespace-nowrap">{{ 'SYSTEM.LOGS.COLUMNS.LEVEL' | translate }}</th>
+              <th class="px-3 py-2 whitespace-nowrap">{{ 'SYSTEM.LOGS.COLUMNS.CATEGORY' | translate }}</th>
+              <th class="px-3 py-2 whitespace-nowrap">{{ 'SYSTEM.LOGS.COLUMNS.EVENT' | translate }}</th>
+              <th class="px-3 py-2 whitespace-nowrap">{{ 'SYSTEM.LOGS.COLUMNS.MESSAGE' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (log of logs; track log.id) {
+            <tr class="border-t border-gray-200 align-top hover:bg-gray-50">
+              <td class="px-3 py-2 whitespace-nowrap">{{ log.timestamp | date:'short' }}</td>
+              <td class="px-3 py-2 whitespace-nowrap">{{ log.logLevel }}</td>
+              <td class="px-3 py-2 whitespace-nowrap">{{ log.category }}</td>
+              <td class="px-3 py-2 whitespace-nowrap">{{ log.eventId }}</td>
+              <td class="px-3 py-2 max-w-2xl">
+                <p class="font-medium text-gray-800 break-words">{{ log.message }}</p>
+                @if (log.exception) {
+                <p class="text-xs text-red-700 mt-1 whitespace-pre-wrap break-words">{{ log.exception }}</p>
+                }
+              </td>
+            </tr>
+            } @empty {
+            <tr>
+              <td colspan="5" class="px-3 py-6 text-center text-gray-500">{{ 'SYSTEM.LOGS.EMPTY' | translate }}</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- LOG FILES SECTION WITH AGGREGATION -->
+    <section class="bg-white/80 rounded-xl border border-primary_orange_1 p-4 sm:p-6">
+      <div class="flex items-center justify-between gap-3 flex-wrap mb-4">
+        <h3 class="text-xl font-semibold text-primary_dark_blue">{{ 'SYSTEM.LOG_FILES.TITLE' | translate }}</h3>
+        <button (click)="loadLogFiles()"
+          class="px-4 py-2 rounded-lg bg-primary_dark_blue text-white hover:bg-primary_dark_blue/90">
+          {{ 'SYSTEM.BUTTONS.REFRESH_FILES' | translate }}
+        </button>
+      </div>
+
+      @if (aggregatedLogFiles.length > 0) {
+      <div class="space-y-2">
+        @for (yearGroup of aggregatedLogFiles; track yearGroup.year) {
+        <div class="border border-primary_orange_1 rounded-lg overflow-hidden">
+          <!-- Year Header -->
+          <div
+            class="bg-secondary_background_gray px-4 py-2 cursor-pointer hover:bg-secondary_background_hover flex items-center gap-2"
+            (click)="yearGroup._yearExpanded = !yearGroup._yearExpanded">
+            <span class="font-semibold text-primary_dark_blue">
+              @if (yearGroup.year === 0) {
+              {{ 'SYSTEM.LOG_FILES.OTHER' | translate }}
+              } @else {
+              {{ yearGroup.year }}
+              }
+            </span>
+            <span class="text-sm text-gray-600">({{ getYearFilesCount(yearGroup) }} {{ 'SYSTEM.LOG_FILES.FILES' |
+              translate }})</span>
+          </div>
+
+          @if (yearGroup._yearExpanded) {
+          <div class="bg-primary_background_white/50 border-t border-primary_orange_1">
+            @for (monthGroup of yearGroup.months; track monthGroup.month) {
+            <div class="border-b border-primary_orange_1 last:border-b-0">
+              <!-- Month Header -->
+              <div class="px-4 py-2 ml-4 cursor-pointer hover:bg-secondary_background_hover flex items-center gap-2"
+                (click)="monthGroup._monthExpanded = !monthGroup._monthExpanded">
+                <span class="font-medium text-primary_dark_blue">
+                  @if (monthGroup.month === 0) {
+                  {{ 'SYSTEM.LOG_FILES.OTHER' | translate }}
+                  } @else {
+                  {{ getMonthName(monthGroup.month) }}
+                  }
+                </span>
+                <span class="text-sm text-gray-600">({{ monthGroup.files.length }} {{ 'SYSTEM.LOG_FILES.FILES' |
+                  translate }})</span>
+              </div>
+
+              @if (monthGroup._monthExpanded) {
+              <div class="bg-primary_background_white/80 p-2 space-y-1">
+                @for (fileName of monthGroup.files; track fileName) {
+                <div
+                  class="flex items-center justify-between gap-2 bg-primary_background_white/80 border border-gray-200 rounded px-3 py-2 ml-4">
+                  <span class="text-sm text-primary_dark_blue truncate">{{ fileName }}</span>
+                  <button (click)="downloadLogFile(fileName)"
+                    class="px-3 py-1 rounded text-sm bg-primary_orange_1 text-white hover:bg-primary_orange_light whitespace-nowrap">
+                    {{ 'SYSTEM.BUTTONS.DOWNLOAD' | translate }}
+                  </button>
+                </div>
+                }
+              </div>
+              }
+            </div>
+            }
+          </div>
+          }
+        </div>
+        }
+      </div>
+      } @else {
+      <p class="text-gray-500 text-sm">{{ 'SYSTEM.LOG_FILES.EMPTY' | translate }}</p>
+      }
+    </section>
+
+    <!-- SETTINGS SECTION WITH TABS -->
+    <section class="bg-white/80 rounded-xl border border-primary_orange_1 p-4 sm:p-6">
+      <div class="flex items-center justify-between gap-3 flex-wrap mb-4">
+        <h3 class="text-xl font-semibold text-primary_dark_blue">{{ 'SYSTEM.SETTINGS.TITLE' | translate }}</h3>
+        <div class="flex gap-2 flex-wrap">
+          <button (click)="loadSettings()"
+            class="px-4 py-2 rounded-lg bg-primary_dark_blue text-white hover:bg-primary_dark_blue/90 text-sm">
+            {{ 'SYSTEM.BUTTONS.LOAD_SETTINGS' | translate }}
+          </button>
+          <button (click)="loadSettingsSchema()"
+            class="px-4 py-2 rounded-lg bg-primary_dark_blue text-white hover:bg-primary_dark_blue/90 text-sm">
+            {{ 'SYSTEM.BUTTONS.LOAD_SCHEMA' | translate }}
+          </button>
+          <button (click)="loadDefaultSettings()"
+            class="px-4 py-2 rounded-lg bg-primary_dark_blue text-white hover:bg-primary_dark_blue/90 text-sm">
+            {{ 'SYSTEM.BUTTONS.LOAD_DEFAULTS' | translate }}
+          </button>
+          <button (click)="exportSettings()"
+            class="px-4 py-2 rounded-lg bg-primary_orange_1 text-white hover:bg-primary_orange_light text-sm">
+            {{ 'SYSTEM.BUTTONS.EXPORT' | translate }}
+          </button>
+          <button (click)="toggleAdvancedMode()"
+            class="px-4 py-2 rounded-lg border-2 border-primary_orange_1 text-primary_orange_1 hover:bg-primary_orange_1/10 text-sm font-medium">
+            {{ useAdvancedMode ? ('SYSTEM.BUTTONS.BASIC_MODE' | translate) : ('SYSTEM.BUTTONS.ADVANCED_MODE' |
+            translate) }}
+          </button>
+        </div>
+      </div>
+
+      <!-- ADVANCED MODE: Raw JSON payloads -->
+      @if (useAdvancedMode) {
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+        <div>
+          <label class="block text-sm font-semibold text-primary_dark_blue mb-1">{{ 'SYSTEM.SETTINGS.CURRENT' |
+            translate }}</label>
+          <textarea [ngModel]="settingsJson" readonly rows="12"
+            class="w-full border border-primary_orange_1 rounded-lg px-3 py-2 font-mono text-xs bg-primary_background_white/80"></textarea>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-primary_dark_blue mb-1">{{ 'SYSTEM.SETTINGS.SCHEMA' | translate
+            }}</label>
+          <textarea [ngModel]="settingsSchemaJson" readonly rows="12"
+            class="w-full border border-primary_orange_1 rounded-lg px-3 py-2 font-mono text-xs bg-primary_background_white/80"></textarea>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-primary_dark_blue mb-1">{{ 'SYSTEM.SETTINGS.DEFAULTS' |
+            translate }}</label>
+          <textarea [ngModel]="defaultSettingsJson" readonly rows="12"
+            class="w-full border border-primary_orange_1 rounded-lg px-3 py-2 font-mono text-xs bg-primary_background_white/80"></textarea>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="block text-sm font-semibold text-primary_dark_blue mb-1">{{ 'SYSTEM.SETTINGS.UPDATE_PAYLOAD' |
+            translate }}</label>
+          <textarea [(ngModel)]="updateSettingsJson" rows="10"
+            class="w-full border border-primary_orange_1 rounded-lg px-3 py-2 font-mono text-xs bg-primary_background_white/80"
+            placeholder="{ }"></textarea>
+          <button (click)="updateSettings()" [disabled]="!updateSettingsJson.trim()"
+            class="mt-2 px-4 py-2 rounded-lg bg-primary_orange_1 text-white hover:bg-primary_orange_light disabled:opacity-50 disabled:cursor-not-allowed">
+            {{ 'SYSTEM.BUTTONS.UPDATE' | translate }}
+          </button>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-primary_dark_blue mb-1">{{ 'SYSTEM.SETTINGS.PATCH_PAYLOAD' |
+            translate }}</label>
+          <textarea [(ngModel)]="patchSettingsJson" rows="10"
+            class="w-full border border-primary_orange_1 rounded-lg px-3 py-2 font-mono text-xs bg-primary_background_white/80"
+            placeholder="{ }"></textarea>
+          <button (click)="patchSettings()" [disabled]="!patchSettingsJson.trim()"
+            class="mt-2 px-4 py-2 rounded-lg bg-primary_orange_1 text-white hover:bg-primary_orange_light disabled:opacity-50 disabled:cursor-not-allowed">
+            {{ 'SYSTEM.BUTTONS.PATCH' | translate }}
+          </button>
+        </div>
+      </div>
+      } @else {
+      <!-- BASIC MODE: Tabbed form fields from schema -->
+      @if (settingsTabs.length > 0) {
+      <mat-tab-group [(selectedIndex)]="selectedSettingsTab" class="mb-4">
+        @for (tabName of settingsTabs; track tabName) {
+        <mat-tab>
+          <ng-template mat-tab-label>
+            {{ getSettingsSectionLabel(tabName) }}
+          </ng-template>
+
+          <div class="pt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            @for (field of settingsFields; track field.section + '.' + field.key) {
+            @if (field.section === tabName) {
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="block text-sm font-semibold text-primary_dark_blue">
+                  {{ field.key }}
+                  @if (field.required) {
+                  <span class="text-red-600">*</span>
+                  }
+                </label>
+                @if (field.isSecret) {
+                <button type="button" (click)="toggleSecretVisibility(field)"
+                  [attr.aria-label]="getSecretToggleLabel(field)" [attr.aria-pressed]="!field.hidden"
+                  [attr.title]="getSecretToggleLabel(field)"
+                  class="text-xs px-2 py-1 rounded border border-primary_orange_1 text-primary_dark_blue hover:bg-secondary_background_hover">
+                  <mat-icon aria-hidden="true" class="!text-base leading-none">{{ field.hidden ? 'visibility' :
+                    'visibility_off' }}</mat-icon>
+                  <span class="sr-only">{{ getSecretToggleLabel(field) }}</span>
+                </button>
+                }
+              </div>
+
+              @switch (field.inputKind) {
+              @case ('string') {
+              <input [type]="field.isSecret && field.hidden ? 'password' : 'text'" [(ngModel)]="field.value"
+                placeholder="{{ field.description || '' }}"
+                class="w-full border border-primary_orange_1 rounded-lg px-3 py-2 text-sm"
+                [class.blur-sm]="field.isSecret && field.hidden">
+              }
+              @case ('integer') {
+              <input type="number" [(ngModel)]="field.value" placeholder="{{ field.description || '' }}"
+                class="w-full border border-primary_orange_1 rounded-lg px-3 py-2 text-sm"
+                [class.blur-sm]="field.isSecret && field.hidden">
+              }
+              @case ('boolean') {
+              <input type="checkbox" [(ngModel)]="field.value" class="mt-2"
+                [class.blur-sm]="field.isSecret && field.hidden">
+              }
+              @case ('json') {
+              <textarea [(ngModel)]="field.value" rows="5" placeholder="{{ field.description || '' }}"
+                class="w-full border border-primary_orange_1 rounded-lg px-3 py-2 text-sm font-mono"
+                [class.blur-sm]="field.isSecret && field.hidden"></textarea>
+              }
+              @default {
+              <input [type]="field.isSecret && field.hidden ? 'password' : 'text'" [(ngModel)]="field.value"
+                placeholder="{{ field.description || '' }}"
+                class="w-full border border-primary_orange_1 rounded-lg px-3 py-2 text-sm"
+                [class.blur-sm]="field.isSecret && field.hidden">
+              }
+              }
+              @if (field.description) {
+              <p class="text-xs text-gray-600 mt-1">{{ field.description }}</p>
+              }
+            </div>
+            }
+            }
+          </div>
+
+          <div class="mt-4 flex gap-2">
+            <button (click)="updateSettings()" [disabled]="!hasSettingsChanges()"
+              class="px-4 py-2 rounded-lg bg-primary_orange_1 text-white hover:bg-primary_orange_light disabled:opacity-50 disabled:cursor-not-allowed text-sm">
+              {{ 'SYSTEM.BUTTONS.SAVE_CHANGES' | translate }}
+            </button>
+            <button (click)="resetSettingsTab(tabName)" [disabled]="!hasSettingsChanges()"
+              class="px-4 py-2 rounded-lg border border-primary_orange_1 text-primary_dark_blue hover:bg-secondary_background_hover disabled:opacity-50 disabled:cursor-not-allowed text-sm">
+              {{ 'SYSTEM.BUTTONS.RESET' | translate }}
+            </button>
+          </div>
+        </mat-tab>
+        }
+      </mat-tab-group>
+      }
+      }
+
+      <!-- File Import Section -->
+      <div class="border-t border-primary_orange_1 pt-4 mt-4">
+        <label class="block text-sm font-semibold text-primary_dark_blue mb-2">{{ 'SYSTEM.SETTINGS.IMPORT_FILE' |
+          translate }}</label>
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <input type="file" accept="application/json" (change)="onImportFileSelected($event)" class="text-sm flex-1">
+          <button (click)="importSettings()" [disabled]="!selectedImportFile"
+            class="px-4 py-2 rounded-lg bg-primary_dark_blue text-white hover:bg-primary_dark_blue/90 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
+            {{ 'SYSTEM.BUTTONS.IMPORT' | translate }}
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- STOP SERVER SECTION -->
+    <section class="bg-white/80 rounded-xl border border-red-300 p-4 sm:p-6">
+      <h3 class="text-xl font-semibold text-red-700 mb-2">{{ 'SYSTEM.STOP.TITLE' | translate }}</h3>
+      <p class="text-sm text-red-700 mb-4">{{ 'SYSTEM.STOP.DESCRIPTION' | translate }}</p>
+      <button (click)="stopServer()" class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700">
+        {{ 'SYSTEM.BUTTONS.STOP_SERVER' | translate }}
+      </button>
+    </section>
+
+    @if (requestCounter > 0) {
+    <div class="flex justify-center items-center min-h-[120px]">
+      <app-loading></app-loading>
+    </div>
+    }
+  </div>
+</div>

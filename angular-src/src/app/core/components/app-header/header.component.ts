@@ -102,6 +102,7 @@ export class HeaderComponent {
       //{ name: 'Overview', route: '/hub' },
       { name: "NAV.TEMPLATES", route: "/templates" },
       { name: "NAV.ACTIVE_QUESTIONNAIRES", route: "/active-questionnaire" },
+      { name: "NAV.SYSTEM", route: "/system" },
       { name: "NAV.USER_GUIDE", route: "/user-guide" }
     ],
     [Role.ResultsViewer]: [
