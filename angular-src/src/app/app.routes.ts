@@ -24,13 +24,13 @@ export const routes: Routes = [
     path: 'results/:id',
     component: ResultComponent,
     canActivate: [authGuard, roleGuard],
-    data: { roles: [Role.Teacher, Role.Student] },
+    data: { roles: [Role.Teacher, Role.Student, Role.ResultsViewer, Role.ExtendedAdmin] },
   },
   {
     path: 'show-active-questionnaires',
     component: ShowActiveQuestionnaireComponent,
-    canActivate: [authGuard],
-    data: { roles: [Role.Teacher, Role.Student, Role.Admin] },
+    canActivate: [authGuard, roleGuard],
+    data: { roles: [Role.Teacher, Role.Student] },
   },
   {
     path: 'answer/:id',
@@ -43,13 +43,13 @@ export const routes: Routes = [
     path: 'active-questionnaire',
     component: ActiveQuestionnaireManagerComponent,
     canActivate: [authGuard, roleGuard],
-    data: { roles: [Role.Admin] },
+    data: { roles: [Role.Admin, Role.ExtendedAdmin] },
   },
   {
     path: 'templates',
     component: TemplateManagerComponent,
     canActivate: [authGuard, roleGuard],
-    data: { roles: [Role.Admin] },
+    data: { roles: [Role.Admin, Role.ExtendedAdmin] },
   },
   {
     path: 'teacher-dashboard',
@@ -67,7 +67,7 @@ export const routes: Routes = [
     path: 'result-history',
     component: ResultHistoryComponent,
     canActivate: [authGuard, roleGuard],
-    data: { roles: [Role.Teacher] },
+    data: { roles: [Role.Teacher, Role.ResultsViewer, Role.ExtendedAdmin] },
   },
   {
     path: 'user-guide',

@@ -87,15 +87,12 @@ export class ShowResultComponent {
     this.showGraphOverlay = true;
     
     const activeQuestionnaireId = this.result.id;
-    
-    // Get teacher ID from AuthService
-    const currentUser = this.authService.user();
-    if (!currentUser?.id) {
-      console.error('No authenticated user found');
+    const teacherId = this.result.teacher?.user?.id ?? this.authService.user()?.id;
+    if (!teacherId) {
+      console.error('Teacher ID is not available');
       this.createChartFromCurrentResult();
       return;
     }
-    const teacherId = currentUser.id;
 
     // Try to get student ID from Input, then from result object
     let studentIdToUse = this.studentId || this.result.student?.user?.id;

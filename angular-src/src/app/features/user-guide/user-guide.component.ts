@@ -51,6 +51,26 @@ export class UserGuideComponent {
         titleKey: 'USER_GUIDE.ADMIN.ACTIVE_QUESTIONNAIRES.TITLE',
         contentKey: 'USER_GUIDE.ADMIN.ACTIVE_QUESTIONNAIRES.CONTENT'
       }
+    ],
+    [Role.ResultsViewer]: [
+      {
+        titleKey: 'USER_GUIDE.TEACHER.DASHBOARD.TITLE',
+        contentKey: 'USER_GUIDE.TEACHER.DASHBOARD.CONTENT'
+      },
+      {
+        titleKey: 'USER_GUIDE.TEACHER.RESULT_HISTORY.TITLE',
+        contentKey: 'USER_GUIDE.TEACHER.RESULT_HISTORY.CONTENT'
+      }
+    ],
+    [Role.ExtendedAdmin]: [
+      {
+        titleKey: 'USER_GUIDE.ADMIN.TEMPLATE_MANAGEMENT.TITLE',
+        contentKey: 'USER_GUIDE.ADMIN.TEMPLATE_MANAGEMENT.CONTENT'
+      },
+      {
+        titleKey: 'USER_GUIDE.ADMIN.ACTIVE_QUESTIONNAIRES.TITLE',
+        contentKey: 'USER_GUIDE.ADMIN.ACTIVE_QUESTIONNAIRES.CONTENT'
+      }
     ]
   };
 

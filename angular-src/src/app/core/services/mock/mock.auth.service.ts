@@ -48,6 +48,20 @@ export class MockAuthService implements IAuthService {
       role: Role.Student,
       fullName: 'Student User'
     },
+    {
+      userName: 'resultsViewerUser',
+      password: 'password',
+      id: 'mockResultsViewerId',
+      role: Role.ResultsViewer,
+      fullName: 'Results Viewer User'
+    },
+    {
+      userName: 'extendedAdminUser',
+      password: 'password',
+      id: 'mockExtendedAdminId',
+      role: Role.ExtendedAdmin,
+      fullName: 'Extended Admin User'
+    },
   ];
 
 
@@ -199,6 +213,10 @@ export class MockAuthService implements IAuthService {
         return Role.Teacher;
       case Role.Admin:
         return Role.Admin;
+      case Role.ResultsViewer:
+        return Role.ResultsViewer;
+      case Role.ExtendedAdmin:
+        return Role.ExtendedAdmin;
       default:
         return null;
     }

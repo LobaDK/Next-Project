@@ -42,13 +42,13 @@ export class HomeComponent {
   constructor() {
     toObservable(this.user).pipe(
       switchMap(u => {
-        // reset on no user/admin
-        if (!u || u.role === Role.Admin) {
+        // reset for users that do not answer active questionnaires
+        if (!u || (u.role !== Role.Student && u.role !== Role.Teacher)) {
           this.activeQuestionnaireId = '';
           this.errorMessage = null;
           return of<string | null>(null); // nothing to load
         }
-        // load ID for non-admin users
+        // load ID for student/teacher users
         return this.homeService.checkForExistingActiveQuestionnaires().pipe(
           map(({ id }) => id ?? ''),
           catchError(() => {

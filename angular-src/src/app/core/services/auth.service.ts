@@ -334,6 +334,10 @@ export class AuthService implements IAuthService {
         return Role.Teacher;
       case Role.Admin:
         return Role.Admin;
+      case Role.ResultsViewer:
+        return Role.ResultsViewer;
+      case Role.ExtendedAdmin:
+        return Role.ExtendedAdmin;
       default:
         return null;
     }

@@ -3,7 +3,6 @@ import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
-import { AuthService } from '../../core/services/auth.service';
 import { User } from '../../shared/models/user.model';
 import { TemplateBase } from '../active-questionnaire-manager/models/active.models';
 import {
@@ -49,7 +48,6 @@ interface SearchState<T> {
 export class ResultHistoryComponent implements OnInit {
   private resultHistoryService = inject(ResultHistoryService);
   private pdfGenerationService = inject(PdfGenerationService);
-  private authService = inject(AuthService);  // <-- ADD THIS
 
 
   public translate = inject(TranslateService)
@@ -461,16 +459,7 @@ export class ResultHistoryComponent implements OnInit {
     const templateId = this.template.selected.id;
     const studentId = this.student.selected.id;
 
-    // Get teacher ID from the authenticated user
-    const currentUser = this.authService.user();
-
-
-    if (!currentUser) {
-      console.error('No authenticated user found!');
-      return;
-    };
-
-    const teacherId = currentUser.id;
+    const teacherId = this.history?.teacher?.id;
 
     if (!teacherId) {
       console.error('Teacher ID is undefined!');

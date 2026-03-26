@@ -104,6 +104,16 @@ export class HeaderComponent {
       { name: "NAV.ACTIVE_QUESTIONNAIRES", route: "/active-questionnaire" },
       { name: "NAV.USER_GUIDE", route: "/user-guide" }
     ],
+    [Role.ResultsViewer]: [
+      { name: "NAV.RESULTS", route: "/result-history" },
+      { name: "NAV.USER_GUIDE", route: "/user-guide" }
+    ],
+    [Role.ExtendedAdmin]: [
+      { name: "NAV.TEMPLATES", route: "/templates" },
+      { name: "NAV.ACTIVE_QUESTIONNAIRES", route: "/active-questionnaire" },
+      { name: "NAV.RESULTS", route: "/result-history" },
+      { name: "NAV.USER_GUIDE", route: "/user-guide" }
+    ],
   };
 
   readonly navLinksForUser = computed(() => {

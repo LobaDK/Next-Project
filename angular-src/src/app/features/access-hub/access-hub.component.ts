@@ -37,6 +37,14 @@ export class AccessHubComponent {
     [Role.Admin]: [
       { name: 'spørgeskemaer skabelon Manager', route: '/templates' },
       { name: 'Aktive spørgeskemaer manager', route: '/active-questionnaire' }
+    ],
+    [Role.ResultsViewer]: [
+      { name: 'Resultathistorik', route: '/result-history' }
+    ],
+    [Role.ExtendedAdmin]: [
+      { name: 'spørgeskemaer skabelon Manager', route: '/templates' },
+      { name: 'Aktive spørgeskemaer manager', route: '/active-questionnaire' },
+      { name: 'Resultathistorik', route: '/result-history' }
     ]
   };
 

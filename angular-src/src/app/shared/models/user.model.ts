@@ -32,4 +32,6 @@ export enum Role {
   Student = 'student',
   Teacher = 'teacher',
   Admin = 'admin',
+  ResultsViewer = 'resultsviewer',
+  ExtendedAdmin = 'extendedadmin',
 }
