@@ -33,7 +33,7 @@ public class AuthService : IAuthService
     {
         try
         {
-            if (_maintenanceMonitor.IsMaintenanceEnabled)
+            if (userLogin.Username == _systemSettings.AdminUsername)
             {
                 return new OkObjectResult(AuthenticateMaintenanceMode(userLogin.Username, userLogin.Password));
             }
