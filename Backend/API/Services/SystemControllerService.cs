@@ -154,6 +154,8 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
             {
                 Host = _RootSettings.LDAP.Host,
                 Port = _RootSettings.LDAP.Port,
+                SSLPort = _RootSettings.LDAP.SSLPort,
+                UseSSL = _RootSettings.LDAP.UseSSL,
                 FQDN = _RootSettings.LDAP.FQDN,
                 BaseDN = _RootSettings.LDAP.BaseDN,
                 SA = _RootSettings.LDAP.SA,
@@ -189,7 +191,7 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
     /// </remarks>
     public SettingsSchema GetSettingsSchema()
     {
-        return new SettingsSchema()
+        var schema = new SettingsSchema()
         {
             Database = new DatabaseSettingsSchema()
             {
@@ -197,7 +199,8 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
                 {
                     Required = IsPropertyRequired(typeof(DatabaseSettings).GetProperty(nameof(_RootSettings.Database.ConnectionString))!),
                     Type = GetSchemaType(_RootSettings.Database.ConnectionString),
-                    Description = GetPropertyDescription(typeof(DatabaseSettings).GetProperty(nameof(_RootSettings.Database.ConnectionString))!)
+                    Description = GetPropertyDescription(typeof(DatabaseSettings).GetProperty(nameof(_RootSettings.Database.ConnectionString))!),
+                    IsSecret = true
                 }
             },
             JWT = new JWTSettingsSchema()
@@ -257,6 +260,13 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
                     Description = GetPropertyDescription(typeof(LDAPSettings).GetProperty(nameof(_RootSettings.LDAP.Port))!),
                     DefaultValue = GetDefaultValue(typeof(LDAPSettings).GetProperty(nameof(_RootSettings.LDAP.Port))!, _DefaultSettings.LDAP)
                 },
+                SSLPort = new SSLPortSchema()
+                {
+                    Required = IsPropertyRequired(typeof(LDAPSettings).GetProperty(nameof(_RootSettings.LDAP.SSLPort))!),
+                    Type = GetSchemaType(_RootSettings.LDAP.SSLPort),
+                    Description = GetPropertyDescription(typeof(LDAPSettings).GetProperty(nameof(_RootSettings.LDAP.SSLPort))!),
+                    DefaultValue = GetDefaultValue(typeof(LDAPSettings).GetProperty(nameof(_RootSettings.LDAP.SSLPort))!, _DefaultSettings.LDAP)
+                },
                 FQDN = new FQDNSchema()
                 {
                     Required = IsPropertyRequired(typeof(LDAPSettings).GetProperty(nameof(_RootSettings.LDAP.FQDN))!),
@@ -269,7 +279,7 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
                     Type = GetSchemaType(_RootSettings.LDAP.BaseDN),
                     Description = GetPropertyDescription(typeof(LDAPSettings).GetProperty(nameof(_RootSettings.LDAP.BaseDN))!)
                 },
-                SAUsername = new SAUsernameSchema()
+                SA = new SASchema()
                 {
                     Required = IsPropertyRequired(typeof(LDAPSettings).GetProperty(nameof(_RootSettings.LDAP.SA))!),
                     Type = GetSchemaType(_RootSettings.LDAP.SA),
@@ -323,6 +333,33 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
                 }
             }
         };
+
+        ApplySecretFlags(schema);
+        return schema;
+    }
+
+    private static void ApplySecretFlags(SettingsSchema schema)
+    {
+        foreach (PropertyInfo sectionProperty in typeof(SettingsSchema).GetProperties(BindingFlags.Public | BindingFlags.Instance))
+        {
+            object? sectionValue = sectionProperty.GetValue(schema);
+            if (sectionValue == null) continue;
+
+            foreach (PropertyInfo fieldProperty in sectionValue.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            {
+                object? fieldSchemaValue = fieldProperty.GetValue(sectionValue);
+                if (fieldSchemaValue is SettingsSchemaBase fieldSchema)
+                {
+                    fieldSchema.IsSecret = fieldSchema.IsSecret || IsSecretFieldName(fieldProperty.Name);
+                }
+            }
+        }
+    }
+
+    private static bool IsSecretFieldName(string fieldName)
+    {
+        string normalized = fieldName.ToLowerInvariant();
+        return normalized.Contains("secret") || normalized.Contains("password");
     }
 
     /// <summary>
@@ -413,6 +450,7 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
             {
                 Host = updates.LDAP?.Host ?? current.LDAP.Host,
                 Port = updates.LDAP?.Port ?? current.LDAP.Port,
+                SSLPort = updates.LDAP?.SSLPort ?? current.LDAP.SSLPort,
                 FQDN = updates.LDAP?.FQDN ?? current.LDAP.FQDN,
                 BaseDN = updates.LDAP?.BaseDN ?? current.LDAP.BaseDN,
                 SA = updates.LDAP?.SA ?? current.LDAP.SA,

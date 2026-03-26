@@ -15,6 +15,7 @@ import { ShowActiveQuestionnaireComponent } from './features/show-active-questio
 import { DataCompareComponent } from './features/data-compare/data-compare.component';
 import { ResultHistoryComponent } from './features/result-history/result-history.component';
 import { UserGuideComponent } from './features/user-guide/user-guide.component';
+import { SystemComponent } from './features/system/system.component';
 import { questionnaireLeaveGuard } from './core/guards and interceptors/questionnaire-leave.guard';
 
 export const routes: Routes = [
@@ -73,6 +74,12 @@ export const routes: Routes = [
     path: 'user-guide',
     component: UserGuideComponent,
     canActivate: [authGuard]
+  },
+  {
+    path: 'system',
+    component: SystemComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { roles: [Role.Admin] },
   },
   { path: '**', component: PageNotFoundComponent }
 ];
