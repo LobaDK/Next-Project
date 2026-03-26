@@ -44,6 +44,8 @@
       "IMPORT": "Importér indstillinger",
       "ENABLE_MAINTENANCE": "Aktivér vedligeholdelse",
       "DISABLE_MAINTENANCE": "Deaktivér vedligeholdelse",
+      "SAVE_MAINTENANCE_REASON": "Gem årsag",
+      "CLEAR_MAINTENANCE_REASON": "Ryd årsag",
       "ADVANCED_MODE": "Avanceret tilstand",
       "BASIC_MODE": "Grundlæggende tilstand",
       "SAVE_CHANGES": "Gem indstillinger",
@@ -90,7 +92,10 @@
       "DESCRIPTION": "Aktivér vedligeholdelsestilstand for midlertidigt at markere API'et som under vedligeholdelse.",
       "STATUS_ENABLED": "Status: Vedligeholdelsestilstand er aktiveret.",
       "STATUS_DISABLED": "Status: Vedligeholdelsestilstand er deaktiveret.",
-      "STATUS_UNKNOWN": "Status: Kunne ikke fastslå vedligeholdelsestilstand."
+      "STATUS_UNKNOWN": "Status: Kunne ikke fastslå vedligeholdelsestilstand.",
+      "REASON_LABEL": "Årsag:",
+      "REASON_INPUT_LABEL": "Vedligeholdelsesårsag",
+      "REASON_INPUT_PLACEHOLDER": "Skriv en valgfri besked, der vises under vedligeholdelse"
     },
     "CONFIRM": {
       "UPDATE_TITLE": "Gem opdaterede indstillinger?",
@@ -134,7 +139,9 @@
       "MAINTENANCE_STATUS_FAILED": "Kunne ikke hente vedligeholdelsesstatus.",
       "MAINTENANCE_ENABLE_OK": "Vedligeholdelsestilstand aktiveret.",
       "MAINTENANCE_DISABLE_OK": "Vedligeholdelsestilstand deaktiveret.",
-      "MAINTENANCE_UPDATE_FAILED": "Kunne ikke opdatere vedligeholdelsestilstand."
+      "MAINTENANCE_UPDATE_FAILED": "Kunne ikke opdatere vedligeholdelsestilstand.",
+      "MAINTENANCE_REASON_UPDATE_OK": "Vedligeholdelsesårsag opdateret.",
+      "MAINTENANCE_REASON_UPDATE_FAILED": "Kunne ikke opdatere vedligeholdelsesårsag."
     }
   },
   "USER_GUIDE": {

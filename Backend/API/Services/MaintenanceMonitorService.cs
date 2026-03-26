@@ -3,7 +3,7 @@ namespace API.Services;
 public class MaintenanceMonitor(ILogger<MaintenanceMonitor> logger) : IMaintenanceMonitor
 {
     private readonly ILogger<MaintenanceMonitor> _logger = logger;
-    private bool _isMaintenanceEnabled = true; // CHANGE THIS TO FALSE BEFORE COMMITING YOU BELLEND
+    private bool _isMaintenanceEnabled = false;
     private string _reason = string.Empty;
     private readonly object _lock = new();
 

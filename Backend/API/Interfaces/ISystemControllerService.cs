@@ -12,5 +12,7 @@ public interface ISystemControllerService
     Task<bool> UpdateSettings(UpdateSettingsRequest rootSettings);
     Task<bool> PatchSettings(PatchSettingsRequest rootSettings);
     bool IsSystemUnderMaintenance();
+    string GetMaintenanceReason();
+    void SetMaintenanceReason(string? reason);
     void SetMaintenanceMode(bool enabled);
 }

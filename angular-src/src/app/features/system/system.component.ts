@@ -83,7 +83,10 @@ export class SystemComponent {
   useAdvancedMode = false;
   selectedImportFile: File | null = null;
   maintenanceEnabled: boolean | null = null;
+  maintenanceReason: string | null = null;
+  maintenanceReasonInput = '';
   maintenanceRequestInProgress = false;
+  maintenanceReasonRequestInProgress = false;
 
   ngOnInit(): void {
     this.loadLogMetadata();
@@ -612,9 +615,57 @@ export class SystemComponent {
 
         this.maintenanceEnabled = parsedStatus;
         this.maintenanceService.setMaintenanceEnabled(parsedStatus);
+        this.loadMaintenanceReason();
       },
       error: () => this.setMessage('SYSTEM.MESSAGES.MAINTENANCE_STATUS_FAILED', true)
     });
+  }
+
+  private loadMaintenanceReason(): void {
+    this.incrementRequestCounter();
+    this.systemService.getMaintenanceReason().pipe(finalize(() => this.decrementRequestCounter())).subscribe({
+      next: reason => {
+        const normalized = (reason ?? '').trim();
+        this.maintenanceReason = normalized.length > 0 ? normalized : null;
+        this.maintenanceReasonInput = this.maintenanceReason ?? '';
+      },
+      error: () => {
+        this.maintenanceReason = null;
+        this.maintenanceReasonInput = '';
+      }
+    });
+  }
+
+  saveMaintenanceReason(): void {
+    if (this.maintenanceReasonRequestInProgress) {
+      return;
+    }
+
+    this.maintenanceReasonRequestInProgress = true;
+    this.incrementRequestCounter();
+    this.systemService.setMaintenanceReason(this.maintenanceReasonInput)
+      .pipe(finalize(() => {
+        this.maintenanceReasonRequestInProgress = false;
+        this.decrementRequestCounter();
+      }))
+      .subscribe({
+        next: () => {
+          const normalized = this.maintenanceReasonInput.trim();
+          this.maintenanceReason = normalized.length > 0 ? normalized : null;
+          this.maintenanceReasonInput = this.maintenanceReason ?? '';
+          this.setMessage('SYSTEM.MESSAGES.MAINTENANCE_REASON_UPDATE_OK');
+        },
+        error: () => this.setMessage('SYSTEM.MESSAGES.MAINTENANCE_REASON_UPDATE_FAILED', true)
+      });
+  }
+
+  clearMaintenanceReason(): void {
+    if (this.maintenanceReasonRequestInProgress) {
+      return;
+    }
+
+    this.maintenanceReasonInput = '';
+    this.saveMaintenanceReason();
   }
 
   toggleMaintenanceMode(): void {
@@ -647,6 +698,12 @@ export class SystemComponent {
           next: () => {
             this.maintenanceEnabled = targetEnabled;
             this.maintenanceService.setMaintenanceEnabled(targetEnabled);
+            if (targetEnabled) {
+              this.loadMaintenanceReason();
+            } else {
+              this.maintenanceReason = null;
+              this.maintenanceReasonInput = '';
+            }
             this.setMessage(targetEnabled
               ? 'SYSTEM.MESSAGES.MAINTENANCE_ENABLE_OK'
               : 'SYSTEM.MESSAGES.MAINTENANCE_DISABLE_OK');

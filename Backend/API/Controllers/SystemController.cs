@@ -44,6 +44,35 @@ namespace API.Controllers
         }
 
         /// <summary>
+        /// Endpoint to get the current maintenance mode reason message.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="ActionResult{T}"/> containing the maintenance reason string.
+        /// Returns an empty string when no reason is configured.
+        /// </returns>
+        [HttpGet("maintenance/reason")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        public ActionResult<string> GetMaintenanceReason()
+        {
+            return Ok(_SystemControllerService.GetMaintenanceReason());
+        }
+
+        /// <summary>
+        /// Endpoint to set or clear the current maintenance mode reason message.
+        /// </summary>
+        /// <param name="request">The request containing the maintenance reason. Null or empty clears the reason.</param>
+        /// <returns>An <see cref="IActionResult"/> indicating the operation completed successfully.</returns>
+        [HttpPut("maintenance/reason")]
+        [Authorize(AuthenticationSchemes = "AccessToken", Policy = "AdminOnly")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult SetMaintenanceReason([FromBody] SetMaintenanceReasonRequest request)
+        {
+            _SystemControllerService.SetMaintenanceReason(request.Reason);
+            return Ok();
+        }
+
+        /// <summary>
         /// Endpoint to enable or disable maintenance mode for the application. When maintenance mode is enabled,
         /// the system will be marked as under maintenance and related endpoints can adjust their behavior accordingly.
         /// </summary>

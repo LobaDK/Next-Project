@@ -459,6 +459,34 @@ public class SystemControllerService(
     }
 
     /// <summary>
+    /// Retrieves the current maintenance mode reason.
+    /// </summary>
+    /// <returns>
+    /// The maintenance reason text when set; otherwise, an empty string.
+    /// </returns>
+    public string GetMaintenanceReason()
+    {
+        return _maintenanceMonitor.Reason;
+    }
+
+    /// <summary>
+    /// Sets or clears the maintenance mode reason.
+    /// </summary>
+    /// <param name="reason">The maintenance reason. If null or whitespace, the reason is cleared.</param>
+    public void SetMaintenanceReason(string? reason)
+    {
+        var normalizedReason = reason?.Trim();
+
+        if (string.IsNullOrWhiteSpace(normalizedReason))
+        {
+            _maintenanceMonitor.ClearMaintenanceReason();
+            return;
+        }
+
+        _maintenanceMonitor.SetMaintenanceReason(normalizedReason);
+    }
+
+    /// <summary>
     /// Enables or disables maintenance mode for the running system.
     /// </summary>
     /// <param name="enabled">

@@ -113,6 +113,16 @@ export class SystemService {
     return this.apiService.get<SystemStatus | number | string>(`${this.apiUrl}/status`);
   }
 
+  getMaintenanceReason(): Observable<string | null> {
+    return this.http.get(`${this.apiUrl}/maintenance/reason`, {
+      responseType: 'text'
+    });
+  }
+
+  setMaintenanceReason(reason: string | null): Observable<unknown> {
+    return this.apiService.put<unknown>(`${this.apiUrl}/maintenance/reason`, { reason });
+  }
+
   setMaintenanceMode(enabled: boolean): Observable<unknown> {
     const params = new HttpParams().set('enabled', String(enabled));
     return this.apiService.post<unknown>(`${this.apiUrl}/maintenance`, {}, params);

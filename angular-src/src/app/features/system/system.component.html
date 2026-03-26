@@ -379,6 +379,31 @@
         <p class="text-sm text-primary_dark_blue font-medium">
           {{ getMaintenanceStatusMessageKey() | translate }}
         </p>
+        @if (maintenanceReason) {
+        <p class="text-sm text-primary_dark_blue/90 mt-2">
+          <span class="font-semibold">{{ 'SYSTEM.MAINTENANCE.REASON_LABEL' | translate }}</span>
+          {{ maintenanceReason }}
+        </p>
+        }
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-sm font-semibold text-primary_dark_blue mb-1">
+          {{ 'SYSTEM.MAINTENANCE.REASON_INPUT_LABEL' | translate }}
+        </label>
+        <textarea [(ngModel)]="maintenanceReasonInput" rows="3"
+          [placeholder]="'SYSTEM.MAINTENANCE.REASON_INPUT_PLACEHOLDER' | translate"
+          class="w-full border border-primary_orange_1 rounded-lg px-3 py-2 text-sm bg-primary_background_white/80"></textarea>
+        <div class="mt-2 flex gap-2 flex-wrap">
+          <button (click)="saveMaintenanceReason()" [disabled]="maintenanceReasonRequestInProgress"
+            class="px-4 py-2 rounded-lg bg-primary_orange_1 text-white hover:bg-primary_orange_light disabled:opacity-50 disabled:cursor-not-allowed">
+            {{ 'SYSTEM.BUTTONS.SAVE_MAINTENANCE_REASON' | translate }}
+          </button>
+          <button (click)="clearMaintenanceReason()" [disabled]="maintenanceReasonRequestInProgress"
+            class="px-4 py-2 rounded-lg border border-primary_orange_1 text-primary_dark_blue hover:bg-secondary_background_hover disabled:opacity-50 disabled:cursor-not-allowed">
+            {{ 'SYSTEM.BUTTONS.CLEAR_MAINTENANCE_REASON' | translate }}
+          </button>
+        </div>
       </div>
 
       <button (click)="toggleMaintenanceMode()" [disabled]="maintenanceRequestInProgress || maintenanceEnabled === null"

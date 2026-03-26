@@ -175,6 +175,8 @@
       "IMPORT": "Import Settings",
       "ENABLE_MAINTENANCE": "Enable Maintenance",
       "DISABLE_MAINTENANCE": "Disable Maintenance",
+      "SAVE_MAINTENANCE_REASON": "Save Reason",
+      "CLEAR_MAINTENANCE_REASON": "Clear Reason",
       "ADVANCED_MODE": "Advanced Mode",
       "BASIC_MODE": "Basic Mode",
       "SAVE_CHANGES": "Save Settings",
@@ -221,7 +223,10 @@
       "DESCRIPTION": "Enable maintenance mode to temporarily mark the API as under maintenance.",
       "STATUS_ENABLED": "Status: Maintenance mode is enabled.",
       "STATUS_DISABLED": "Status: Maintenance mode is disabled.",
-      "STATUS_UNKNOWN": "Status: Unable to determine maintenance mode."
+      "STATUS_UNKNOWN": "Status: Unable to determine maintenance mode.",
+      "REASON_LABEL": "Reason:",
+      "REASON_INPUT_LABEL": "Maintenance reason",
+      "REASON_INPUT_PLACEHOLDER": "Enter an optional message shown during maintenance"
     },
     "CONFIRM": {
       "UPDATE_TITLE": "Save updated settings?",
@@ -265,7 +270,9 @@
       "MAINTENANCE_STATUS_FAILED": "Failed to load maintenance status.",
       "MAINTENANCE_ENABLE_OK": "Maintenance mode enabled.",
       "MAINTENANCE_DISABLE_OK": "Maintenance mode disabled.",
-      "MAINTENANCE_UPDATE_FAILED": "Failed to update maintenance mode."
+      "MAINTENANCE_UPDATE_FAILED": "Failed to update maintenance mode.",
+      "MAINTENANCE_REASON_UPDATE_OK": "Maintenance reason updated.",
+      "MAINTENANCE_REASON_UPDATE_FAILED": "Failed to update maintenance reason."
     }
   },
   "USER_GUIDE": {
