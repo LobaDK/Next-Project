@@ -4,14 +4,14 @@ import { NavigationEnd, Router } from '@angular/router';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 
-import {HeaderComponent } from './core/components/app-header/header.component';
+import { HeaderComponent } from './core/components/app-header/header.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from './core/services/auth.service';
 import { MaintenanceService } from './core/services/maintenance.service';
 
 @Component({
     selector: 'app-root',
-        imports: [RouterModule, RouterOutlet, HeaderComponent, TranslateModule],
+    imports: [RouterModule, RouterOutlet, HeaderComponent, TranslateModule],
     templateUrl: 'app.component.html',
     styleUrls: ['app.component.css']
 })

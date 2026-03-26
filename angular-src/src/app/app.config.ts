@@ -1,7 +1,7 @@
 import { ApplicationConfig, importProvidersFrom, inject, provideAppInitializer, Type } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
-import {  provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { jwtInterceptor } from './core/guards and interceptors/jwt.interceptor';
 import { maintenanceInterceptor } from './core/guards and interceptors/maintenance.interceptor';
@@ -30,29 +30,29 @@ import { IAuthService, IHomeService, IAnswerService, ITemplateService, IActiveSe
 
 export const appConfig: ApplicationConfig = {
   providers: [provideRouter(routes),
-    provideHttpClient(
+  provideHttpClient(
     withInterceptors([jwtInterceptor, maintenanceInterceptor]),
   ), provideAnimationsAsync(),
-    // Type-safe mock service providers
-    mockService<IAuthService>(AuthService, MockAuthService),
-    mockService<IHomeService>(HomeService, MockHomeService),
-    mockService<IAnswerService>(AnswerService, MockAnswerService),
-    mockService<ITemplateService>(TemplateService, MockTemplateService),
-    mockService<IActiveService>(ActiveService, MockActiveService),
-    mockService<IResultService>(ResultService, MockResultService),
-    mockService<ITeacherService>(TeacherService, MockTeacherService),
-    provideAppInitializer(() => {
-      const authService = inject(AuthService);
-      return authService.initializeAuthState();
+  // Type-safe mock service providers
+  mockService<IAuthService>(AuthService, MockAuthService),
+  mockService<IHomeService>(HomeService, MockHomeService),
+  mockService<IAnswerService>(AnswerService, MockAnswerService),
+  mockService<ITemplateService>(TemplateService, MockTemplateService),
+  mockService<IActiveService>(ActiveService, MockActiveService),
+  mockService<IResultService>(ResultService, MockResultService),
+  mockService<ITeacherService>(TeacherService, MockTeacherService),
+  provideAppInitializer(() => {
+    const authService = inject(AuthService);
+    return authService.initializeAuthState();
+  }),
+  provideTranslateService({
+    lang: I18nService.getInitialLanguage(),
+    fallbackLang: 'da',
+    loader: provideTranslateHttpLoader({
+      prefix: '/assets/i18n/',
+      suffix: '.json',
     }),
-    provideTranslateService({
-      lang: I18nService.getInitialLanguage(),            
-      fallbackLang: 'da',
-      loader: provideTranslateHttpLoader({
-        prefix: '/assets/i18n/',  
-        suffix: '.json',          
-      }),
-    }),
+  }),
   ],
 };
 
