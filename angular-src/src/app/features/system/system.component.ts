@@ -8,7 +8,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs';
 import { LoadingComponent } from '../../shared/loading/loading.component';
 import { SystemConfirmDialogComponent, SystemConfirmDialogData } from './dialog/system-confirm-dialog/system-confirm-dialog.component';
-import { ApplicationLog, EventIdDto, SystemService } from './services/system.service';
+import { ApplicationLog, EventIdDto, SystemService, SystemStatus } from './services/system.service';
 
 type LogLevel = 'Trace' | 'Debug' | 'Information' | 'Warning' | 'Error' | 'Critical' | 'None';
 
@@ -80,6 +80,8 @@ export class SystemComponent {
   settingsFields: SettingsField[] = [];
   useAdvancedMode = false;
   selectedImportFile: File | null = null;
+  maintenanceEnabled: boolean | null = null;
+  maintenanceRequestInProgress = false;
 
   ngOnInit(): void {
     this.loadLogMetadata();
@@ -87,6 +89,7 @@ export class SystemComponent {
     this.loadSettings();
     this.loadSettingsSchema();
     this.loadDefaultSettings();
+    this.loadSystemStatus();
   }
 
   ping(): void {
@@ -595,18 +598,104 @@ export class SystemComponent {
     });
   }
 
-  stopServer(): void {
-    this.openConfirmDialog({
-      titleKey: 'SYSTEM.CONFIRM.STOP_TITLE',
-      textKey: 'SYSTEM.CONFIRM.STOP_TEXT',
-      confirmKey: 'SYSTEM.CONFIRM.STOP_BUTTON'
-    }, () => {
-      this.incrementRequestCounter();
-      this.systemService.stopServer().pipe(finalize(() => this.decrementRequestCounter())).subscribe({
-        next: () => this.setMessage('SYSTEM.MESSAGES.STOP_OK'),
-        error: () => this.setMessage('SYSTEM.MESSAGES.STOP_FAILED', true)
-      });
+  loadSystemStatus(): void {
+    this.incrementRequestCounter();
+    this.systemService.getSystemStatus().pipe(finalize(() => this.decrementRequestCounter())).subscribe({
+      next: status => {
+        const parsedStatus = this.parseSystemStatus(status);
+        if (parsedStatus == null) {
+          this.setMessage('SYSTEM.MESSAGES.MAINTENANCE_STATUS_FAILED', true);
+          return;
+        }
+
+        this.maintenanceEnabled = parsedStatus;
+      },
+      error: () => this.setMessage('SYSTEM.MESSAGES.MAINTENANCE_STATUS_FAILED', true)
     });
+  }
+
+  toggleMaintenanceMode(): void {
+    if (this.maintenanceRequestInProgress) {
+      return;
+    }
+
+    const targetEnabled = !(this.maintenanceEnabled ?? false);
+    const confirmData: SystemConfirmDialogData = targetEnabled
+      ? {
+        titleKey: 'SYSTEM.CONFIRM.MAINTENANCE_ENABLE_TITLE',
+        textKey: 'SYSTEM.CONFIRM.MAINTENANCE_ENABLE_TEXT',
+        confirmKey: 'SYSTEM.CONFIRM.MAINTENANCE_ENABLE_BUTTON'
+      }
+      : {
+        titleKey: 'SYSTEM.CONFIRM.MAINTENANCE_DISABLE_TITLE',
+        textKey: 'SYSTEM.CONFIRM.MAINTENANCE_DISABLE_TEXT',
+        confirmKey: 'SYSTEM.CONFIRM.MAINTENANCE_DISABLE_BUTTON'
+      };
+
+    this.openConfirmDialog(confirmData, () => {
+      this.maintenanceRequestInProgress = true;
+      this.incrementRequestCounter();
+      this.systemService.setMaintenanceMode(targetEnabled)
+        .pipe(finalize(() => {
+          this.maintenanceRequestInProgress = false;
+          this.decrementRequestCounter();
+        }))
+        .subscribe({
+          next: () => {
+            this.maintenanceEnabled = targetEnabled;
+            this.setMessage(targetEnabled
+              ? 'SYSTEM.MESSAGES.MAINTENANCE_ENABLE_OK'
+              : 'SYSTEM.MESSAGES.MAINTENANCE_DISABLE_OK');
+          },
+          error: () => this.setMessage('SYSTEM.MESSAGES.MAINTENANCE_UPDATE_FAILED', true)
+        });
+    });
+  }
+
+  getMaintenanceStatusMessageKey(): string {
+    if (this.maintenanceEnabled == null) {
+      return 'SYSTEM.MAINTENANCE.STATUS_UNKNOWN';
+    }
+
+    return this.maintenanceEnabled
+      ? 'SYSTEM.MAINTENANCE.STATUS_ENABLED'
+      : 'SYSTEM.MAINTENANCE.STATUS_DISABLED';
+  }
+
+  getMaintenanceToggleButtonKey(): string {
+    return this.maintenanceEnabled
+      ? 'SYSTEM.BUTTONS.DISABLE_MAINTENANCE'
+      : 'SYSTEM.BUTTONS.ENABLE_MAINTENANCE';
+  }
+
+  private parseSystemStatus(status: SystemStatus | number | string): boolean | null {
+    if (typeof status === 'string') {
+      const normalized = status.trim().toLowerCase();
+
+      if (normalized === 'maintenance') {
+        return true;
+      }
+
+      if (normalized === 'ok') {
+        return false;
+      }
+
+      return null;
+    }
+
+    if (typeof status === 'number') {
+      if (status === 1) {
+        return true;
+      }
+
+      if (status === 0) {
+        return false;
+      }
+
+      return null;
+    }
+
+    return null;
   }
 
   private openConfirmDialog(data: SystemConfirmDialogData, onConfirm: () => void): void {

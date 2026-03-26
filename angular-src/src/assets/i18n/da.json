@@ -30,6 +30,7 @@
     "BUTTONS": {
       "PING": "Ping",
       "REFRESH_META": "Opdater metadata",
+      "REFRESH_STATUS": "Opdater status",
       "CLEAR_FILTERS": "Nulstil filtre",
       "LOAD_LOGS": "Hent logs",
       "REFRESH_FILES": "Opdater filer",
@@ -41,7 +42,8 @@
       "PATCH": "Patch indstillinger",
       "EXPORT": "Eksportér indstillinger",
       "IMPORT": "Importér indstillinger",
-      "STOP_SERVER": "Stop server",
+      "ENABLE_MAINTENANCE": "Aktivér vedligeholdelse",
+      "DISABLE_MAINTENANCE": "Deaktivér vedligeholdelse",
       "ADVANCED_MODE": "Avanceret tilstand",
       "BASIC_MODE": "Grundlæggende tilstand",
       "SAVE_CHANGES": "Gem indstillinger",
@@ -83,9 +85,12 @@
       "SECTION_Logging": "Logging",
       "SECTION_System": "System"
     },
-    "STOP": {
-      "TITLE": "Applikationskontrol",
-      "DESCRIPTION": "Hvis serveren stoppes, er API'et utilgængeligt indtil genstart."
+    "MAINTENANCE": {
+      "TITLE": "Vedligeholdelsestilstand",
+      "DESCRIPTION": "Aktivér vedligeholdelsestilstand for midlertidigt at markere API'et som under vedligeholdelse.",
+      "STATUS_ENABLED": "Status: Vedligeholdelsestilstand er aktiveret.",
+      "STATUS_DISABLED": "Status: Vedligeholdelsestilstand er deaktiveret.",
+      "STATUS_UNKNOWN": "Status: Kunne ikke fastslå vedligeholdelsestilstand."
     },
     "CONFIRM": {
       "UPDATE_TITLE": "Gem opdaterede indstillinger?",
@@ -97,9 +102,12 @@
       "IMPORT_TITLE": "Bekræft import af indstillinger",
       "IMPORT_TEXT": "Dette importerer og overskriver indstillinger fra den valgte fil. Fortsæt?",
       "IMPORT_BUTTON": "Ja, importér indstillinger",
-      "STOP_TITLE": "Bekræft stop af server",
-      "STOP_TEXT": "Dette stopper API-serveren og afbryder aktive brugere. Fortsæt?",
-      "STOP_BUTTON": "Ja, stop server"
+      "MAINTENANCE_ENABLE_TITLE": "Aktivér vedligeholdelsestilstand?",
+      "MAINTENANCE_ENABLE_TEXT": "API-status skifter til vedligeholdelse. Vil du fortsætte?",
+      "MAINTENANCE_ENABLE_BUTTON": "Ja, aktivér vedligeholdelse",
+      "MAINTENANCE_DISABLE_TITLE": "Deaktivér vedligeholdelsestilstand?",
+      "MAINTENANCE_DISABLE_TEXT": "API-status skifter tilbage til OK. Vil du fortsætte?",
+      "MAINTENANCE_DISABLE_BUTTON": "Ja, deaktivér vedligeholdelse"
     },
     "MESSAGES": {
       "PING_OK": "Ping lykkedes.",
@@ -123,8 +131,10 @@
       "IMPORT_FILE_REQUIRED": "Vælg en JSON-fil før import.",
       "IMPORT_OK": "Indstillinger importeret.",
       "IMPORT_FAILED": "Kunne ikke importere indstillinger.",
-      "STOP_OK": "Stop-anmodning sendt.",
-      "STOP_FAILED": "Kunne ikke stoppe serveren."
+      "MAINTENANCE_STATUS_FAILED": "Kunne ikke hente vedligeholdelsesstatus.",
+      "MAINTENANCE_ENABLE_OK": "Vedligeholdelsestilstand aktiveret.",
+      "MAINTENANCE_DISABLE_OK": "Vedligeholdelsestilstand deaktiveret.",
+      "MAINTENANCE_UPDATE_FAILED": "Kunne ikke opdatere vedligeholdelsestilstand."
     }
   },
   "USER_GUIDE": {
@@ -363,12 +373,10 @@
     "PIE_CHART": "Pie",
     "BAR_CHART": "Bar"
   },
-
   "LANG": {
     "EN": "Engelsk",
     "DA": "Dansk"
   },
-
   "PDF": {
     "TITLE": "Matrixskema (Lærer / Elev)",
     "META_NOTE": "Spørgsmål kan have 0-10 muligheder. Valgte viser et X. Hvis der er mulighed for eget svar , vises det under tabellen.",

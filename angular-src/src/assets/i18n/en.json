@@ -155,6 +155,7 @@
     "BUTTONS": {
       "PING": "Ping",
       "REFRESH_META": "Refresh Metadata",
+      "REFRESH_STATUS": "Refresh Status",
       "CLEAR_FILTERS": "Clear Filters",
       "LOAD_LOGS": "Load Logs",
       "REFRESH_FILES": "Refresh Files",
@@ -166,7 +167,8 @@
       "PATCH": "Patch Settings",
       "EXPORT": "Export Settings",
       "IMPORT": "Import Settings",
-      "STOP_SERVER": "Stop Server",
+      "ENABLE_MAINTENANCE": "Enable Maintenance",
+      "DISABLE_MAINTENANCE": "Disable Maintenance",
       "ADVANCED_MODE": "Advanced Mode",
       "BASIC_MODE": "Basic Mode",
       "SAVE_CHANGES": "Save Settings",
@@ -208,9 +210,12 @@
       "SECTION_Logging": "Logging",
       "SECTION_System": "System"
     },
-    "STOP": {
-      "TITLE": "Application Control",
-      "DESCRIPTION": "Stopping the server will make the API unavailable until restarted."
+    "MAINTENANCE": {
+      "TITLE": "Maintenance Mode",
+      "DESCRIPTION": "Enable maintenance mode to temporarily mark the API as under maintenance.",
+      "STATUS_ENABLED": "Status: Maintenance mode is enabled.",
+      "STATUS_DISABLED": "Status: Maintenance mode is disabled.",
+      "STATUS_UNKNOWN": "Status: Unable to determine maintenance mode."
     },
     "CONFIRM": {
       "UPDATE_TITLE": "Save updated settings?",
@@ -222,9 +227,12 @@
       "IMPORT_TITLE": "Confirm settings import",
       "IMPORT_TEXT": "This will import and overwrite settings from the selected file. Continue?",
       "IMPORT_BUTTON": "Yes, import settings",
-      "STOP_TITLE": "Confirm server stop",
-      "STOP_TEXT": "This will stop the API server and disconnect active users. Continue?",
-      "STOP_BUTTON": "Yes, stop server"
+      "MAINTENANCE_ENABLE_TITLE": "Enable maintenance mode?",
+      "MAINTENANCE_ENABLE_TEXT": "The API status will switch to maintenance. Continue?",
+      "MAINTENANCE_ENABLE_BUTTON": "Yes, enable maintenance",
+      "MAINTENANCE_DISABLE_TITLE": "Disable maintenance mode?",
+      "MAINTENANCE_DISABLE_TEXT": "The API status will switch back to OK. Continue?",
+      "MAINTENANCE_DISABLE_BUTTON": "Yes, disable maintenance"
     },
     "MESSAGES": {
       "PING_OK": "Ping successful.",
@@ -248,8 +256,10 @@
       "IMPORT_FILE_REQUIRED": "Choose a JSON file before import.",
       "IMPORT_OK": "Settings imported.",
       "IMPORT_FAILED": "Failed to import settings.",
-      "STOP_OK": "Stop request sent.",
-      "STOP_FAILED": "Failed to stop server."
+      "MAINTENANCE_STATUS_FAILED": "Failed to load maintenance status.",
+      "MAINTENANCE_ENABLE_OK": "Maintenance mode enabled.",
+      "MAINTENANCE_DISABLE_OK": "Maintenance mode disabled.",
+      "MAINTENANCE_UPDATE_FAILED": "Failed to update maintenance mode."
     }
   },
   "USER_GUIDE": {

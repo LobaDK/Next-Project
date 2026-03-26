@@ -363,12 +363,28 @@
       </div>
     </section>
 
-    <!-- STOP SERVER SECTION -->
-    <section class="bg-white/80 rounded-xl border border-red-300 p-4 sm:p-6">
-      <h3 class="text-xl font-semibold text-red-700 mb-2">{{ 'SYSTEM.STOP.TITLE' | translate }}</h3>
-      <p class="text-sm text-red-700 mb-4">{{ 'SYSTEM.STOP.DESCRIPTION' | translate }}</p>
-      <button (click)="stopServer()" class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700">
-        {{ 'SYSTEM.BUTTONS.STOP_SERVER' | translate }}
+    <!-- MAINTENANCE SECTION -->
+    <section class="bg-white/80 rounded-xl border border-primary_orange_1 p-4 sm:p-6">
+      <div class="flex items-start justify-between gap-3 flex-wrap mb-3">
+        <h3 class="text-xl font-semibold text-primary_dark_blue">{{ 'SYSTEM.MAINTENANCE.TITLE' | translate }}</h3>
+        <button (click)="loadSystemStatus()"
+          class="px-4 py-2 rounded-lg border border-primary_orange_1 text-primary_dark_blue hover:bg-secondary_background_hover">
+          {{ 'SYSTEM.BUTTONS.REFRESH_STATUS' | translate }}
+        </button>
+      </div>
+
+      <p class="text-sm text-primary_dark_blue/90 mb-3">{{ 'SYSTEM.MAINTENANCE.DESCRIPTION' | translate }}</p>
+
+      <div class="mb-4 rounded-lg border border-primary_orange_1 bg-primary_background_white/80 px-4 py-3">
+        <p class="text-sm text-primary_dark_blue font-medium">
+          {{ getMaintenanceStatusMessageKey() | translate }}
+        </p>
+      </div>
+
+      <button (click)="toggleMaintenanceMode()" [disabled]="maintenanceRequestInProgress || maintenanceEnabled === null"
+        class="px-4 py-2 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed"
+        [ngClass]="maintenanceEnabled ? 'bg-red-600 hover:bg-red-700' : 'bg-primary_orange_1 hover:bg-primary_orange_light'">
+        {{ getMaintenanceToggleButtonKey() | translate }}
       </button>
     </section>
 
