@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Database.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20250228105643_Rework ActiveQuestionnaire and its related models to optimize storing of activated questionnaires")]
-    partial class ReworkActiveQuestionnaireanditsrelatedmodelstooptimizestoringofactivatedquestionnaires
+    [Migration("20260407084911_InitialSetup")]
+    partial class InitialSetup
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,6 +36,12 @@ namespace Database.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("SYSUTCDATETIME()");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("QuestionnaireTemplateFK")
                         .HasColumnType("uniqueidentifier");
 
@@ -57,6 +63,8 @@ namespace Database.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("GroupId");
+
                     b.HasIndex("QuestionnaireTemplateFK");
 
                     b.HasIndex("StudentFK");
@@ -68,7 +76,7 @@ namespace Database.Migrations
                     b.ToTable("ActiveQuestionnaire");
                 });
 
-            modelBuilder.Entity("Database.Models.ActiveQuestionnaireResponseModel", b =>
+            modelBuilder.Entity("Database.Models.ActiveQuestionnaireResponseBaseModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -79,27 +87,31 @@ namespace Database.Migrations
                     b.Property<Guid>("ActiveQuestionnaireFK")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("CustomStudentResponse")
+                    b.Property<string>("CustomResponse")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CustomTeacherResponse")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Question")
+                    b.Property<string>("Discriminator")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(55)
+                        .HasColumnType("nvarchar(55)");
 
-                    b.Property<string>("StudentResponse")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("OptionFK")
+                        .HasColumnType("int");
 
-                    b.Property<string>("TeacherResponse")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("QuestionFK")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ActiveQuestionnaireFK");
+                    b.HasIndex("OptionFK");
+
+                    b.HasIndex("QuestionFK");
 
                     b.ToTable("ActiveQuestionnaireResponse");
+
+                    b.HasDiscriminator().HasValue("ActiveQuestionnaireResponseBaseModel");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Database.Models.ApplicationLogsModel", b =>
@@ -114,11 +126,14 @@ namespace Database.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("EventDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("EventId")
                         .HasColumnType("int");
 
                     b.Property<string>("Exception")
-                        .HasMaxLength(5000)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("LogLevel")
@@ -126,8 +141,7 @@ namespace Database.Migrations
 
                     b.Property<string>("Message")
                         .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Timestamp")
                         .ValueGeneratedOnAdd()
@@ -137,6 +151,29 @@ namespace Database.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ApplicationLogs");
+                });
+
+            modelBuilder.Entity("Database.Models.QuestionnaireGroupModel", b =>
+                {
+                    b.Property<Guid>("GroupId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("TemplateId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("GroupId");
+
+                    b.HasIndex("TemplateId");
+
+                    b.ToTable("QuestionnaireGroups");
                 });
 
             modelBuilder.Entity("Database.Models.QuestionnaireOptionModel", b =>
@@ -158,6 +195,9 @@ namespace Database.Migrations
                     b.Property<int>("QuestionFK")
                         .HasColumnType("int");
 
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("QuestionFK");
@@ -170,294 +210,312 @@ namespace Database.Migrations
                             Id = 1,
                             DisplayText = "Viser lidt eller ingen forståelse for arbejdsopgaverne.",
                             OptionValue = 1,
-                            QuestionFK = 1
+                            QuestionFK = 1,
+                            SortOrder = 0
                         },
                         new
                         {
                             Id = 2,
                             DisplayText = "Forstår arbejdsopgaverne, men kan ikke anvende den i praksis. Har svært ved at tilegne sig ny viden.",
                             OptionValue = 2,
-                            QuestionFK = 1
+                            QuestionFK = 1,
+                            SortOrder = 1
                         },
                         new
                         {
                             Id = 3,
                             DisplayText = "Let ved at forstå arbejdsopgaverne og anvende den i praksis. Har let ved at tilegne sig ny viden.",
                             OptionValue = 3,
-                            QuestionFK = 1
+                            QuestionFK = 1,
+                            SortOrder = 2
                         },
                         new
                         {
                             Id = 4,
                             DisplayText = "Mindre behov for oplæring end normalt. Kan selv finde/tilegne sig ny viden.",
                             OptionValue = 4,
-                            QuestionFK = 1
+                            QuestionFK = 1,
+                            SortOrder = 3
                         },
                         new
                         {
                             Id = 5,
                             DisplayText = "Behøver næsten ingen oplæring. Kan ved selvstudium, endog ved svært tilgængeligt materiale, tilegne sig ny viden.",
                             OptionValue = 5,
-                            QuestionFK = 1
+                            QuestionFK = 1,
+                            SortOrder = 4
                         },
                         new
                         {
                             Id = 6,
                             DisplayText = "Viser intet initiativ. Er passiv, uinteresseret og uselvstændig.",
                             OptionValue = 1,
-                            QuestionFK = 2
+                            QuestionFK = 2,
+                            SortOrder = 0
                         },
                         new
                         {
                             Id = 7,
                             DisplayText = "Viser ringe initiativ. Kommer ikke selv med løsningsforslag. Viser ingen interesse i at tilrettelægge eget arbejde.",
                             OptionValue = 2,
-                            QuestionFK = 2
+                            QuestionFK = 2,
+                            SortOrder = 1
                         },
                         new
                         {
                             Id = 8,
                             DisplayText = "Viser normalt initiativ. Kommer selv med løsningsforslag. Tilrettelægger eget arbejde.",
                             OptionValue = 3,
-                            QuestionFK = 2
+                            QuestionFK = 2,
+                            SortOrder = 2
                         },
                         new
                         {
                             Id = 9,
                             DisplayText = "Meget initiativrig. Kommer selv med løsningsforslag. Gode evner for at tilrettelægge eget og andres arbejde.",
                             OptionValue = 4,
-                            QuestionFK = 2
+                            QuestionFK = 2,
+                            SortOrder = 3
                         },
                         new
                         {
                             Id = 10,
                             DisplayText = "Overordentlig initiativrig. Løser selv problemerne. Tilrettelægger selvstændigt arbejdet for mig selv og andre.",
                             OptionValue = 5,
-                            QuestionFK = 2
+                            QuestionFK = 2,
+                            SortOrder = 4
                         },
                         new
                         {
                             Id = 11,
                             DisplayText = "Uacceptabel",
                             OptionValue = 1,
-                            QuestionFK = 3
+                            QuestionFK = 3,
+                            SortOrder = 0
                         },
                         new
                         {
                             Id = 12,
                             DisplayText = "Under middel",
                             OptionValue = 2,
-                            QuestionFK = 3
+                            QuestionFK = 3,
+                            SortOrder = 1
                         },
                         new
                         {
                             Id = 13,
                             DisplayText = "Middel",
                             OptionValue = 3,
-                            QuestionFK = 3
+                            QuestionFK = 3,
+                            SortOrder = 2
                         },
                         new
                         {
                             Id = 14,
                             DisplayText = "Over middel",
                             OptionValue = 4,
-                            QuestionFK = 3
+                            QuestionFK = 3,
+                            SortOrder = 3
                         },
                         new
                         {
                             Id = 15,
                             DisplayText = "Særdeles god",
                             OptionValue = 5,
-                            QuestionFK = 3
+                            QuestionFK = 3,
+                            SortOrder = 4
                         },
                         new
                         {
                             Id = 16,
                             DisplayText = "Omgås materialer, maskiner og værktøj på en sløset og ligegyldig måde. Holder ikke sin arbejdsplads ordentlig.",
                             OptionValue = 1,
-                            QuestionFK = 4
+                            QuestionFK = 4,
+                            SortOrder = 0
                         },
                         new
                         {
                             Id = 17,
                             DisplayText = "Bruger maskiner og værktøj uden megen omtanke. Mindre god orden og omhyggelighed.",
                             OptionValue = 2,
-                            QuestionFK = 4
+                            QuestionFK = 4,
+                            SortOrder = 1
                         },
                         new
                         {
                             Id = 18,
                             DisplayText = "Påpasselighed og omhyggelighed middel. Rimelig god orden.",
                             OptionValue = 3,
-                            QuestionFK = 4
+                            QuestionFK = 4,
+                            SortOrder = 2
                         },
                         new
                         {
                             Id = 19,
                             DisplayText = "Meget påpasselig både i praktik og teori. God orden.",
                             OptionValue = 4,
-                            QuestionFK = 4
+                            QuestionFK = 4,
+                            SortOrder = 3
                         },
                         new
                         {
                             Id = 20,
                             DisplayText = "I høj grad påpasselig. God forståelse for materialevalg. Særdeles god orden.",
                             OptionValue = 5,
-                            QuestionFK = 4
-                        },
-                        new
-                        {
-                            Id = 21,
-                            DisplayText = "N/A",
-                            OptionValue = 1,
-                            QuestionFK = 5
-                        },
-                        new
-                        {
-                            Id = 22,
-                            DisplayText = "N/A",
-                            OptionValue = 1,
-                            QuestionFK = 6
-                        },
-                        new
-                        {
-                            Id = 23,
-                            DisplayText = "N/A",
-                            OptionValue = 1,
-                            QuestionFK = 7
+                            QuestionFK = 4,
+                            SortOrder = 4
                         },
                         new
                         {
                             Id = 24,
                             DisplayText = "Du møder ikke hver dag til tiden.",
                             OptionValue = 1,
-                            QuestionFK = 8
+                            QuestionFK = 8,
+                            SortOrder = 0
                         },
                         new
                         {
                             Id = 25,
                             DisplayText = "Du møder næsten hver dag til tiden.",
                             OptionValue = 2,
-                            QuestionFK = 8
+                            QuestionFK = 8,
+                            SortOrder = 1
                         },
                         new
                         {
                             Id = 26,
                             DisplayText = "Du møder hver dag til tiden.",
                             OptionValue = 3,
-                            QuestionFK = 8
+                            QuestionFK = 8,
+                            SortOrder = 2
                         },
                         new
                         {
                             Id = 27,
                             DisplayText = "Du melder ikke afbud ved sygdom.",
                             OptionValue = 1,
-                            QuestionFK = 9
+                            QuestionFK = 9,
+                            SortOrder = 0
                         },
                         new
                         {
                             Id = 28,
                             DisplayText = "Du melder, for det meste afbud, når du er syg.",
                             OptionValue = 2,
-                            QuestionFK = 9
+                            QuestionFK = 9,
+                            SortOrder = 1
                         },
                         new
                         {
                             Id = 29,
                             DisplayText = "Du melder afbud, når du er syg.",
                             OptionValue = 3,
-                            QuestionFK = 9
+                            QuestionFK = 9,
+                            SortOrder = 2
                         },
                         new
                         {
                             Id = 30,
                             DisplayText = "Du har et stort fravær.",
                             OptionValue = 1,
-                            QuestionFK = 10
+                            QuestionFK = 10,
+                            SortOrder = 0
                         },
                         new
                         {
                             Id = 31,
                             DisplayText = "Du har noget fravær.",
                             OptionValue = 2,
-                            QuestionFK = 10
+                            QuestionFK = 10,
+                            SortOrder = 1
                         },
                         new
                         {
                             Id = 32,
                             DisplayText = "Du har stort set ingen fravær.",
                             OptionValue = 3,
-                            QuestionFK = 10
+                            QuestionFK = 10,
+                            SortOrder = 2
                         },
                         new
                         {
                             Id = 33,
                             DisplayText = "Du har ingen fravær.",
                             OptionValue = 4,
-                            QuestionFK = 10
+                            QuestionFK = 10,
+                            SortOrder = 3
                         },
                         new
                         {
                             Id = 34,
                             DisplayText = "Du søger ingen praktikpladser.",
                             OptionValue = 1,
-                            QuestionFK = 11
+                            QuestionFK = 11,
+                            SortOrder = 0
                         },
                         new
                         {
                             Id = 35,
                             DisplayText = "Du ved, at du skal søge alle relevante praktikpladser, men det kniber med handlingen.",
                             OptionValue = 2,
-                            QuestionFK = 11
+                            QuestionFK = 11,
+                            SortOrder = 1
                         },
                         new
                         {
                             Id = 36,
                             DisplayText = "Du søger alle relevante praktikpladser, men skal have hjælp til at søge praktikpladser, der ligger længere væk end i din bopælskommune.",
                             OptionValue = 3,
-                            QuestionFK = 11
+                            QuestionFK = 11,
+                            SortOrder = 2
                         },
                         new
                         {
                             Id = 37,
                             DisplayText = "Du søger alle relevante praktikpladser også dem der ligger uden for din bopælskommune.",
                             OptionValue = 4,
-                            QuestionFK = 11
+                            QuestionFK = 11,
+                            SortOrder = 3
                         },
                         new
                         {
                             Id = 38,
                             DisplayText = "Du søger alle relevante praktikpladser også dem der ligger uden for din bopælskommune. Du søger også praktikplads inden for en anden uddannelse, som dit GF giver adgang til.",
                             OptionValue = 5,
-                            QuestionFK = 11
+                            QuestionFK = 11,
+                            SortOrder = 4
                         },
                         new
                         {
                             Id = 39,
                             DisplayText = "Du har ikke en synlig profil på praktikpladsen.dk.",
                             OptionValue = 1,
-                            QuestionFK = 12
+                            QuestionFK = 12,
+                            SortOrder = 0
                         },
                         new
                         {
                             Id = 40,
                             DisplayText = "Du skal ofte påmindes om at synliggøre din profil på praktikpladsen.dk.",
                             OptionValue = 2,
-                            QuestionFK = 12
+                            QuestionFK = 12,
+                            SortOrder = 1
                         },
                         new
                         {
                             Id = 41,
                             DisplayText = "Du har altid en synlig, men ikke opdateret profil på praktikpladsen.dk.",
                             OptionValue = 3,
-                            QuestionFK = 12
+                            QuestionFK = 12,
+                            SortOrder = 2
                         },
                         new
                         {
                             Id = 42,
                             DisplayText = "Du har altid en opdateret og synlig profil på praktikpladsen.dk.",
                             OptionValue = 4,
-                            QuestionFK = 12
+                            QuestionFK = 12,
+                            SortOrder = 3
                         });
                 });
 
@@ -480,6 +538,9 @@ namespace Database.Migrations
                     b.Property<Guid>("QuestionnaireTemplateFK")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("QuestionnaireTemplateFK");
@@ -492,84 +553,72 @@ namespace Database.Migrations
                             Id = 1,
                             AllowCustom = false,
                             Prompt = "Indlæringsevne",
-                            QuestionnaireTemplateFK = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6")
+                            QuestionnaireTemplateFK = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6"),
+                            SortOrder = 0
                         },
                         new
                         {
                             Id = 2,
                             AllowCustom = false,
                             Prompt = "Kreativitet og selvstændighed",
-                            QuestionnaireTemplateFK = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6")
+                            QuestionnaireTemplateFK = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6"),
+                            SortOrder = 1
                         },
                         new
                         {
                             Id = 3,
                             AllowCustom = false,
                             Prompt = "Arbejdsindsats",
-                            QuestionnaireTemplateFK = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6")
+                            QuestionnaireTemplateFK = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6"),
+                            SortOrder = 2
                         },
                         new
                         {
                             Id = 4,
                             AllowCustom = false,
                             Prompt = "Orden og omhyggelighed",
-                            QuestionnaireTemplateFK = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6")
-                        },
-                        new
-                        {
-                            Id = 5,
-                            AllowCustom = false,
-                            Prompt = "N/A",
-                            QuestionnaireTemplateFK = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6")
-                        },
-                        new
-                        {
-                            Id = 6,
-                            AllowCustom = false,
-                            Prompt = "N/A",
-                            QuestionnaireTemplateFK = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6")
-                        },
-                        new
-                        {
-                            Id = 7,
-                            AllowCustom = false,
-                            Prompt = "N/A",
-                            QuestionnaireTemplateFK = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6")
+                            QuestionnaireTemplateFK = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6"),
+                            SortOrder = 3
                         },
                         new
                         {
                             Id = 8,
                             AllowCustom = false,
                             Prompt = "Mødestabilitet",
-                            QuestionnaireTemplateFK = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6")
+                            QuestionnaireTemplateFK = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6"),
+                            SortOrder = 7
                         },
                         new
                         {
                             Id = 9,
                             AllowCustom = false,
                             Prompt = "Sygdom",
-                            QuestionnaireTemplateFK = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6")
+                            QuestionnaireTemplateFK = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6"),
+                            SortOrder = 8
                         },
                         new
                         {
                             Id = 10,
                             AllowCustom = false,
                             Prompt = "Fravær",
-                            QuestionnaireTemplateFK = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6")
+                            QuestionnaireTemplateFK = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6"),
+                            SortOrder = 9
                         },
                         new
                         {
                             Id = 11,
                             AllowCustom = false,
                             Prompt = "Praktikpladssøgning",
-                            QuestionnaireTemplateFK = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6")
+                            QuestionnaireTemplateFK = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6"),
+                            SortOrder = 10
                         },
                         new
                         {
                             Id = 12,
                             AllowCustom = false,
                             Prompt = "Synlighed",
-                            QuestionnaireTemplateFK = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6")
+                            QuestionnaireTemplateFK = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6"),
+                            SortOrder = 11
                         });
                 });
 
@@ -592,6 +641,9 @@ namespace Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("SYSUTCDATETIME()");
+
+                    b.Property<int>("TemplateStatus")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -618,6 +670,7 @@ namespace Database.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Gennemførelsesprocedure for SKP-elever ved PRAKTIK NORD",
                             LastUpated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TemplateStatus = 0,
                             Title = "Evaluering af SKP-elever"
                         });
                 });
@@ -708,6 +761,28 @@ namespace Database.Migrations
                     b.UseTphMappingStrategy();
                 });
 
+            modelBuilder.Entity("Database.Models.ActiveQuestionnaireStudentResponseModel", b =>
+                {
+                    b.HasBaseType("Database.Models.ActiveQuestionnaireResponseBaseModel");
+
+                    b.HasIndex("ActiveQuestionnaireFK");
+
+                    b.ToTable("ActiveQuestionnaireResponse");
+
+                    b.HasDiscriminator().HasValue("ActiveQuestionnaireStudentResponseModel");
+                });
+
+            modelBuilder.Entity("Database.Models.ActiveQuestionnaireTeacherResponseModel", b =>
+                {
+                    b.HasBaseType("Database.Models.ActiveQuestionnaireResponseBaseModel");
+
+                    b.HasIndex("ActiveQuestionnaireFK");
+
+                    b.ToTable("ActiveQuestionnaireResponse");
+
+                    b.HasDiscriminator().HasValue("ActiveQuestionnaireTeacherResponseModel");
+                });
+
             modelBuilder.Entity("Database.Models.StudentModel", b =>
                 {
                     b.HasBaseType("Database.Models.UserBaseModel");
@@ -728,6 +803,12 @@ namespace Database.Migrations
 
             modelBuilder.Entity("Database.Models.ActiveQuestionnaireModel", b =>
                 {
+                    b.HasOne("Database.Models.QuestionnaireGroupModel", "Group")
+                        .WithMany("Questionnaires")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Database.Models.QuestionnaireTemplateModel", "QuestionnaireTemplate")
                         .WithMany("ActiveQuestionnaires")
                         .HasForeignKey("QuestionnaireTemplateFK")
@@ -746,6 +827,8 @@ namespace Database.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.Navigation("Group");
+
                     b.Navigation("QuestionnaireTemplate");
 
                     b.Navigation("Student");
@@ -753,15 +836,32 @@ namespace Database.Migrations
                     b.Navigation("Teacher");
                 });
 
-            modelBuilder.Entity("Database.Models.ActiveQuestionnaireResponseModel", b =>
+            modelBuilder.Entity("Database.Models.ActiveQuestionnaireResponseBaseModel", b =>
                 {
-                    b.HasOne("Database.Models.ActiveQuestionnaireModel", "ActiveQuestionnaire")
-                        .WithMany("Answers")
-                        .HasForeignKey("ActiveQuestionnaireFK")
+                    b.HasOne("Database.Models.QuestionnaireOptionModel", "Option")
+                        .WithMany()
+                        .HasForeignKey("OptionFK");
+
+                    b.HasOne("Database.Models.QuestionnaireQuestionModel", "Question")
+                        .WithMany()
+                        .HasForeignKey("QuestionFK")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("ActiveQuestionnaire");
+                    b.Navigation("Option");
+
+                    b.Navigation("Question");
+                });
+
+            modelBuilder.Entity("Database.Models.QuestionnaireGroupModel", b =>
+                {
+                    b.HasOne("Database.Models.QuestionnaireTemplateModel", "Template")
+                        .WithMany()
+                        .HasForeignKey("TemplateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Template");
                 });
 
             modelBuilder.Entity("Database.Models.QuestionnaireOptionModel", b =>
@@ -793,9 +893,38 @@ namespace Database.Migrations
                         .HasForeignKey("UserBaseModelId");
                 });
 
+            modelBuilder.Entity("Database.Models.ActiveQuestionnaireStudentResponseModel", b =>
+                {
+                    b.HasOne("Database.Models.ActiveQuestionnaireModel", "ActiveQuestionnaire")
+                        .WithMany("StudentAnswers")
+                        .HasForeignKey("ActiveQuestionnaireFK")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ActiveQuestionnaire");
+                });
+
+            modelBuilder.Entity("Database.Models.ActiveQuestionnaireTeacherResponseModel", b =>
+                {
+                    b.HasOne("Database.Models.ActiveQuestionnaireModel", "ActiveQuestionnaire")
+                        .WithMany("TeacherAnswers")
+                        .HasForeignKey("ActiveQuestionnaireFK")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ActiveQuestionnaire");
+                });
+
             modelBuilder.Entity("Database.Models.ActiveQuestionnaireModel", b =>
                 {
-                    b.Navigation("Answers");
+                    b.Navigation("StudentAnswers");
+
+                    b.Navigation("TeacherAnswers");
+                });
+
+            modelBuilder.Entity("Database.Models.QuestionnaireGroupModel", b =>
+                {
+                    b.Navigation("Questionnaires");
                 });
 
             modelBuilder.Entity("Database.Models.QuestionnaireQuestionModel", b =>
