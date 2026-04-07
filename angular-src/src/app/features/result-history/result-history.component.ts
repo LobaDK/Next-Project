@@ -4,15 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
-
 import { User } from '../../shared/models/user.model';
 import { TemplateBase } from '../active-questionnaire-manager/models/active.models';
-
 import {
   ShowResultComponent,
   ShowResultConfig
 } from '../../shared/show-result/show-result.component';
-
 import {
   Answer,
   QuestionOption,
