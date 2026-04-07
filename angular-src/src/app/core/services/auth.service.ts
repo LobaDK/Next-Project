@@ -353,6 +353,10 @@ export class AuthService implements IAuthService {
       }
     }
 
+    if (this.isMaintenanceError(httpError)) {
+      return LoginErrorCode.Maintenance;
+    }
+
     // HTTP status code mapping
     const statusMap: Record<number, LoginErrorCode> = {
       0: LoginErrorCode.Network,
@@ -370,6 +374,10 @@ export class AuthService implements IAuthService {
     return httpError.status >= 500 && httpError.status < 600
       ? LoginErrorCode.Server
       : LoginErrorCode.Unknown;
+  }
+
+  private isMaintenanceError(httpError: HttpErrorResponse): boolean {
+    return httpError.status === 503;
   }
 
   private parseADError(error: any): ADErrorResponse | null {

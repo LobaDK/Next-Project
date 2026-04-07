@@ -4,6 +4,22 @@
   <!-- Page content -->
   <app-header></app-header>
   <main class="flex-grow pt-20 print:pt-0">
+    @if (showMaintenanceBanner()) {
+    <div
+      class="maintenance-banner bg-primary_background_white/80 border-2 border-primary_orange_1 rounded-xl px-4 py-3 mb-4 shadow-lg">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <p class="font-semibold text-primary_dark_blue">{{ 'MAINTENANCE_NOTICE.TITLE' | translate }}</p>
+          <p class="text-sm text-primary_dark_blue/90">{{ 'MAINTENANCE_NOTICE.MESSAGE' | translate }}</p>
+        </div>
+        <button type="button" (click)="dismissMaintenanceBanner()"
+          class="maintenance-dismiss-btn px-3 py-1.5 rounded-lg text-sm font-semibold border border-primary_orange_1 text-primary_dark_blue hover:bg-secondary_background_hover transition-colors whitespace-nowrap">
+          {{ 'MAINTENANCE_NOTICE.DISMISS' | translate }}
+        </button>
+      </div>
+    </div>
+    }
+
     <router-outlet></router-outlet>
   </main>
 </div>

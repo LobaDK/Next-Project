@@ -1,3 +1,4 @@
+using API.Middleware.MaintenanceMode;
 using API.Middleware.RateLimiter;
 
 const string settingsFile = "config.json";
@@ -39,7 +40,7 @@ bootstrapLoggerFactory.AddSerilog(seriLogger);
 // Add services to the container.
 
 if (File.Exists("USEMOCKAUTH") || File.Exists("USEMOCKAUTH.txt"))
-{   
+{
     builder.Services.AddScoped<IAuthenticationBridge, MockedAuthenticationBridge>();
     seriLogger.Warning("Using MOCK authentication bridge, this should NOT be used in production!");
 }
@@ -48,6 +49,7 @@ else
     builder.Services.AddScoped<IAuthenticationBridge, ActiveDirectoryAuthenticationBridge>();
 }
 
+builder.Services.AddSingleton<IMaintenanceMonitor, MaintenanceMonitor>();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddScoped<IValidator<QuestionnaireTemplateAdd>, CreateQuestionnaireTemplateSubmissionValidator>();
 builder.Services.AddScoped<JsonSerializerService>();
@@ -60,11 +62,13 @@ builder.Services.AddScoped<ISystemControllerService, SystemControllerService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSingleton<CacheService>();
 builder.Services.AddMemoryCache();
-builder.Services.AddAuthentication(cfg => {
+builder.Services.AddAuthentication(cfg =>
+{
     cfg.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     cfg.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     cfg.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer("AccessToken", x => {
+}).AddJwtBearer("AccessToken", x =>
+{
     x.RequireHttpsMetadata = false;
     x.SaveToken = false;
     x.TokenValidationParameters = JwtService.GetAccessTokenValidationParameters(jWTSettings.AccessTokenSecret, issuer: jWTSettings.Issuer, audience: jWTSettings.Audience);
@@ -72,7 +76,8 @@ builder.Services.AddAuthentication(cfg => {
     // ASP.NET likes to map JWT claim names to their own URL schema claims
     // making it difficult to work with incoming tokens. This disables that.
     x.MapInboundClaims = false;
-}).AddJwtBearer("RefreshToken", x => {
+}).AddJwtBearer("RefreshToken", x =>
+{
     x.RequireHttpsMetadata = false;
     x.SaveToken = false;
     x.TokenValidationParameters = JwtService.GetRefreshTokenValidationParameters(jWTSettings.RefreshTokenSecret);
@@ -82,7 +87,8 @@ builder.Services.AddAuthentication(cfg => {
     x.MapInboundClaims = false;
 });
 
-builder.Services.Configure<RouteOptions>(o => {
+builder.Services.Configure<RouteOptions>(o =>
+{
     o.LowercaseUrls = true;
     o.LowercaseQueryStrings = true;
 });
@@ -95,7 +101,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITrackedRefreshTokenRepository, TrackedRefreshTokenRepository>();
 builder.Services.AddScoped<IApplicationLogRepository, ApplicationLogRepository>();
 
-builder.Services.AddControllers(options =>{
+builder.Services.AddControllers(options =>
+{
     options.Conventions.Add(new RouteTokenTransformerConvention(new SlugifyParameterTransformer()));
 }).AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
@@ -103,7 +110,7 @@ builder.Services.AddControllers(options =>{
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "NEXT questionnaire API", Version = "v1"});
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "NEXT questionnaire API", Version = "v1" });
 
     options.UseAllOfToExtendReferenceSchemas();
 
@@ -135,9 +142,10 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddDbContext<Context>(o =>
     o.UseSqlServer(databaseSettings.ConnectionString,
-        options => {
+        options =>
+        {
             options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
-            }));
+        }));
 
 // We have to configure Kestrel before building the app instance
 string environment = builder.Configuration["ASPNETCORE_ENVIRONMENT"] ?? "Production";
@@ -160,7 +168,7 @@ if (environment != "Development")
         {
             options.ListenAnyIP(systemSettings.HttpPort);
         }
-        
+
         if (systemSettings.UseSSL)
         {
             if (address is not null)
@@ -182,9 +190,11 @@ if (environment != "Development")
 }
 
 // CORS
-builder.Services.AddCors(options => {
+builder.Services.AddCors(options =>
+{
     options.AddPolicy(name: "AllowedOrigins",
-        policy => {
+        policy =>
+        {
             policy.WithOrigins("http://10.0.1.5")
             .AllowAnyHeader()
             .AllowAnyMethod();
@@ -217,29 +227,43 @@ using (IServiceScope scope = app.Services.CreateScope())
     {
         ILogger<Program> logger = services.GetRequiredService<ILogger<Program>>();
         int max_attempts = 3;
-        
-        for (int attempt = 0; attempt < max_attempts; attempt++)
+        string failureReason = string.Empty;
+
+        try
         {
-            if (context.Database.CanConnect())
+            for (int attempt = 0; attempt < max_attempts; attempt++)
             {
-                context.Database.Migrate();
-            }
-            else if (!databaseCreator.Exists())
-            {
-                logger.LogInformation("Database does not exist, creating it...");
-                databaseCreator.Create();
-                context.Database.Migrate();
-            }
-            else
-            {
-                logger.LogWarning("Waiting for database to be created/migrated... ({attempt}/{max_attempts})", attempt + 1, max_attempts);
-                Thread.Sleep(TimeSpan.FromSeconds(30));
-                if (attempt == max_attempts - 1)
+                if (context.Database.CanConnect())
                 {
-                    logger.LogCritical("Database is not reachable, exiting.");
-                    Environment.Exit(1);
+                    failureReason = "Failed to migrate database.";
+                    context.Database.Migrate();
+                    break;
+                }
+                else if (context.Database.CanConnect() && !databaseCreator.Exists())
+                {
+                    failureReason = "Failed to create database.";
+                    logger.LogInformation("Database does not exist, creating it...");
+                    databaseCreator.Create();
+                    failureReason = "Failed to migrate database after creating it";
+                    context.Database.Migrate();
+                    break;
+                }
+                else
+                {
+                    logger.LogWarning("Waiting for database to be created/migrated... ({attempt}/{max_attempts})", attempt + 1, max_attempts);
+                    Thread.Sleep(TimeSpan.FromSeconds(30));
+                    if (attempt == max_attempts - 1)
+                    {
+                        failureReason = "Failed to reach/connect to database.";
+                        throw new InvalidOperationException();
+                    }
                 }
             }
+        }
+        catch (Exception ex)
+        {
+            logger.LogCritical(ex, failureReason);
+            services.GetRequiredService<IMaintenanceMonitor>().EnableMaintenance(failureReason);
         }
     }
 }
@@ -248,7 +272,8 @@ using (IServiceScope scope = app.Services.CreateScope())
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(options => {
+    app.UseSwaggerUI(options =>
+    {
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
         options.RoutePrefix = string.Empty;
     });
@@ -269,5 +294,7 @@ app.UseWebSockets();
 app.UseRateLimiter();
 
 app.MapControllers().RequireRateLimiting("global");
+
+app.UseMiddleware<MaintenanceModeMiddleware>();
 
 app.Run();

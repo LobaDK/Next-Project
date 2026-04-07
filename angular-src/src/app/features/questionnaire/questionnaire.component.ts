@@ -139,6 +139,7 @@ export class QuestionnaireComponent {
   private loadQuestionnaire(id: string) {
     this.isLoading = true;
     this.currentQuestionnaireId = id;
+    // First, check if the user has already submitted the questionnaire
     this.answerService.getActiveQuestionnaireById(id)
       .subscribe({
         next: (template) => {

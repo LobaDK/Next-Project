@@ -40,6 +40,8 @@ public class LDAPUpdateRequest : ILDAPSettings
 
 public class SystemUpdateRequest : ISystemSettings
 {
+    public required string AdminUsername { get; set; }
+    public required string AdminPassword { get; set; }
     public required string ListenIP { get; set; }
     public required int HttpPort { get; set; }
     public required int HttpsPort { get; set; }

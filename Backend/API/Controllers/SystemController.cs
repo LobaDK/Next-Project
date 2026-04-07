@@ -32,6 +32,62 @@ namespace API.Controllers
         }
 
         /// <summary>
+        /// Endpoint to check the current system status, including whether the application is under maintenance.
+        /// </summary>
+        /// <returns>An <see cref="ActionResult{T}"/> containing a <see cref="SystemStatus"/> value indicating the current system status.</returns>
+        [HttpGet("status")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(SystemStatus), StatusCodes.Status200OK)]
+        public ActionResult<SystemStatus> Status()
+        {
+            return _SystemControllerService.IsSystemUnderMaintenance() ? (ActionResult<SystemStatus>)SystemStatus.Maintenance : (ActionResult<SystemStatus>)SystemStatus.Ok;
+        }
+
+        /// <summary>
+        /// Endpoint to get the current maintenance mode reason message.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="ActionResult{T}"/> containing the maintenance reason string.
+        /// Returns an empty string when no reason is configured.
+        /// </returns>
+        [HttpGet("maintenance/reason")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        public ActionResult<string> GetMaintenanceReason()
+        {
+            return Ok(_SystemControllerService.GetMaintenanceReason());
+        }
+
+        /// <summary>
+        /// Endpoint to set or clear the current maintenance mode reason message.
+        /// </summary>
+        /// <param name="request">The request containing the maintenance reason. Null or empty clears the reason.</param>
+        /// <returns>An <see cref="IActionResult"/> indicating the operation completed successfully.</returns>
+        [HttpPut("maintenance/reason")]
+        [Authorize(AuthenticationSchemes = "AccessToken", Policy = "AdminOnly")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult SetMaintenanceReason([FromBody] SetMaintenanceReasonRequest request)
+        {
+            _SystemControllerService.SetMaintenanceReason(request.Reason);
+            return Ok();
+        }
+
+        /// <summary>
+        /// Endpoint to enable or disable maintenance mode for the application. When maintenance mode is enabled,
+        /// the system will be marked as under maintenance and related endpoints can adjust their behavior accordingly.
+        /// </summary>
+        /// <returns>An <see cref="IActionResult"/> indicating the result of the operation. Returns HTTP 200 (OK) when the maintenance mode setting is updated.</returns>
+        [HttpPost("maintenance")]
+        [Authorize(AuthenticationSchemes = "AccessToken", Policy = "AdminOnly")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult SetMaintenanceMode(bool enabled)
+        {
+            _SystemControllerService.SetMaintenanceMode(enabled);
+            return Ok();
+        }
+
+        /// <summary>
         /// Retrieves application logs from the database based on the specified query parameters.
         /// </summary>
         /// <param name="logQuery">The query parameters to filter and paginate the application logs.</param>

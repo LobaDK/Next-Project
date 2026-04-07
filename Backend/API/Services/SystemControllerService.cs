@@ -1,7 +1,11 @@
 
 namespace API.Services;
 
-public class SystemControllerService(IConfiguration configuration, ILogger<SystemControllerService> logger, IHostApplicationLifetime hostApplicationLifetime) : ISystemControllerService
+public class SystemControllerService(
+    IConfiguration configuration,
+    ILogger<SystemControllerService> logger,
+    IHostApplicationLifetime hostApplicationLifetime,
+    IMaintenanceMonitor maintenanceMonitor) : ISystemControllerService
 {
     private readonly RootSettings _RootSettings = ConfigurationBinderService.Bind<RootSettings>(configuration);
     private readonly IConfiguration _Configuration = configuration;
@@ -9,6 +13,7 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
     private readonly ILogger<ISystemControllerService> _Logger = logger;
     private readonly JsonSerializerOptions _SerializerOptions = JsonSerializerUtility.ConfigureJsonSerializerSettings();
     private readonly IHostApplicationLifetime _HostApplicationLifetime = hostApplicationLifetime;
+    private readonly IMaintenanceMonitor _maintenanceMonitor = maintenanceMonitor;
 
     public bool StopServer()
     {
@@ -164,6 +169,8 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
             },
             System = new SystemSettingsFetchResponse()
             {
+                AdminUsername = _RootSettings.System.AdminUsername,
+                AdminPassword = _RootSettings.System.AdminPassword,
                 ListenIP = _RootSettings.System.ListenIP,
                 HttpPort = _RootSettings.System.HttpPort,
                 HttpsPort = _RootSettings.System.HttpsPort,
@@ -301,6 +308,18 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
             },
             System = new SystemSettingsSchema()
             {
+                AdminUsername = new AdminUsername()
+                {
+                    Required = IsPropertyRequired(typeof(SystemSettings).GetProperty(nameof(_RootSettings.System.AdminUsername))!),
+                    Type = GetSchemaType(_RootSettings.System.AdminUsername),
+                    Description = GetPropertyDescription(typeof(SystemSettings).GetProperty(nameof(_RootSettings.System.AdminUsername))!)
+                },
+                AdminPassword = new AdminPassword()
+                {
+                    Required = IsPropertyRequired(typeof(SystemSettings).GetProperty(nameof(_RootSettings.System.AdminPassword))!),
+                    Type = GetSchemaType(_RootSettings.System.AdminPassword),
+                    Description = GetPropertyDescription(typeof(SystemSettings).GetProperty(nameof(_RootSettings.System.AdminPassword))!)
+                },
                 ListenIP = new ListenIPSchema()
                 {
                     Required = IsPropertyRequired(typeof(SystemSettings).GetProperty(nameof(_RootSettings.System.ListenIP))!),
@@ -425,6 +444,66 @@ public class SystemControllerService(IConfiguration configuration, ILogger<Syste
         {
             _Logger.LogError(ex, "Failed to patch settings: {Message}", ex.Message);
             return false;
+        }
+    }
+
+    /// <summary>
+    /// Determines whether the system is currently operating in maintenance mode.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> when maintenance mode is enabled; otherwise, <c>false</c>.
+    /// </returns>
+    public bool IsSystemUnderMaintenance()
+    {
+        return _maintenanceMonitor.IsMaintenanceEnabled;
+    }
+
+    /// <summary>
+    /// Retrieves the current maintenance mode reason.
+    /// </summary>
+    /// <returns>
+    /// The maintenance reason text when set; otherwise, an empty string.
+    /// </returns>
+    public string GetMaintenanceReason()
+    {
+        return _maintenanceMonitor.Reason;
+    }
+
+    /// <summary>
+    /// Sets or clears the maintenance mode reason.
+    /// </summary>
+    /// <param name="reason">The maintenance reason. If null or whitespace, the reason is cleared.</param>
+    public void SetMaintenanceReason(string? reason)
+    {
+        var normalizedReason = reason?.Trim();
+
+        if (string.IsNullOrWhiteSpace(normalizedReason))
+        {
+            _maintenanceMonitor.ClearMaintenanceReason();
+            return;
+        }
+
+        _maintenanceMonitor.SetMaintenanceReason(normalizedReason);
+    }
+
+    /// <summary>
+    /// Enables or disables maintenance mode for the running system.
+    /// </summary>
+    /// <param name="enabled">
+    /// <c>true</c> to enable maintenance mode; <c>false</c> to disable it.
+    /// </param>
+    /// <remarks>
+    /// Disabling maintenance mode forces an immediate shutdown of any active maintenance window.
+    /// </remarks>
+    public void SetMaintenanceMode(bool enabled)
+    {
+        if (enabled)
+        {
+            _maintenanceMonitor.EnableMaintenance();
+        }
+        else
+        {
+            _maintenanceMonitor.DisableMaintenance(true);
         }
     }
 

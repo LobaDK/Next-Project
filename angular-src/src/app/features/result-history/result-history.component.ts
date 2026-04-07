@@ -248,7 +248,7 @@ export class ResultHistoryComponent implements OnInit {
   /**
    * Fetch using the new normalized "history with attempts" shape
    */
- fetchStudentResultsV2(): void {
+  fetchStudentResultsV2(): void {
     if (!this.student.selected || !this.template.selected) return;
 
     this.isLoading = true;
@@ -653,5 +653,4 @@ export class ResultHistoryComponent implements OnInit {
 
 
 }
-
 

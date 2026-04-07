@@ -13,31 +13,32 @@ import { environment } from '../../../environments/environment';
 
 const ERROR_I18N: Record<LoginErrorCode, string> = {
   [LoginErrorCode.InvalidCredentials]: 'LOGIN.ERRORS.INVALID',
-  [LoginErrorCode.AccountDisabled]:    'LOGIN.ERRORS.ACCOUNT_DISABLED',
-  [LoginErrorCode.AccountExpired]:     'LOGIN.ERRORS.ACCOUNT_EXPIRED',
-  [LoginErrorCode.PasswordExpired]:    'LOGIN.ERRORS.PASSWORD_EXPIRED',
-  [LoginErrorCode.AccountLocked]:      'LOGIN.ERRORS.ACCOUNT_LOCKED',
-  [LoginErrorCode.AccountLoginError]:  'LOGIN.ERRORS.ACCOUNT_LOGIN_ERROR',
-  [LoginErrorCode.Network]:            'LOGIN.ERRORS.NETWORK',
-  [LoginErrorCode.Server]:             'LOGIN.ERRORS.SERVER',
-  [LoginErrorCode.Unknown]:            'LOGIN.ERRORS.GENERIC',
-  [LoginErrorCode.BadRequest]:         'LOGIN.ERRORS.BAD_REQUEST',
-  [LoginErrorCode.Forbidden]:          'LOGIN.ERRORS.FORBIDDEN',
-  [LoginErrorCode.RateLimited]:        'LOGIN.ERRORS.RATE_LIMITED',
-  [LoginErrorCode.Unavailable]:        'LOGIN.ERRORS.UNAVAILABLE',
-  [LoginErrorCode.Timeout]:            'LOGIN.ERRORS.TIMEOUT',
+  [LoginErrorCode.AccountDisabled]: 'LOGIN.ERRORS.ACCOUNT_DISABLED',
+  [LoginErrorCode.AccountExpired]: 'LOGIN.ERRORS.ACCOUNT_EXPIRED',
+  [LoginErrorCode.PasswordExpired]: 'LOGIN.ERRORS.PASSWORD_EXPIRED',
+  [LoginErrorCode.AccountLocked]: 'LOGIN.ERRORS.ACCOUNT_LOCKED',
+  [LoginErrorCode.AccountLoginError]: 'LOGIN.ERRORS.ACCOUNT_LOGIN_ERROR',
+  [LoginErrorCode.Network]: 'LOGIN.ERRORS.NETWORK',
+  [LoginErrorCode.Server]: 'LOGIN.ERRORS.SERVER',
+  [LoginErrorCode.Unknown]: 'LOGIN.ERRORS.GENERIC',
+  [LoginErrorCode.BadRequest]: 'LOGIN.ERRORS.BAD_REQUEST',
+  [LoginErrorCode.Forbidden]: 'LOGIN.ERRORS.FORBIDDEN',
+  [LoginErrorCode.RateLimited]: 'LOGIN.ERRORS.RATE_LIMITED',
+  [LoginErrorCode.Maintenance]: 'LOGIN.ERRORS.MAINTENANCE',
+  [LoginErrorCode.Unavailable]: 'LOGIN.ERRORS.UNAVAILABLE',
+  [LoginErrorCode.Timeout]: 'LOGIN.ERRORS.TIMEOUT',
 };
 
 @Component({
-    selector: 'app-login',
-    imports: [FormsModule, TranslateModule, LanguageSwitcherComponent, TrackCapsDirective],
-    templateUrl: './login.component.html',
-    styleUrls: ['./login.component.css']
+  selector: 'app-login',
+  imports: [FormsModule, TranslateModule, LanguageSwitcherComponent, TrackCapsDirective],
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
-  
+
 
   @Output() loggedIn = new EventEmitter<boolean>();
   @Output() errorOccurred = new EventEmitter<LoginErrorCode>();
@@ -49,7 +50,7 @@ export class LoginComponent {
 
   isLoading = false;
   capsLockOn = false;
-  
+
   // Flag to control whether to show specific AD error messages or generic ones
   showSpecificErrors = environment.showSpecificErrors ?? false;
 
@@ -65,14 +66,14 @@ export class LoginComponent {
         this.loggedIn.emit(true);
         return;
       }
-      
+
       // Check if we should show generic message for AD-specific errors
       if (!this.showSpecificErrors && this.isADSpecificError(res.code)) {
         this.errorKey = 'LOGIN.ERRORS.GENERIC_AD_ERROR';
       } else {
         this.errorKey = ERROR_I18N[res.code];
       }
-      
+
       this.errorOccurred.emit(res.code);
     });
   }
@@ -89,7 +90,7 @@ export class LoginComponent {
   onCapsLockChange(capsLockOn: boolean) {
     this.capsLockOn = capsLockOn;
   }
-  
+
   /**
    * Checks if the error code is specific to Active Directory (not invalid credentials)
    */

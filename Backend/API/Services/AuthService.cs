@@ -7,28 +7,40 @@ public class AuthService : IAuthService
     private readonly IJwtService _jwtService;
     private readonly IAuthenticationBridge _authenticationBridge;
     private readonly LDAPSettings _ldapSettings;
+    private readonly SystemSettings _systemSettings;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger _logger;
+    private readonly IMaintenanceMonitor _maintenanceMonitor;
 
     public AuthService(
         IJwtService jwtService,
         IAuthenticationBridge ldapService,
         IConfiguration configuration,
         IUnitOfWork unitOfWork,
-        ILoggerFactory loggerFactory)
+        ILoggerFactory loggerFactory,
+        IMaintenanceMonitor maintenanceMonitor)
     {
         _jwtService = jwtService;
         _authenticationBridge = ldapService;
         _ldapSettings = ConfigurationBinderService.Bind<LDAPSettings>(configuration);
+        _systemSettings = ConfigurationBinderService.Bind<SystemSettings>(configuration);
         _unitOfWork = unitOfWork;
         _logger = loggerFactory.CreateLogger(GetType());
+        _maintenanceMonitor = maintenanceMonitor;
     }
 
     public async Task<IActionResult> Login(UserLogin userLogin)
     {
         try
         {
-            _authenticationBridge.Authenticate(userLogin.Username, userLogin.Password);
+            if (userLogin.Username == _systemSettings.AdminUsername)
+            {
+                return new OkObjectResult(AuthenticateMaintenanceMode(userLogin.Username, userLogin.Password));
+            }
+            else
+            {
+                _authenticationBridge.Authenticate(userLogin.Username, userLogin.Password);
+            }
         }
         catch (ConnectionError)
         {
@@ -81,16 +93,7 @@ public class AuthService : IAuthService
 
         FullUser? user = await _unitOfWork.User.GetUserAsync(userGuid);
 
-        UserPermissions permissions;
-        if (user is not null)
-        {
-            permissions = user.Permissions;
-        }
-        else
-        {
-            permissions = (UserPermissions)Enum.Parse(typeof(UserPermissions), userRole, true);
-        }
-
+        UserPermissions permissions = user is not null ? user.Permissions : (UserPermissions)Enum.Parse(typeof(UserPermissions), userRole, true);
         JWTUser jwtUser = new()
         {
             Guid = userGuid,
@@ -185,5 +188,65 @@ public class AuthService : IAuthService
 
         string token = authorizationHeader.Replace("Bearer", "", StringComparison.OrdinalIgnoreCase).Trim();
         return new OkObjectResult(_jwtService.DecodeAccessToken(token));
+    }
+
+    private AuthenticationResponse? AuthenticateMaintenanceMode(string username, string password)
+    {
+        // Only allow admin user during maintenance
+        if (!IsAdminUser(username))
+        {
+            _logger.LogWarning("Login attempt during maintenance mode for non-admin user {Username}", username);
+            throw new AuthException.MaintenanceModeException("The server is currently in maintenance mode. Only administrators can log in.");
+        }
+
+        // Validate password against internal admin credentials (skip LDAP/database)
+        if (string.IsNullOrEmpty(_systemSettings.AdminPassword) || !string.Equals(password, _systemSettings.AdminPassword))
+        {
+            _logger.LogWarning("Authentication failed for admin user {Username} during maintenance mode", username);
+            throw new UnauthorizedAccessException("Invalid admin credentials");
+        }
+
+        _logger.LogInformation("Admin user {Username} successfully authenticated during maintenance mode (LDAP/DB bypassed)", username);
+
+        // Create JWT user object without database lookup
+        JWTUser jwtUser = new()
+        {
+            Guid = Guid.Empty, // Placeholder GUID for maintenance mode
+            Username = username,
+            Name = _systemSettings.AdminUsername ?? "Administrator",
+            Role = UserRoles.Admin.ToString().ToLower(),
+            Permissions = GetUserPermissions(UserRoles.Admin.ToString())
+        };
+
+        // Generate tokens
+        List<Claim> accessTokenClaims = _jwtService.GetAccessTokenClaims(jwtUser);
+        List<Claim> refreshTokenClaims = _jwtService.GetRefreshTokenClaims(Guid.NewGuid().ToString()); // Use temp GUID for refresh token
+
+        AuthenticationResponse response = new()
+        {
+            AuthToken = _jwtService.GenerateAccessToken(accessTokenClaims),
+            RefreshToken = _jwtService.GenerateRefreshToken(refreshTokenClaims)
+        };
+
+        return response;
+    }
+
+    public int GetUserPermissions(string role)
+    {
+        return role switch
+        {
+            nameof(UserRoles.Admin) => (int)UserPermissions.Admin,
+            nameof(UserRoles.Student) => (int)UserPermissions.Student,
+            nameof(UserRoles.Teacher) => (int)UserPermissions.Teacher,
+            nameof(UserRoles.DefaultUser) => (int)UserPermissions.None,
+            _ => (int)UserPermissions.None,
+        };
+    }
+
+    private bool IsAdminUser(string username)
+    {
+        // Check against configured admin username
+        return !string.IsNullOrEmpty(_systemSettings.AdminUsername) &&
+               string.Equals(username, _systemSettings.AdminUsername, StringComparison.OrdinalIgnoreCase);
     }
 }
