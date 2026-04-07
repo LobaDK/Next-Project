@@ -239,7 +239,7 @@ using (IServiceScope scope = app.Services.CreateScope())
                     context.Database.Migrate();
                     break;
                 }
-                else if (context.Database.CanConnect() && !databaseCreator.Exists())
+                else if (!context.Database.CanConnect() && !databaseCreator.Exists())
                 {
                     failureReason = "Failed to create database.";
                     logger.LogInformation("Database does not exist, creating it...");
