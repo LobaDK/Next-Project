@@ -56,10 +56,6 @@ public class MaintenanceModeMiddleware(RequestDelegate next, IMaintenanceMonitor
                             await _next(context);
                             return;
                         }
-                        {
-                            await _next(context);
-                            return;
-                        }
                     }
                 }
 
