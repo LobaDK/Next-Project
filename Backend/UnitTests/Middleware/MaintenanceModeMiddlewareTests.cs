@@ -1,5 +1,6 @@
 using System.IO;
 using System.Text;
+
 using API.Middleware.MaintenanceMode;
 
 namespace UnitTests.Middleware
@@ -171,7 +172,7 @@ namespace UnitTests.Middleware
         private static DefaultHttpContext CreateLoginRequestContext(string username)
         {
             var context = CreateHttpContext();
-            context.Request.Path = "/api/auth/login";
+            context.Request.Path = "/api/auth";
             context.Request.Method = HttpMethods.Post;
             context.Request.ContentType = "application/x-www-form-urlencoded";
 
